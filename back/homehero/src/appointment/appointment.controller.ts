@@ -28,6 +28,7 @@ export class AppointmentController {
   @Get(':id')
   findOne(@Param('id') id: string) {
     console.log("hola martin");
+    console.log("hola Lautaro");
     return this.appointmentService.findOne(+id);
   }
 
