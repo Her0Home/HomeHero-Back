@@ -7,28 +7,28 @@ import { UpdateSubcategoryDto } from './dto/update-subcategory.dto';
 export class SubcategoryController {
   constructor(private readonly subcategoryService: SubcategoryService) {}
 
-  @Post()
-  create(@Body() createSubcategoryDto: CreateSubcategoryDto) {
-    return this.subcategoryService.create(createSubcategoryDto);
-  }
+  // @Post()
+  // create(@Body() createSubcategoryDto: CreateSubcategoryDto) {
+  //   return this.subcategoryService.create(createSubcategoryDto);
+  // }
 
-  @Get()
-  findAll() {
-    return this.subcategoryService.findAll();
-  }
+  // @Get()
+  // findAll() {
+  //   return this.subcategoryService.findAll();
+  // }
 
-  @Get(':id')
-  findOne(@Param('id') id: string) {
-    return this.subcategoryService.findOne(+id);
-  }
+  // @Get(':id')
+  // findOne(@Param('id') id: string) {
+  //   return this.subcategoryService.findOne(+id);
+  // }
 
-  @Patch(':id')
-  update(@Param('id') id: string, @Body() updateSubcategoryDto: UpdateSubcategoryDto) {
-    return this.subcategoryService.update(+id, updateSubcategoryDto);
-  }
+  // @Patch(':id')
+  // update(@Param('id') id: string, @Body() updateSubcategoryDto: UpdateSubcategoryDto) {
+  //   return this.subcategoryService.update(+id, updateSubcategoryDto);
+  // }
 
-  @Delete(':id')
-  remove(@Param('id') id: string) {
-    return this.subcategoryService.remove(+id);
-  }
+  // @Delete(':id')
+  // remove(@Param('id') id: string) {
+  //   return this.subcategoryService.remove(+id);
+  // }
 }
