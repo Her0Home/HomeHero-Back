@@ -1,9 +1,13 @@
 import { Appointment } from "src/appointment/entities/appointment.entity";
-import { Column, Entity, JoinColumn, ManyToMany, OneToMany, OneToOne } from "typeorm";
+import { Column, Entity, JoinColumn, ManyToMany, OneToMany, OneToOne, PrimaryGeneratedColumn } from "typeorm";
 import { Role } from "../assets/roles";
 
 @Entity({name: 'users'})
 export class User {
+
+    @PrimaryGeneratedColumn('uuid')
+    id: string;
+
 
     @Column({type:'varchar'})
     name: string;
@@ -14,7 +18,7 @@ export class User {
     @Column({type:'date'})
     birthdate: Date;
 
-    @Column({type:'bigint', unique: true})
+    @Column({type:'bigint', unique: true, nullable: false})
     dni: number;
 
     // @OneToMany(() => Addres, addres => addres.user)
@@ -23,7 +27,7 @@ export class User {
     @Column({type:'varchar'})
     imageProfile?:string;
 
-    @Column({type:'varchar'})
+    @Column({type:'varchar', default:'Sin descripción'})
     description?: string;
 
     @Column({type:'varchar'})
@@ -46,10 +50,10 @@ export class User {
     // @JoinColumn({name: 'appointment_id'})
     // appointments: Appointment[];
 
-    @Column({type:'boolean', default: false})
+    @Column({type:'boolean', default: true})
     isActive: boolean;
 
-    @Column({type:'enum', enum: Role, nullable:false})
+    @Column({type:'enum', enum: Role, nullable:true})
     Role: Role;
 
     

@@ -1,26 +1,32 @@
-import { Injectable } from '@nestjs/common';
-import { CreateUserDto } from './dto/create-user.dto';
-import { UpdateUserDto } from './dto/update-user.dto';
+import { Injectable, NotFoundException } from '@nestjs/common';
+import { CreateClienteDto } from './dto/create-user.dto';
+import { InjectRepository } from '@nestjs/typeorm';
+import { User } from './entities/user.entity';
+import { Repository } from 'typeorm';
+// import { UpdateUserDto } from './dto/update-user.dto';
 
 @Injectable()
 export class UsersService {
-  create(createUserDto: CreateUserDto) {
-    return 'This action adds a new user';
-  }
 
-  findAll() {
-    return `This action returns all users`;
-  }
+  constructor(@InjectRepository(User) private userRepository: Repository<User>) {}
 
-  findOne(id: number) {
-    return `This action returns a #${id} user`;
-  }
+  async create(createUserDto: CreateClienteDto) {
+    try {
 
-  update(id: number, updateUserDto: UpdateUserDto) {
-    return `This action updates a #${id} user`;
-  }
+      const foundUser: User | null = await this.userRepository.findOne({where:{email: createUserDto.email}});
 
-  remove(id: number) {
-    return `This action removes a #${id} user`;
+      if(foundUser){
+        throw new NotFoundException(`User with email ${createUserDto.email} already exists`);
+      }
+
+
+      const newCliente: User = this.userRepository.create(createUserDto);
+      const  newUserCliente: User = await this.userRepository.save(newCliente);
+      return newUserCliente;
+      
+    } catch (error) {
+      throw new NotFoundException(`Error creating user: ${error.message}`);
+    }
   }
+  
 }
