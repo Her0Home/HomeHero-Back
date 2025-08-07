@@ -3,9 +3,12 @@ import { IsDate, IsEnum, IsNotEmpty, IsOptional, IsString, IsUUID, Matches } fro
 import { Type } from 'class-transformer';
 
 export class CreateAppointmentDto {
+
+  @IsNotEmpty()
   @IsUUID()
   clientId: string;
 
+  @IsNotEmpty()
   @IsUUID()
   professionalId: string;
 
