@@ -13,7 +13,7 @@ export class CategoryService {
   ) {}
   async findAll() {
     const categories = await this.categoryRepository.find();
-    return categories;
+    return 'todavia no hay categorias' + categories;
   }
 
   async findOne(id: number): Promise<Category> {
