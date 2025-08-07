@@ -5,7 +5,7 @@ import { AppointmentModule } from './appointment/appointment.module';
 import { ConfigModule, ConfigService } from '@nestjs/config';
 import { TypeOrmModule } from '@nestjs/typeorm';
 import typeOrmConfig from './config/typeorm';
-import { UsersModule } from './User.module';
+import { UsersModule } from './users/users.module';
 
 @Module({
   imports: [
