@@ -5,15 +5,15 @@ import { InjectRepository } from '@nestjs/typeorm';
 import { DataSource, Repository } from 'typeorm';
 import { Appointment } from './entities/appointment.entity';
 import { User } from 'src/users/entities/user.entity';
-import { AppointmentStatus } from 'src/appointmentStatus.enum';
+import { AppointmentStatus } from 'src/appointment/Enum/appointmentStatus.enum';
 
 @Injectable()
 export class AppointmentService {
   constructor( 
     @InjectRepository(Appointment)
     private appointmentRepository: Repository<Appointment>,
-    // @InjectRepository (User)
-    // private userRepository: Repository<User>,
+    @InjectRepository (User)
+    private userRepository: Repository<User>,
     private readonly dataSource: DataSource,
   ) {}
 

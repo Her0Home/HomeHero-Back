@@ -5,11 +5,9 @@ import { AppService } from './app.service';
 import { ConfigModule, ConfigService } from '@nestjs/config';
 import { TypeOrmModule } from '@nestjs/typeorm';
 import typeOrmConfig from './config/typeorm';
-<<<<<<< HEAD
-// import { UsersModule } from './User.module';
-=======
 import { UsersModule } from './users/users.module';
->>>>>>> origin/Desarrollo
+import { AppointmentModule } from './appointment/appointment.module';
+import { SeederModule } from './seders/seeder.Module';
 
 @Module({
   imports: [
@@ -22,8 +20,11 @@ import { UsersModule } from './users/users.module';
       useFactory: (ConfigService: ConfigService) =>
         ConfigService.get('typeorm')!,
     }),
-    // AppointmentModule,
-    // UsersModule
+    
+    SeederModule,
+    AppointmentModule,
+    UsersModule,
+
   ],
   controllers: [AppController],
   providers: [AppService],

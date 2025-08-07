@@ -49,7 +49,7 @@ export class User {
     @Column({type:'enum', enum: Role, default:Role.CLIENTE})
     Role: Role;
     
-    @OneToMany(() => Appointment, appoiment=> appoiment.client)
+    @OneToMany(() => Appointment, appoiment=> appoiment.Client)
     @JoinColumn({name: 'appointment_id'})
     clientAppointments: Appointment[];
     
