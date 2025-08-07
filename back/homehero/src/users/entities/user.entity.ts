@@ -56,12 +56,12 @@ export class User {
     @OneToMany(()=>Appointment, appoiment=> appoiment.professional)
     professionalAppointments: Appointment[];
     
-    // @OneToMany(() => Addres, addres => addres.user)
-    // addresses: Addres[];
     
     @OneToOne(()=> Membership, membership => membership.user)
     membership: Membership;
-
+    
+    // @OneToMany(() => Addres, addres => addres.user)
+    // addresses: Addres[];
 
     // @ManyToMany(() => Subcategories, subcategory => subcategory.users)
     // subcategories?: Subcategories[];
