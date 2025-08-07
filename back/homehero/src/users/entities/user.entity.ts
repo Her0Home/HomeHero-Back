@@ -21,9 +21,7 @@ export class User {
     @Column({type:'bigint', unique: true, nullable: false})
     dni: number;
 
-    // @OneToMany(() => Addres, addres => addres.user)
-    // addresses: Addres[];
-
+    
     @Column({type:'varchar'})
     imageProfile?:string;
 
@@ -38,25 +36,33 @@ export class User {
 
     @Column({type:'integer', default: 0})
     totalAppointments?: number;
+    
+    
+    @Column({type:'boolean', default: false})
+    isVerified: boolean;
+    
+    
+    @Column({type:'boolean', default: true})
+    isActive: boolean;
+    
+    @Column({type:'enum', enum: Role, default:Role.CLIENTE})
+    Role: Role;
+    
+    @OneToMany(() => Appointment, appoiment=> appoiment.client)
+    @JoinColumn({name: 'appointment_id'})
+    clientAppointments: Appointment[];
+    
+    @OneToMany(()=>Appointment, appoiment=> appoiment.professional)
+    professionalAppointments: Appointment[];
+    
+    // @OneToMany(() => Addres, addres => addres.user)
+    // addresses: Addres[];
 
+    
     // @OneToOne(()=> Membership, membership => membership.user)
     // @JoinColumn({name: 'membership_id'})
     // membership: Membership;
 
-    @Column({type:'boolean', default: false})
-    isVerified: boolean;
-
-    // @OneToMany(() => Appointment, appoiment=> appoiment.user)
-    // @JoinColumn({name: 'appointment_id'})
-    // appointments: Appointment[];
-
-    @Column({type:'boolean', default: true})
-    isActive: boolean;
-
-    @Column({type:'enum', enum: Role, nullable:true})
-    Role: Role;
-
-    
 
     // @ManyToMany(() => Subcategories, subcategory => subcategory.users)
     // subcategories?: Subcategories[];

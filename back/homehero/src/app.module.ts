@@ -2,18 +2,24 @@ import { Module } from '@nestjs/common';
 import { AppController } from './app.controller';
 import { AppService } from './app.service';
 import { AppointmentModule } from './appointment/appointment.module';
-import { UsersModule } from './users/users.module';
-import { TypeOrmModule } from '@nestjs/typeorm';
 import { ConfigModule, ConfigService } from '@nestjs/config';
-import typeorm from './config/typeorm';
+import { TypeOrmModule } from '@nestjs/typeorm';
+import typeOrmConfig from './config/typeorm';
+import { UsersModule } from './users/users.module';
 
 @Module({
-  imports: [AppointmentModule, UsersModule,
-    ConfigModule.forRoot({isGlobal: true, load:[typeorm]}),
+  imports: [
+    ConfigModule.forRoot({
+      isGlobal: true,
+      load: [typeOrmConfig],
+    }),
     TypeOrmModule.forRootAsync({
       inject: [ConfigService],
-      useFactory: (config: ConfigService)=>config.get('typeorm')!,
+      useFactory: (ConfigService: ConfigService) =>
+        ConfigService.get('typeorm')!,
     }),
+    AppointmentModule,
+    UsersModule
   ],
   controllers: [AppController],
   providers: [AppService],
