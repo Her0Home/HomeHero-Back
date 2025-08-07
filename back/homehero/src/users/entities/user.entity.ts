@@ -1,6 +1,7 @@
 import { Appointment } from "src/appointment/entities/appointment.entity";
 import { Column, Entity, JoinColumn, ManyToMany, OneToMany, OneToOne, PrimaryGeneratedColumn } from "typeorm";
 import { Role } from "../assets/roles";
+import { Membership } from "src/membership/entities/membership.entity";
 
 @Entity({name: 'users'})
 export class User {
@@ -57,11 +58,9 @@ export class User {
     
     // @OneToMany(() => Addres, addres => addres.user)
     // addresses: Addres[];
-
     
-    // @OneToOne(()=> Membership, membership => membership.user)
-    // @JoinColumn({name: 'membership_id'})
-    // membership: Membership;
+    @OneToOne(()=> Membership, membership => membership.user)
+    membership: Membership;
 
 
     // @ManyToMany(() => Subcategories, subcategory => subcategory.users)

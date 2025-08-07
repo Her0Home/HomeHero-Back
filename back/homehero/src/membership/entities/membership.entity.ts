@@ -1,4 +1,6 @@
-import { Entity, PrimaryGeneratedColumn, Column, ManyToOne } from 'typeorm';
+import { Entity, PrimaryGeneratedColumn, Column, ManyToOne, OneToOne, JoinColumn } from 'typeorm';
+import { typeMemberships } from '../enums/enum-type';
+import { User } from 'src/users/entities/user.entity';
 
 @Entity('memberships')
 export class Membership {
@@ -14,7 +16,11 @@ export class Membership {
   @Column({ type: 'date' })
   membershipEnd: Date;
 
-  @Column({type: 'enum', enum: ['free', 'premiun']})
-  membershipType: string;
+  @Column({type: 'enum', enum: typeMemberships, default: typeMemberships.FREE})
+  membershipType: typeMemberships;
+
+  @OneToOne(()=>User, user=> user.membership)
+  @JoinColumn({name: 'user_id'})
+  user: User;
 }
 
