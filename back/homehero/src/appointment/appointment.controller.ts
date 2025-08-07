@@ -22,6 +22,8 @@ export class AppointmentController {
 
   @Get()
   findAll() {
+    console.log('Fetching all appointments');
+    
     return this.appointmentService.findAll();
   }
 
