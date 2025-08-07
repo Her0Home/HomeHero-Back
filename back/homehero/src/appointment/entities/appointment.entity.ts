@@ -52,7 +52,7 @@ export class Appointment {
 
   @ManyToOne(() => User, (user) => user.professionalAppointments)
   @JoinColumn({ name: 'professional_id' })
-  Professional: User;
+  professional: User;
 
 //   @OneToOne(() => Chat, (chat) => chat.appointment)
 //   @JoinColumn({ name: 'chat_id' })
