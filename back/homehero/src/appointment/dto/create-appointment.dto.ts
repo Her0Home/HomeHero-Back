@@ -7,7 +7,7 @@ export class CreateAppointmentDto {
   clientId: string;
 
   @IsUUID()
-  providerId: string;
+  professionalId: string;
 
   @IsNotEmpty()
   @Type(() => Date)

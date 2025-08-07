@@ -17,13 +17,11 @@ export class AppointmentController {
 
   @Post()
   create(@Body() createAppointmentDto: CreateAppointmentDto) {
-    return this.appointmentService.create(createAppointmentDto);
+    return this.appointmentService.createAppointment(createAppointmentDto);
   }
 
   @Get()
   findAll() {
-    console.log('Fetching all appointments');
-    
     return this.appointmentService.findAll();
   }
 

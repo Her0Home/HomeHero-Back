@@ -1,4 +1,5 @@
 import { AppointmentStatus } from 'src/appointmentStatus.enum';
+import { User } from 'src/user.entity';
 import {
   Column,
   Entity,
@@ -45,18 +46,18 @@ export class Appointment {
   })
   imageService: string;
 
-  @ManyToOne(() => User, (user) => user.ClientAppointments)
+  @ManyToOne(() => User, (user) => user.clientAppointments)
   @JoinColumn({ name: 'client_id' })
   Client: User;
 
-  @ManyToOne(() => User, (user) => user.ProfesionalAppointments)
+  @ManyToOne(() => User, (user) => user.professionalAppointments)
   @JoinColumn({ name: 'professional_id' })
-  Profesional: User;
+  Professional: User;
 
-  @OneToOne(() => Chat, (chat) => chat.appointment)
-  @JoinColumn({ name: 'chat_id' })
-  chat: Chat;
+//   @OneToOne(() => Chat, (chat) => chat.appointment)
+//   @JoinColumn({ name: 'chat_id' })
+//   chat: Chat;
 
-  @OneToMany(() => Image, (image) => image.appointment)
-  images: Image[];
+//   @OneToMany(() => Image, (image) => image.appointment)
+//   images: Image[];
 }
