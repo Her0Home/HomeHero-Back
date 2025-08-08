@@ -2,9 +2,9 @@ import { Appointment } from "src/appointment/entities/appointment.entity";
 import { Column, Entity, JoinColumn, JoinTable, ManyToMany, OneToMany, OneToOne, PrimaryGeneratedColumn } from "typeorm";
 import { Role } from "../assets/roles";
 import { Membership } from "src/membership/entities/membership.entity";
-import { Category } from "src/category/entities/category.entity";
-import { SubCategory } from "src/subcategory/entities/subcategory.entity";
 import { Addre } from "src/addres/entities/addre.entity";
+import { SubCategory } from "src/subcategory/entities/subcategory.entity";
+import { Category } from "src/category/entities/category.entity";
 
 @Entity({name: 'users'})
 export class User {
@@ -77,6 +77,11 @@ export class User {
     addres: Addre[]
     // @OneToMany(() => Addres, addres => addres.user)
     // addresses: Addres[];
+
+    // @ManyToMany(() => Subcategories, subcategory => subcategory.users)
+    // subcategories?: Subcategories[];
+
+
 
 
 }

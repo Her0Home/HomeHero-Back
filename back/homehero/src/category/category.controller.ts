@@ -23,8 +23,9 @@ export class CategoryController {
   }
 
   @Post()
-  async create(@Req() req: any, @Body() createCategoryDto: CreateCategoryDto) {
-    return this.categoryService.create(req.user.id, createCategoryDto);
+  async create(@Body() createCategoryDto: CreateCategoryDto) {
+    console.log('BODY:', createCategoryDto);
+    return this.categoryService.create(createCategoryDto);
   }
 
   @Delete(':id')
