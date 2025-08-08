@@ -6,7 +6,7 @@
   "birthdate": "1985-06-18T00:00:00.000Z",
   "dni": 1020304050,
   "password": "Password123!",
-  "role": "professional",
+  "role": "profesional",
   "description": "Plomero con 15 años de experiencia en reparaciones e instalaciones sanitarias.",
   "categoryIds": ["c1d2e3f4-a5b6-c7d8-e9f0-a1b2c3d4e5f6"],
   "subCategoryIds": ["d9e8f7g6-h5i4-j3k2-l1m0-n9o8p7q6r5s4"]
@@ -19,7 +19,7 @@
   "dni": 2030405060,
   "password": "Password456@",
   "imageProfile": "https://example.com/images/ricardo.jpg",
-  "role": "professional",
+  "role": "profesional",
   "description": "Electricista certificado para instalaciones, mantenimiento y reparación de sistemas eléctricos.",
   "categoryIds": ["c2d3e4f5-b6a7-c8d9-e0f1-a2b3c4d5e6f7"],
   "subCategoryIds": ["e0f1g2h3-i4j5-k6l7-m8n9-o0p1q2r3s4t5"]
@@ -31,7 +31,7 @@
   "birthdate": "1995-02-10T00:00:00.000Z",
   "dni": 3040506070,
   "password": "Password789#",
-  "role": "professional",
+  "role": "profesional",
   "description": "Paseadora de perros con experiencia en adiestramiento básico y primeros auxilios.",
   "categoryIds": ["c3d4e5f6-b7a8-c9d0-e1f2-a3b4c5d6e7f8"],
   "subCategoryIds": ["f1g2h3i4-j5k6-l7m8-n9o0-p1q2r3s4t5u6"]
@@ -44,7 +44,7 @@
   "dni": 8070605040,
   "password": "PasswordABC!",
   "imageProfile": "https://example.com/images/andrea.png",
-  "role": "professional",
+  "role": "profesional",
   "description": "Niñera profesional, responsable y cariñosa. Con experiencia en el cuidado de niños de 1 a 10 años.",
   "categoryIds": ["c4d5e6f7-b8a9-c0d1-e2f3-a4b5c6d7e8f9"],
   "subCategoryIds": ["g1h2i3j4-k5l6-m7n8-o9p0-q1r2s3t4u5v6"]
@@ -56,7 +56,7 @@
   "birthdate": "1993-04-30T00:00:00.000Z",
   "dni": 9070504030,
   "password": "PasswordXYZ#",
-  "role": "professional",
+  "role": "profesional",
   "description": "Cerrajero de emergencia 24/7. Instalación y reparación de cerraduras, apertura de puertas y vehículos.",
   "categoryIds": ["c5d6e7f8-b9a0-c1d2-e3f4-a5b6c7d8e9f0"],
   "subCategoryIds": ["h1i2j3k4-l5m6-n7o8-p9q0-r1s2t3u4v5w6"]

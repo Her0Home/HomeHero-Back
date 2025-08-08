@@ -5,6 +5,4 @@ export class FinishAppointmentDto {
   @IsInt()
   token: number;
 
-  @IsNotEmpty()
-  appointmentId: string;
 }
