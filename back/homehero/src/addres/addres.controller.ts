@@ -7,28 +7,13 @@ import { UpdateAddreDto } from './dto/update-addre.dto';
 export class AddresController {
   constructor(private readonly addresService: AddresService) {}
 
-  @Post()
-  create(@Body() createAddreDto: CreateAddreDto) {
-    return this.addresService.create(createAddreDto);
+  @Post(':id')
+  create(@Body() createAddreDto: CreateAddreDto[], @Param('id') userId: string ) {
+    return this.addresService.create(createAddreDto,userId);
   }
 
   @Get()
-  findAll() {
-    return this.addresService.findAll();
-  }
-
-  @Get(':id')
-  findOne(@Param('id') id: string) {
-    return this.addresService.findOne(+id);
-  }
-
-  @Patch(':id')
-  update(@Param('id') id: string, @Body() updateAddreDto: UpdateAddreDto) {
-    return this.addresService.update(+id, updateAddreDto);
-  }
-
-  @Delete(':id')
-  remove(@Param('id') id: string) {
-    return this.addresService.remove(+id);
+  getAllAddres(){
+    return this.addresService.getAllAddres()
   }
 }

@@ -72,8 +72,8 @@ export class User {
     @JoinTable({name: 'professional_subcategories'})
     subcategories?: SubCategory[];
     
-    @ManyToMany(()=> Addre, addre=> addre.user)
-    @JoinTable({name: 'User_Addre'})
+    @OneToMany(()=> Addre, addre=> addre.user)
+    @JoinColumn({name:'addres_id'})
     addres: Addre[]
     // @OneToMany(() => Addres, addres => addres.user)
     // addresses: Addres[];
