@@ -17,6 +17,10 @@ export class UsersController {
     return this.usersService.create(createUserDto);
   }
 
+  @Get()
+  getAllUser(){
+    
+  }
 }
 
 @Controller('user/profesional')
@@ -26,6 +30,6 @@ export class profesionalController {
   @UseInterceptors(ChangeRoleInterceptor)
   @Post()
   createProfesional(@Body() userProfessional: CreateProfesionalDto) {
-    return this.userService.createProfessional()
+    return this.userService.createProfessional(userProfessional)
   }
 }

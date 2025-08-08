@@ -51,8 +51,8 @@ export class User {
     @Column({type:'boolean', default: true})
     isActive: boolean;
     
-    @Column({type:'enum', enum: Role, default:Role.CLIENTE})
-    Role: Role;
+    @Column({type:'enum', enum: Role})
+    role: Role;
     
     @OneToMany(() => Appointment, appoiment=> appoiment.client)
     @JoinColumn({name: 'appointment_id'})

@@ -28,7 +28,6 @@ export class CreateClienteDto {
     @IsNotEmpty()
     password: string;
 
-    @IsEnum(Role)
     @IsNotEmpty()
     role: Role;
 
