@@ -55,9 +55,9 @@ export class Appointment {
   @JoinColumn({ name: 'professional_id' })
   professional: User;
 
-//   @OneToOne(() => Chat, (chat) => chat.appointment)
-//   @JoinColumn({ name: 'chat_id' })
-//   chat: Chat;
+  // @OneToOne(() => Chat, (chat) => chat.appointment)
+  // @JoinColumn({ name: 'chat_id' })
+  // chat: Chat;
 
 //   @OneToMany(() => Image, (image) => image.appointment)
 //   images: Image[];
