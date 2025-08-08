@@ -1,7 +1,12 @@
 import { Appointment } from "src/appointment/entities/appointment.entity";
-import { Column, Entity, JoinColumn, ManyToMany, OneToMany, OneToOne, PrimaryGeneratedColumn } from "typeorm";
+import { Column, Entity, JoinColumn, JoinTable, ManyToMany, OneToMany, OneToOne, PrimaryGeneratedColumn } from "typeorm";
 import { Role } from "../assets/roles";
 import { Membership } from "src/membership/entities/membership.entity";
+import { Category } from "src/category/entities/category.entity";
+import { SubCategory } from "src/subcategory/entities/subcategory.entity";
+import { Addre } from "src/addres/entities/addre.entity";
+import { Chat } from "src/chat/entities/chat.entity";
+import { Image } from "../../images/entities/image.entity";
 
 @Entity({name: 'users'})
 export class User {
@@ -59,14 +64,28 @@ export class User {
     
     @OneToOne(()=> Membership, membership => membership.user)
     membership: Membership;
+
+    @ManyToMany(()=>Category, category=>category.professional)
+    @JoinTable({name:'professional_category'})
+    categories: Category[];
     
+    
+    @ManyToMany(() => SubCategory, subcategory => subcategory.professionals)
+    @JoinTable({name: 'professional_subcategories'})
+    subcategories?: SubCategory[];
+    
+    @OneToMany(()=> Addre, addre=> addre.user)
+    @JoinColumn({name:'addres_id'})
+    addres: Addre[]
     // @OneToMany(() => Addres, addres => addres.user)
     // addresses: Addres[];
+    @OneToMany(() => Chat, chat => chat.user)
+    @JoinColumn({name:'chat_id'})
+    chat: Chat[]
 
-    // @ManyToMany(() => Subcategories, subcategory => subcategory.users)
-    // subcategories?: Subcategories[];
-
-
+    @OneToMany(() => Image, image => image.user)
+    @JoinColumn({name:'image_id'})
+    image: Image[]
 
 
 }

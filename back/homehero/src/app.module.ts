@@ -5,8 +5,9 @@ import { AppointmentModule } from './appointment/appointment.module';
 import { ConfigModule, ConfigService } from '@nestjs/config';
 import { TypeOrmModule } from '@nestjs/typeorm';
 import typeOrmConfig from './config/typeorm';
+
+// import { UsersModule } from './User.module';
 import { UsersModule } from './users/users.module';
-import { CategoryModule } from './category/category.module';
 
 @Module({
   imports: [
@@ -20,8 +21,7 @@ import { CategoryModule } from './category/category.module';
         ConfigService.get('typeorm')!,
     }),
     AppointmentModule,
-    UsersModule,
-    CategoryModule
+    UsersModule
   ],
   controllers: [AppController],
   providers: [AppService],

@@ -1,5 +1,6 @@
 import { SubCategory } from 'src/subcategory/entities/subcategory.entity';
-import { Column, Entity, OneToMany, PrimaryGeneratedColumn } from 'typeorm';
+import { User } from 'src/users/entities/user.entity';
+import { Column, Entity, ManyToMany, OneToMany, PrimaryGeneratedColumn } from 'typeorm';
 
 @Entity('categorias')
 export class Category {
@@ -17,5 +18,8 @@ export class Category {
 
   @OneToMany(() => SubCategory, (subcategory) => subcategory.category)
   subcategories: SubCategory[];
+
+  @ManyToMany(()=>User, user=>user.categories)
+  professional: User[];
 }
 
