@@ -32,7 +32,7 @@ export class AuthService {
     const payload ={
       id: findUser.id,
       email: findUser.email,
-      role: findUser.Role,
+      role: findUser.role,
       dni: findUser.dni,
     }
 
