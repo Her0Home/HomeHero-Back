@@ -3,9 +3,10 @@ import {
   Get,
   Post,
   Body,
-  Patch,
   Param,
   Delete,
+  ParseUUIDPipe,
+  Put,
 } from '@nestjs/common';
 import { AppointmentService } from './appointment.service';
 import { CreateAppointmentDto } from './dto/create-appointment.dto';
@@ -27,20 +28,17 @@ create(@Body() createAppointmentDto: CreateAppointmentDto) {
   }
 
   @Get(':id')
-  findOne(@Param('id') id: string) {
-    return this.appointmentService.findOne(+id);
+  findOne(@Param('id', new ParseUUIDPipe()) id: string) {
+    return this.appointmentService.findOne(id);
   }
 
-  @Patch(':id')
+ @Put(':id')
   update(
-    @Param('id') id: string,
+    @Param('id', new ParseUUIDPipe()) id: string,
+    @Body('professionalId', new ParseUUIDPipe()) professionalId: string,
     @Body() updateAppointmentDto: UpdateAppointmentDto,
   ) {
-    return this.appointmentService.update(+id, updateAppointmentDto);
+    return this.appointmentService.updateAppointment(id, professionalId, updateAppointmentDto); 
   }
 
-  @Delete(':id')
-  remove(@Param('id') id: string) {
-    return this.appointmentService.remove(+id);
-  }
 }

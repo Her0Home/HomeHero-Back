@@ -49,7 +49,7 @@ export class Appointment {
 
   @ManyToOne(() => User, (user) => user.clientAppointments)
   @JoinColumn({ name: 'client_id' })
-  Client: User;
+  client: User;
 
   @ManyToOne(() => User, (user) => user.professionalAppointments)
   @JoinColumn({ name: 'professional_id' })
