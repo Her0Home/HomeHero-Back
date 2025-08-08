@@ -51,6 +51,7 @@ export class Appointment {
   imageService: string;
 
   @ManyToOne(() => User, (user) => user.clientAppointments)
+  @JoinColumn({ name: 'client_id' })
   client: User;
 
 

@@ -1,4 +1,4 @@
-import { AppointmentStatus } from 'src/appointmentStatus.enum';
+import { AppointmentStatus } from 'src/appointment/Enum/appointmentStatus.enum';
 import { IsDate, IsEnum, IsNotEmpty, IsOptional, IsString, IsUUID, Matches } from 'class-validator';
 import { Type } from 'class-transformer';
 
@@ -6,9 +6,12 @@ console.log("HOLA");
 
 
 export class CreateAppointmentDto {
+
+  @IsNotEmpty()
   @IsUUID()
   clientId: string;
 
+  @IsNotEmpty()
   @IsUUID()
   professionalId: string;
 
