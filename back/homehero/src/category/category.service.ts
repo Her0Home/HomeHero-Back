@@ -39,21 +39,14 @@ export class CategoryService {
   return updatedCategory;
   }
 
-  async create(userId: number, createCategoryDto: CreateCategoryDto) {
+  async create(createCategoryDto: CreateCategoryDto) {
     const category = this.categoryRepository.create({
       ...createCategoryDto,
-      users_id: userId,
       subCategoryArray: createCategoryDto.subCategoryArray
         ? createCategoryDto.subCategoryArray.map(String)
-        : [],
+        : undefined,
     });
-    try {
-      const createdCategory = await this.categoryRepository.save(category);
-      return createdCategory;
-    } catch (error) {
-      throw new Error('La categoria no pudo ser creada'); 
-    
-  }
+    return this.categoryRepository.save(category);
   }
 
   async remove(id: number) {
