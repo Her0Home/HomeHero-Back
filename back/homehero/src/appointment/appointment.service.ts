@@ -4,7 +4,7 @@ import { UpdateAppointmentDto } from './dto/update-appointment.dto';
 import { InjectRepository } from '@nestjs/typeorm';
 import { DataSource, Repository } from 'typeorm';
 import { Appointment } from './entities/appointment.entity';
-import { User } from 'src/user.entity';
+import { User } from 'src/users/entities/user.entity';
 import { AppointmentStatus } from 'src/appointmentStatus.enum';
 
 @Injectable()

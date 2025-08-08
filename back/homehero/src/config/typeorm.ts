@@ -5,15 +5,18 @@ import { registerAs } from '@nestjs/config';
 dotenvConfig({ path: '.env.development' });
 const config = {
   type: 'postgres',
-  database: process.env.DB_NAME,
-  host: process.env.DB_HOST,
-  port: process.env.DB_PORT ? parseInt(process.env.DB_PORT) : 5432,
-  username: process.env.DB_USERNAME,
-  password: process.env.DB_PASSWORD,
+  url: process.env.DB_URL,
   autoLoadEntities: true,
   synchronize: true,
   dropSchema: true,
-  logging: true,
+<<<<<<< HEAD
+  logging: false,
+=======
+  // logging: true,
+>>>>>>> a9fbb6f1ed94b0afd88d59d7587bbb471c454f03
+  ssl: {
+    rejectUnauthorized: false,
+  },
   entities: ['dist/**/*.entity{.ts,.js}'],
   migrations: ['dist/migrations/*{.ts,.js}'],
 };
