@@ -4,7 +4,6 @@ import {
   Post,
   Body,
   Param,
-  Delete,
   ParseUUIDPipe,
   Put,
 } from '@nestjs/common';
@@ -16,7 +15,6 @@ import { UpdateAppointmentDto } from './dto/update-appointment.dto';
 export class AppointmentController {
   constructor(private readonly appointmentService: AppointmentService) {}
 
-  @Post()
   @Post()
 create(@Body() createAppointmentDto: CreateAppointmentDto) {
   return this.appointmentService.createAppointment(createAppointmentDto);

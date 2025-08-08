@@ -1,11 +1,14 @@
-import { AppointmentStatus } from 'src/appointment/Enum/appointmentStatus.enum';
+import { AppointmentStatus } from 'src/appointmentStatus.enum';
+import { Chat } from 'src/chat/entities/chat.entity';
 import { User } from 'src/users/entities/user.entity';
-
+import { Image } from '../../images/entities/image.entity';
 import {
   Column,
   Entity,
   JoinColumn,
   ManyToOne,
+  OneToMany,
+  OneToOne,
   PrimaryGeneratedColumn,
 } from 'typeorm';
 
@@ -51,14 +54,19 @@ export class Appointment {
   @JoinColumn({ name: 'client_id' })
   client: User;
 
+
+
   @ManyToOne(() => User, (user) => user.professionalAppointments)
   @JoinColumn({ name: 'professional_id' })
   professional: User;
 
-  // @OneToOne(() => Chat, (chat) => chat.appointment)
-  // @JoinColumn({ name: 'chat_id' })
-  // chat: Chat;
+  @OneToOne(() => Chat, (chat) => chat.appointment)
+  @JoinColumn({ name: 'chat_id' })
+  chat: Chat;
 
-  // @OneToMany(() => Image, (image) => image.appointment)
-  // images: Image[];
+
+
+  @OneToMany(() => Image, (image) => image.appointment)
+  @JoinColumn({ name: 'image_id' })
+  image: Image[];
 }
