@@ -1,6 +1,6 @@
 import { Entity, PrimaryGeneratedColumn, Column, ManyToOne, JoinColumn } from 'typeorm';
-import { User } from '../../back/homehero/src/users/entities/user.entity';
-import { Appointment } from '../../back/homehero/src/appointment/entities/appointment.entity';
+import { User } from '../../users/entities/user.entity';
+import { Appointment } from '../../appointment/entities/appointment.entity';
 
 @Entity()
 export class Image {

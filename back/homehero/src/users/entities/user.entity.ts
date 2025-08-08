@@ -5,6 +5,8 @@ import { Membership } from "src/membership/entities/membership.entity";
 import { Addre } from "src/addres/entities/addre.entity";
 import { SubCategory } from "src/subcategory/entities/subcategory.entity";
 import { Category } from "src/category/entities/category.entity";
+import { Image } from "src/images/entities/image.entity";
+import { Chat } from "src/chat/entities/chat.entity";
 
 @Entity({name: 'users'})
 export class User {
@@ -80,8 +82,12 @@ export class User {
 
     // @ManyToMany(() => Subcategories, subcategory => subcategory.users)
     // subcategories?: Subcategories[];
+    @OneToMany(() => Image, image => image.user)
+    @JoinColumn({ name: 'image_id' })
+    image: Image[];
 
-
-
+    @OneToMany(() => Chat, chat => chat.user)
+    @JoinColumn({ name: 'chat_id' })
+    chat: Chat[];
 
 }
