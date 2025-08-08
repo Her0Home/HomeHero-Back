@@ -9,11 +9,7 @@ const config = {
   autoLoadEntities: true,
   synchronize: true,
   dropSchema: true,
-<<<<<<< HEAD
-  logging: false,
-=======
   // logging: true,
->>>>>>> a9fbb6f1ed94b0afd88d59d7587bbb471c454f03
   ssl: {
     rejectUnauthorized: false,
   },
