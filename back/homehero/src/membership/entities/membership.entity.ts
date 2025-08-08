@@ -4,7 +4,7 @@ import { User } from 'src/users/entities/user.entity';
 
 @Entity('memberships')
 export class Membership {
-  @PrimaryGeneratedColumn()
+  @PrimaryGeneratedColumn('uuid')
   id: number;
 
   @Column({ type: 'text' })

@@ -4,7 +4,7 @@ import { Appointment } from '../../appointment/entities/appointment.entity';
 
 @Entity()
 export class Image {
-    @PrimaryGeneratedColumn()
+    @PrimaryGeneratedColumn('uuid')
     id: number;
 
     @Column('text')
