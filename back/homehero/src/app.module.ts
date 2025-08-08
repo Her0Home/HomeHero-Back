@@ -8,6 +8,9 @@ import typeOrmConfig from './config/typeorm';
 
 // import { UsersModule } from './User.module';
 import { UsersModule } from './users/users.module';
+import { AddresModule } from './addres/addres.module';
+import { AuthModule } from './auth/auth.module';
+import { JwtModule } from '@nestjs/jwt';
 
 @Module({
   imports: [
@@ -21,7 +24,14 @@ import { UsersModule } from './users/users.module';
         ConfigService.get('typeorm')!,
     }),
     AppointmentModule,
-    UsersModule
+    UsersModule,
+    AddresModule,
+    AuthModule,
+    JwtModule.register({
+      global: true,
+      secret: process.env.SECRET_KEY,
+      signOptions:{expiresIn: '1h'}
+    }),
   ],
   controllers: [AppController],
   providers: [AppService],
