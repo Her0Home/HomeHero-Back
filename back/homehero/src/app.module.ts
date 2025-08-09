@@ -6,6 +6,7 @@ import { ConfigModule, ConfigService } from '@nestjs/config';
 import { TypeOrmModule } from '@nestjs/typeorm';
 import typeOrmConfig from './config/typeorm';
 import { SeederModule } from './seders/seeder.Module';
+import { ChatModule } from './chat/chat.module';
 
 // import { UsersModule } from './User.module';
 import { UsersModule } from './users/users.module';
@@ -31,6 +32,7 @@ import { SubcategoryModule } from './subcategory/subcategory.module';
      SubcategoryModule,
      SeederModule,
     AppointmentModule,
+    ChatModule,
     UsersModule,
     AddresModule,
     AuthModule,
