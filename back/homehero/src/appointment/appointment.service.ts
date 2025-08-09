@@ -21,12 +21,20 @@ export class AppointmentService {
   async createAppointment(createAppointmentDto: CreateAppointmentDto) {
    return await this.dataSource.transaction(async (manager) => {
 
+<<<<<<< HEAD
     const client = await manager.findOne(User,{where: {id: createAppointmentDto.clientId, Role: Role.CLIENTE }});
+=======
+    const client = await manager.findOne(User,{where: {id: createAppointmentDto.clientId, role: Role.CLIENTE }});
+>>>>>>> 377f6ebf0ed12320f149e9c5a3009e4c23e068dd
   if (!client) {
     throw new NotFoundException(`Client with ID ${createAppointmentDto.clientId} not found`);
   }
 
+<<<<<<< HEAD
   const professional = await manager.findOne(User, {where: {id: createAppointmentDto.professionalId, Role: Role.PROFESSIONAL}});
+=======
+  const professional = await manager.findOne(User, {where: {id: createAppointmentDto.professionalId, role: Role.PROFESSIONAL}});
+>>>>>>> 377f6ebf0ed12320f149e9c5a3009e4c23e068dd
   if (!professional) {
     throw new NotFoundException(`Professional with ID ${createAppointmentDto.professionalId} not found`);
   }
@@ -63,7 +71,11 @@ export class AppointmentService {
     professionalId: string,
   ): Promise<Appointment> {
     const professional = await manager.findOne(User, {
+<<<<<<< HEAD
       where: { id: professionalId, Role: Role.PROFESSIONAL },
+=======
+      where: { id: professionalId, role: Role.PROFESSIONAL },
+>>>>>>> 377f6ebf0ed12320f149e9c5a3009e4c23e068dd
     });
     if (!professional) throw new NotFoundException (`Professional with ID ${professionalId} not found`);
 
@@ -71,10 +83,17 @@ export class AppointmentService {
       where: { id: appointmentId },
       relations: ['professional', 'client'],
     });
+<<<<<<< HEAD
     if (!appointment) throw new NotFoundException(`Cita con ID ${appointmentId} no encontrada`);
 
     if (appointment.professional.id !== professionalId) {
       throw new NotFoundException('No autorizado');
+=======
+    if (!appointment) throw new NotFoundException(`Appointmetn with ID ${appointmentId} not found`);
+
+    if (appointment.professional.id !== professionalId) {
+      throw new NotFoundException('Unauthorized');
+>>>>>>> 377f6ebf0ed12320f149e9c5a3009e4c23e068dd
     }
 
     return appointment;

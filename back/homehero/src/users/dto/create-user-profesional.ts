@@ -28,7 +28,6 @@ export class CreateProfesionalDto {
     @IsNotEmpty()
     password: string;
 
-    @IsEnum(Role)
     @IsNotEmpty()
     role: Role;
 
