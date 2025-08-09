@@ -71,10 +71,10 @@ export class AppointmentService {
       where: { id: appointmentId },
       relations: ['professional', 'client'],
     });
-    if (!appointment) throw new NotFoundException(`Cita con ID ${appointmentId} no encontrada`);
+    if (!appointment) throw new NotFoundException(`Appointmetn with ID ${appointmentId} not found`);
 
     if (appointment.professional.id !== professionalId) {
-      throw new NotFoundException('No autorizado');
+      throw new NotFoundException('Unauthorized');
     }
 
     return appointment;
