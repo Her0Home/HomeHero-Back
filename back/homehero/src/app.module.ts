@@ -11,6 +11,7 @@ import { SeederModule } from './seders/seeder.Module';
 import { UsersModule } from './users/users.module';
 import { AddresModule } from './addres/addres.module';
 import { AuthModule } from './auth/auth.module';
+import { ImagesModule } from './images/images.module';
 import { JwtModule } from '@nestjs/jwt';
 import { CategoryModule } from './category/category.module';
 import { SubcategoryModule } from './subcategory/subcategory.module';
@@ -33,6 +34,7 @@ import { SubcategoryModule } from './subcategory/subcategory.module';
     UsersModule,
     AddresModule,
     AuthModule,
+    ImagesModule,
     JwtModule.register({
       global: true,
       secret: process.env.SECRET_KEY,
