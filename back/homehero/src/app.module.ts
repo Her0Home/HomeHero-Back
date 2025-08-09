@@ -10,6 +10,7 @@ import typeOrmConfig from './config/typeorm';
 import { UsersModule } from './users/users.module';
 import { AddresModule } from './addres/addres.module';
 import { AuthModule } from './auth/auth.module';
+import { ImagesModule } from './images/images.module';
 import { JwtModule } from '@nestjs/jwt';
 
 @Module({
@@ -27,6 +28,7 @@ import { JwtModule } from '@nestjs/jwt';
     UsersModule,
     AddresModule,
     AuthModule,
+    ImagesModule,
     JwtModule.register({
       global: true,
       secret: process.env.SECRET_KEY,
