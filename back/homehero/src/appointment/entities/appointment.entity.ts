@@ -1,4 +1,4 @@
-import { AppointmentStatus } from 'src/appointmentStatus.enum';
+
 import { Chat } from 'src/chat/entities/chat.entity';
 import { User } from 'src/users/entities/user.entity';
 import { Image } from '../../images/entities/image.entity';
@@ -11,6 +11,7 @@ import {
   OneToOne,
   PrimaryGeneratedColumn,
 } from 'typeorm';
+import { AppointmentStatus } from '../Enum/appointmentStatus.enum';
 
 @Entity({
   name: 'APPOINTMENTS',
