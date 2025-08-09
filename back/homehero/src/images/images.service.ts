@@ -1,10 +1,11 @@
-import { Injectable } from '@nestjs/common';
+import { Injectable, NotFoundException } from '@nestjs/common';
 import { CreateImageDto } from './dto/create-image.dto';
 import { UpdateImageDto } from './dto/update-image.dto';
 import { InjectRepository } from '@nestjs/typeorm';
 import { Image } from './entities/image.entity';
 import { Repository } from 'typeorm';
 import { ImageRepository } from './image.repository';
+import { User } from 'src/users/entities/user.entity';
 
 @Injectable()
 export class ImagesService {
@@ -12,6 +13,8 @@ export class ImagesService {
     @InjectRepository(Image)
     private readonly imageRepository: Repository<Image>,
     private readonly imageUploadRepository: ImageRepository,
+    @InjectRepository(User)
+    private readonly userRepository: Repository<User>,
   ) {}
 
   async uploadImage(file: Express.Multer.File) {
@@ -60,5 +63,17 @@ export class ImagesService {
 
   remove(id: number) {
     return `This action removes a #${id} image`;
+  }
+  async uploadProfileUser(file: Express.Multer.File, userId: string) {
+    const user = await this.userRepository.findOneBy({ id: userId });
+    if (!user) {
+      throw new NotFoundException('User not found');
+    }
+
+    const uploadResponse = await this.imageUploadRepository.uploadImage(file);
+    await this.userRepository.update(user.id, {
+      imageProfile: uploadResponse.secure_url,
+    });
+    return await this.userRepository.findOneBy({ id: userId });
   }
 }

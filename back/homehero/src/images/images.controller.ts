@@ -73,4 +73,27 @@ export class ImagesController {
   remove(@Param('id', new ParseUUIDPipe()) id: string) {
     return this.imagesService.remove(+id);
   }
+
+  @Post('UploadProfile/:userId')
+  
+  @UseInterceptors(FileInterceptor('file'))
+  uploadImage(
+    @UploadedFile(
+      new ParseFilePipe({
+        validators: [
+          new MaxFileSizeValidator({
+            maxSize: 200000,
+            message: 'File is too large',
+          }),
+          new FileTypeValidator({
+            fileType: /(jpg|jpeg|png|webp)$/,
+          }),
+        ],
+      }),
+    )
+    file: Express.Multer.File,
+    @Param('userId', ParseUUIDPipe) userId: string,
+  ) {
+    return this.imagesService.uploadProfileUser(file, userId);
+  }
 }
