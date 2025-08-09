@@ -21,12 +21,12 @@ export class AppointmentService {
   async createAppointment(createAppointmentDto: CreateAppointmentDto) {
    return await this.dataSource.transaction(async (manager) => {
 
-    const client = await manager.findOne(User,{where: {id: createAppointmentDto.clientId, Role: Role.CLIENTE }});
+    const client = await manager.findOne(User,{where: {id: createAppointmentDto.clientId, role: Role.CLIENTE }});
   if (!client) {
     throw new NotFoundException(`Client with ID ${createAppointmentDto.clientId} not found`);
   }
 
-  const professional = await manager.findOne(User, {where: {id: createAppointmentDto.professionalId, Role: Role.PROFESSIONAL}});
+  const professional = await manager.findOne(User, {where: {id: createAppointmentDto.professionalId, role: Role.PROFESSIONAL}});
   if (!professional) {
     throw new NotFoundException(`Professional with ID ${createAppointmentDto.professionalId} not found`);
   }
@@ -63,7 +63,7 @@ export class AppointmentService {
     professionalId: string,
   ): Promise<Appointment> {
     const professional = await manager.findOne(User, {
-      where: { id: professionalId, Role: Role.PROFESSIONAL },
+      where: { id: professionalId, role: Role.PROFESSIONAL },
     });
     if (!professional) throw new NotFoundException (`Professional with ID ${professionalId} not found`);
 
