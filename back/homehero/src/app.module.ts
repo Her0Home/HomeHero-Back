@@ -8,6 +8,8 @@ import typeOrmConfig from './config/typeorm';
 import { UsersModule } from './users/users.module';
 import { AppointmentModule } from './appointment/appointment.module';
 import { SeederModule } from './seders/seeder.Module';
+import { ChatModule } from './chat/chat.module';
+import { ChatModule } from './chat/chat.module';
 
 @Module({
   imports: [
@@ -24,6 +26,7 @@ import { SeederModule } from './seders/seeder.Module';
     SeederModule,
     AppointmentModule,
     UsersModule,
+    ChatModule,
 
   ],
   controllers: [AppController],
