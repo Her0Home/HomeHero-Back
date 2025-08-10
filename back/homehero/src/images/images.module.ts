@@ -4,6 +4,8 @@ import { ImagesController } from './images.controller';
 import { ImageRepository } from './image.repository';
 import { CloudinaryConfig } from 'src/config/cloudinary';
 import { TypeOrmModule } from '@nestjs/typeorm';
+import { User } from 'src/users/entities/user.entity';
+import { Image } from './entities/image.entity';
 
 
 

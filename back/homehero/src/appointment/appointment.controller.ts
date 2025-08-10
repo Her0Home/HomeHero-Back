@@ -4,31 +4,31 @@ import {
   Post,
   Body,
   Param,
-<<<<<<< HEAD
-  Delete,
-=======
->>>>>>> 377f6ebf0ed12320f149e9c5a3009e4c23e068dd
   ParseUUIDPipe,
   Put,
+  UseGuards,
 } from '@nestjs/common';
 import { AppointmentService } from './appointment.service';
 import { CreateAppointmentDto } from './dto/create-appointment.dto';
 import { UpdateAppointmentDto } from './dto/update-appointment.dto';
+import {  LogginGuard } from 'src/guards/loggin.guard';
+import { Roles } from 'src/decorators/role.decorator';
+import { Role } from 'src/users/assets/roles';
+import { RolesGuard } from 'src/guards/roles.guard';
 
 @Controller('appointment')
 export class AppointmentController {
   constructor(private readonly appointmentService: AppointmentService) {}
 
   @Post()
-<<<<<<< HEAD
-  @Post()
-=======
->>>>>>> 377f6ebf0ed12320f149e9c5a3009e4c23e068dd
+  @UseGuards(LogginGuard)
 create(@Body() createAppointmentDto: CreateAppointmentDto) {
   return this.appointmentService.createAppointment(createAppointmentDto);
 }
 
   @Get()
+  @Roles(Role.ADMIN)
+  @UseGuards(LogginGuard,RolesGuard)
   findAll() {
     return this.appointmentService.findAll();
   }
@@ -47,8 +47,4 @@ create(@Body() createAppointmentDto: CreateAppointmentDto) {
     return this.appointmentService.updateAppointment(id, professionalId, updateAppointmentDto); 
   }
 
-<<<<<<< HEAD
 }
-=======
-}
->>>>>>> 377f6ebf0ed12320f149e9c5a3009e4c23e068dd
