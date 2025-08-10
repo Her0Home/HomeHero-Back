@@ -37,6 +37,7 @@ import { SubcategoryModule } from './subcategory/subcategory.module';
     AddresModule,
     AuthModule,
     ImagesModule,
+    AuthModule,
     JwtModule.register({
       global: true,
       secret: process.env.SECRET_KEY,

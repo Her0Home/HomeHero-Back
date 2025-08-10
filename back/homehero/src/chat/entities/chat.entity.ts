@@ -1,6 +1,3 @@
-<<<<<<< HEAD
-export class Chat {}
-=======
 import {
   Entity,
   PrimaryGeneratedColumn,
@@ -26,4 +23,3 @@ export class Chat {
   @JoinColumn({ name: 'appointment_id' })
   appointment: Appointment[];
 }
->>>>>>> f5dde4c79b4c396d9561955ffb49326fcc0f84a2
