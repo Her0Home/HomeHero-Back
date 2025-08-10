@@ -1,4 +1,4 @@
-import { AppointmentStatus } from 'src/appointmentStatus.enum';
+
 import { Chat } from 'src/chat/entities/chat.entity';
 import { User } from 'src/users/entities/user.entity';
 import { Image } from '../../images/entities/image.entity';
@@ -11,6 +11,7 @@ import {
   OneToOne,
   PrimaryGeneratedColumn,
 } from 'typeorm';
+import { AppointmentStatus } from '../Enum/appointmentStatus.enum';
 
 @Entity({
   name: 'APPOINTMENTS',
@@ -51,9 +52,13 @@ export class Appointment {
   imageService: string;
 
   @ManyToOne(() => User, (user) => user.clientAppointments)
+  @JoinColumn({ name: 'client_id' })
   client: User;
+<<<<<<< HEAD
+=======
 
 
+>>>>>>> 377f6ebf0ed12320f149e9c5a3009e4c23e068dd
 
   @ManyToOne(() => User, (user) => user.professionalAppointments)
   @JoinColumn({ name: 'professional_id' })

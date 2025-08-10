@@ -5,12 +5,17 @@ import { AppointmentModule } from './appointment/appointment.module';
 import { ConfigModule, ConfigService } from '@nestjs/config';
 import { TypeOrmModule } from '@nestjs/typeorm';
 import typeOrmConfig from './config/typeorm';
+import { SeederModule } from './seders/seeder.Module';
+import { ChatModule } from './chat/chat.module';
 
 // import { UsersModule } from './User.module';
 import { UsersModule } from './users/users.module';
 import { AddresModule } from './addres/addres.module';
 import { AuthModule } from './auth/auth.module';
+import { ImagesModule } from './images/images.module';
 import { JwtModule } from '@nestjs/jwt';
+import { CategoryModule } from './category/category.module';
+import { SubcategoryModule } from './subcategory/subcategory.module';
 
 @Module({
   imports: [
@@ -23,10 +28,15 @@ import { JwtModule } from '@nestjs/jwt';
       useFactory: (ConfigService: ConfigService) =>
         ConfigService.get('typeorm')!,
     }),
+     CategoryModule,
+     SubcategoryModule,
+     SeederModule,
     AppointmentModule,
+    ChatModule,
     UsersModule,
     AddresModule,
     AuthModule,
+    ImagesModule,
     JwtModule.register({
       global: true,
       secret: process.env.SECRET_KEY,

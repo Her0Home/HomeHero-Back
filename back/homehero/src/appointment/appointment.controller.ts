@@ -3,9 +3,13 @@ import {
   Get,
   Post,
   Body,
-  Patch,
   Param,
+<<<<<<< HEAD
   Delete,
+=======
+>>>>>>> 377f6ebf0ed12320f149e9c5a3009e4c23e068dd
+  ParseUUIDPipe,
+  Put,
 } from '@nestjs/common';
 import { AppointmentService } from './appointment.service';
 import { CreateAppointmentDto } from './dto/create-appointment.dto';
@@ -16,9 +20,13 @@ export class AppointmentController {
   constructor(private readonly appointmentService: AppointmentService) {}
 
   @Post()
-  create(@Body() createAppointmentDto: CreateAppointmentDto) {
-    return this.appointmentService.createAppointment(createAppointmentDto);
-  }
+<<<<<<< HEAD
+  @Post()
+=======
+>>>>>>> 377f6ebf0ed12320f149e9c5a3009e4c23e068dd
+create(@Body() createAppointmentDto: CreateAppointmentDto) {
+  return this.appointmentService.createAppointment(createAppointmentDto);
+}
 
   @Get()
   findAll() {
@@ -26,20 +34,21 @@ export class AppointmentController {
   }
 
   @Get(':id')
-  findOne(@Param('id') id: string) {
-    return this.appointmentService.findOne(+id);
+  findOne(@Param('id', new ParseUUIDPipe()) id: string) {
+    return this.appointmentService.findOne(id);
   }
 
-  @Patch(':id')
+ @Put(':id')
   update(
-    @Param('id') id: string,
+    @Param('id', new ParseUUIDPipe()) id: string,
+    @Body('professionalId', new ParseUUIDPipe()) professionalId: string,
     @Body() updateAppointmentDto: UpdateAppointmentDto,
   ) {
-    return this.appointmentService.update(+id, updateAppointmentDto);
+    return this.appointmentService.updateAppointment(id, professionalId, updateAppointmentDto); 
   }
 
-  @Delete(':id')
-  remove(@Param('id') id: string) {
-    return this.appointmentService.remove(+id);
-  }
+<<<<<<< HEAD
 }
+=======
+}
+>>>>>>> 377f6ebf0ed12320f149e9c5a3009e4c23e068dd

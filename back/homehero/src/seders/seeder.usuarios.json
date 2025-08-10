@@ -1,0 +1,112 @@
+[
+{
+  "id": "665fcecc-9022-4384-98b1-26bd49d09d93",
+  "name": "Mario Garcia",
+  "email": "mario.garcia@example.com",
+  "birthdate": "1985-06-18T00:00:00.000Z",
+  "dni": 1020304050,
+  "password": "Password123!",
+  "role": "profesional",
+  "description": "Plomero con 15 años de experiencia en reparaciones e instalaciones sanitarias.",
+  "categoryIds": ["f12e7ffe-5059-41b6-ab51-734742fde8c9"],
+  "subCategoryIds": ["d9e8f7g6-h5i4-j3k2-l1m0-n9o8p7q6r5s4"]
+},
+{
+  "id": "123e4567-e89b-12d3-a456-426614174000",
+  "name": "Ricardo Diaz",
+  "email": "ricardo.diaz@example.com",
+  "birthdate": "1988-11-23T00:00:00.000Z",
+  "dni": 2030405060,
+  "password": "Password456@",
+  "imageProfile": "https://example.com/images/ricardo.jpg",
+  "role": "profesional",
+  "description": "Electricista certificado para instalaciones, mantenimiento y reparación de sistemas eléctricos.",
+  "categoryIds": ["473cf1fc-7da5-4bfb-91de-ef8d18402187"],
+  "subCategoryIds": ["e0f1g2h3-i4j5-k6l7-m8n9-o0p1q2r3s4t5"]
+},
+{
+  "id": "0b8ddd96-6e4d-44d4-9f90-2ae0cdb68617",
+  "name": "Sofia Torres",
+  "email": "sofia.torres@example.com",
+  "birthdate": "1995-02-10T00:00:00.000Z",
+  "dni": 3040506070,
+  "password": "Password789#",
+  "role": "profesional",
+  "description": "Paseadora de perros con experiencia en adiestramiento básico y primeros auxilios.",
+  "categoryIds": ["77dec34e-dd9f-4786-994b-c9a8335ea296"],
+  "subCategoryIds": ["f1g2h3i4-j5k6-l7m8-n9o0-p1q2r3s4t5u6"]
+},
+{
+  "id": "25fbd9d8-6256-4978-a46a-96a553e67e00",
+  "name": "Andrea Castro",
+  "email": "andrea.castro@example.com",
+  "birthdate": "1982-08-08T00:00:00.000Z",
+  "dni": 8070605040,
+  "password": "PasswordABC!",
+  "imageProfile": "https://example.com/images/andrea.png",
+  "role": "profesional",
+  "description": "Niñera profesional, responsable y cariñosa. Con experiencia en el cuidado de niños de 1 a 10 años.",
+  "categoryIds": ["d28d20cc-f160-440e-8d7c-69f235d842f3"],
+  "subCategoryIds": ["g1h2i3j4-k5l6-m7n8-o9p0-q1r2s3t4u5v6"]
+},
+{
+  "id": "3b9e073b-3aac-443c-8c6e-493d2bab8397",
+  "name": "Javier Lopez",
+  "email": "javier.lopez@example.com",
+  "birthdate": "1993-04-30T00:00:00.000Z",
+  "dni": 9070504030,
+  "password": "PasswordXYZ#",
+  "role": "profesional",
+  "description": "Cerrajero de emergencia 24/7. Instalación y reparación de cerraduras, apertura de puertas y vehículos.",
+  "categoryIds": ["ebe6e167-ca47-465c-be1e-fbe5a1795f21"],
+  "subCategoryIds": ["h1i2j3k4-l5m6-n7o8-p9q0-r1s2t3u4v5w6"]
+},
+{
+  "id": "f1e2d3c4-b5a6-7890-abcd-ef1234567890",
+  "name": "Ana Lopez",
+  "email": "ana.lopez@cliente.com",
+  "birthdate": "1995-02-10T00:00:00.000Z",
+  "dni": 9080706050,
+  "password": "Password789#",
+  "role": "cliente",
+  "imageProfile": "https://example.com/images/ana.jpg"
+},
+{
+  "id": "2ea8b0b7-3761-45ca-9b60-64b9e7633a6e",
+  "name": "Juan Perez",
+  "email": "juan.perez@cliente.com",
+  "birthdate": "1988-08-25T00:00:00.000Z",
+  "dni": 4050607080,
+  "password": "PasswordClient1!",
+  "role": "cliente"
+},
+{
+  "id": "1afd8bb8-530d-4ab4-bd2d-bb74248789b1",
+  "name": "Sofia Gomez",
+  "email": "sofia.gomez@cliente.com",
+  "birthdate": "1992-04-05T00:00:00.000Z",
+  "dni": 5060708090,
+  "password": "PasswordClient2@",
+  "role": "cliente",
+  "imageProfile": "https://example.com/images/sofia.png"
+},
+{
+  "id": "bfdc48f6-ab99-4ad7-a4fe-f7af9b4c4a96",
+  "name": "Pedro Morales",
+  "email": "pedro.morales@cliente.com",
+  "birthdate": "1975-11-11T00:00:00.000Z",
+  "dni": 6070809010,
+  "password": "PasswordClient3#",
+  "role": "cliente"
+},
+{
+  "id": "6c90ad7a-d0b9-4e85-b060-ec7abce82bf8",
+  "name": "Maria Rodriguez",
+  "email": "maria.rodriguez@cliente.com",
+  "birthdate": "2001-07-20T00:00:00.000Z",
+  "dni": 7080901020,
+  "password": "PasswordClient4$",
+  "role": "cliente",
+  "imageProfile": "https://example.com/images/maria.jpg"
+}
+]
