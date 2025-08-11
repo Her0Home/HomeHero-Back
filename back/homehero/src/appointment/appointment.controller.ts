@@ -3,43 +3,48 @@ import {
   Get,
   Post,
   Body,
-  Patch,
   Param,
-  Delete,
+  ParseUUIDPipe,
+  Put,
+  UseGuards,
 } from '@nestjs/common';
 import { AppointmentService } from './appointment.service';
 import { CreateAppointmentDto } from './dto/create-appointment.dto';
 import { UpdateAppointmentDto } from './dto/update-appointment.dto';
+import {  LogginGuard } from 'src/guards/loggin.guard';
+import { Roles } from 'src/decorators/role.decorator';
+import { Role } from 'src/users/assets/roles';
+import { RolesGuard } from 'src/guards/roles.guard';
 
 @Controller('appointment')
 export class AppointmentController {
   constructor(private readonly appointmentService: AppointmentService) {}
 
   @Post()
-  create(@Body() createAppointmentDto: CreateAppointmentDto) {
-    return this.appointmentService.create(createAppointmentDto);
+  @UseGuards(LogginGuard)
+    create(@Body() createAppointmentDto: CreateAppointmentDto) {
+    return this.appointmentService.createAppointment(createAppointmentDto);
   }
 
   @Get()
+  @Roles(Role.ADMIN)
+  @UseGuards(LogginGuard,RolesGuard)
   findAll() {
     return this.appointmentService.findAll();
   }
 
   @Get(':id')
-  findOne(@Param('id') id: string) {
-    return this.appointmentService.findOne(+id);
+  findOne(@Param('id', new ParseUUIDPipe()) id: string) {
+    return this.appointmentService.findOne(id);
   }
 
-  @Patch(':id')
+ @Put(':id')
   update(
-    @Param('id') id: string,
+    @Param('id', new ParseUUIDPipe()) id: string,
+    @Body('professionalId', new ParseUUIDPipe()) professionalId: string,
     @Body() updateAppointmentDto: UpdateAppointmentDto,
   ) {
-    return this.appointmentService.update(+id, updateAppointmentDto);
+    return this.appointmentService.updateAppointment(id, professionalId, updateAppointmentDto); 
   }
 
-  @Delete(':id')
-  remove(@Param('id') id: string) {
-    return this.appointmentService.remove(+id);
-  }
 }

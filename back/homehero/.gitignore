@@ -3,6 +3,7 @@
 /node_modules
 /build
 
+
 # Logs
 logs
 *.log
@@ -36,7 +37,16 @@ lerna-debug.log*
 !.vscode/extensions.json
 
 # dotenv environment variable files
+<<<<<<< HEAD
+.env.development
 .env
+.env.*
+=======
+<<<<<<< HEAD
+.env
+.env.development
+>>>>>>> c52a5c122e5aff7ce362f79e70b9b66d4e90c77c
+>>>>>>> d8d1131380c2461b05f0934f27cfd9d6981c5713
 .env.development.local
 .env.test.local
 .env.production.local
@@ -54,3 +64,5 @@ pids
 
 # Diagnostic reports (https://nodejs.org/api/report.html)
 report.[0-9]*.[0-9]*.[0-9]*.[0-9]*.json
+
+
