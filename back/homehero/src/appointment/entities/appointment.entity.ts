@@ -55,17 +55,12 @@ export class Appointment {
   @JoinColumn({ name: 'client_id' })
   client: User;
 
-
-
   @ManyToOne(() => User, (user) => user.professionalAppointments)
   @JoinColumn({ name: 'professional_id' })
   professional: User;
 
   @OneToOne(() => Chat, (chat) => chat.appointment)
-  @JoinColumn({ name: 'chat_id' })
   chat: Chat;
-
-
 
   @OneToMany(() => Image, (image) => image.appointment)
   @JoinColumn({ name: 'image_id' })
