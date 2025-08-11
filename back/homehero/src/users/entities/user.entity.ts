@@ -54,8 +54,12 @@ export class User {
     @Column({type:'enum', enum: Role})
     role: Role;
     
+<<<<<<< HEAD
     @OneToMany(() => Appointment, appoiment=> appoiment.client,{cascade: true, onDelete: 'CASCADE'})
     @JoinColumn({name: 'appointment_id'})
+=======
+    @OneToMany(() => Appointment, appoiment=> appoiment.client)
+>>>>>>> e81dcabc5ed54eff0cd75e6840387296097e43b9
     clientAppointments: Appointment[];
     
     @OneToMany(()=>Appointment, appoiment=> appoiment.professional,{cascade: true, onDelete: 'CASCADE'})
@@ -86,8 +90,10 @@ export class User {
     @JoinColumn({ name: 'image_id' })
     image: Image[];
 
-    @OneToMany(() => Chat, chat => chat.user)
-    @JoinColumn({ name: 'chat_id' })
-    chat: Chat[];
+    @OneToMany(() => Chat, (chat) => chat.cliente)
+    clientChats: Chat[];
+
+    @OneToMany(() => Chat, (chat) => chat.profesional)
+    profesionalChats: Chat[];
 
 }

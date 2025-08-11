@@ -1,23 +1,26 @@
+<<<<<<< HEAD
 import { Controller, Get, Post, Body, Patch, Param, Delete, ParseUUIDPipe } from '@nestjs/common';
+=======
+import { Controller, Get, Param, UseGuards, Req } from '@nestjs/common';
+>>>>>>> e81dcabc5ed54eff0cd75e6840387296097e43b9
 import { ChatService } from './chat.service';
-import { CreateChatDto } from './dto/create-chat.dto';
-import { UpdateChatDto } from './dto/update-chat.dto';
+import { AuthGuard } from '@nestjs/passport';
+import type { Request } from 'express';
+import { User } from 'src/users/entities/user.entity';
 
-@Controller('chat')
+@Controller('chats')
+@UseGuards(AuthGuard('jwt')) 
 export class ChatController {
   constructor(private readonly chatService: ChatService) {}
 
-  @Post()
-  create(@Body() createChatDto: CreateChatDto) {
-    return this.chatService.create(createChatDto);
-  }
-
   @Get()
-  findAll() {
-    return this.chatService.findAll();
+  findAll(@Req() req: Request) {
+    const currentUser = req.user as User;
+    return this.chatService.findUserChats(currentUser.id);
   }
 
   @Get(':id')
+<<<<<<< HEAD
   findOne(@Param('id', new ParseUUIDPipe()) id: string) {
     return this.chatService.findOne(+id);
   }
@@ -32,3 +35,10 @@ export class ChatController {
     return this.chatService.remove(+id);
   }
 }
+=======
+  findOne(@Param('id') id: string, @Req() req: Request) {
+    const currentUser = req.user as User;
+    return this.chatService.getChatByIdWithMessages(id, currentUser);
+  }
+}
+>>>>>>> e81dcabc5ed54eff0cd75e6840387296097e43b9

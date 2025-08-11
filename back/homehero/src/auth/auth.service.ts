@@ -15,7 +15,7 @@ export class AuthService {
   ){}
 
 
-  async logIn(credentials: credentialsDto){
+  async logIn(credentials: credentialsDto): Promise<{ message: string; token: string }>{
 
     const findUser: User | null = await this.userRepository.findOne({where:{email: credentials.email}});
 
@@ -37,8 +37,7 @@ export class AuthService {
     }
 
     const token = this.jwtservice.sign(payload);
-
-    return token;
+    return { message: 'Login successful', token: token };
   }
 
 
