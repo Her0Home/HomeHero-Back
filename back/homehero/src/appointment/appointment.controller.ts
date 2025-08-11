@@ -22,9 +22,9 @@ export class AppointmentController {
 
   @Post()
   @UseGuards(LogginGuard)
-create(@Body() createAppointmentDto: CreateAppointmentDto) {
-  return this.appointmentService.createAppointment(createAppointmentDto);
-}
+    create(@Body() createAppointmentDto: CreateAppointmentDto) {
+    return this.appointmentService.createAppointment(createAppointmentDto);
+  }
 
   @Get()
   @Roles(Role.ADMIN)
