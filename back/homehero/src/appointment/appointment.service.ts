@@ -30,16 +30,6 @@ export class AppointmentService {
         throw new NotFoundException(`Client with ID ${createAppointmentDto.clientId} not found`);
       }
 
-<<<<<<< HEAD
-    const client = await manager.findOne(User,{where: {id: createAppointmentDto.clientId, role: Role.CLIENTE }});
-  if (!client) {
-    throw new NotFoundException(`Client with ID ${createAppointmentDto.clientId} not found`);
-  }
-
-  const professional = await manager.findOne(User, {where: {id: createAppointmentDto.professionalId, role: Role.PROFESSIONAL}});
-  if (!professional) {
-    throw new NotFoundException(`Professional with ID ${createAppointmentDto.professionalId} not found`);
-=======
       const professional = await manager.findOne(User, {
         where: {id: createAppointmentDto.professionalId, role: Role.PROFESSIONAL}
       });
@@ -99,7 +89,6 @@ export class AppointmentService {
       
       return updatedAppointment;
     });
->>>>>>> e81dcabc5ed54eff0cd75e6840387296097e43b9
   }
 
   private async validateProfessionalAndAppointment(
@@ -143,54 +132,4 @@ export class AppointmentService {
       relations: ['client', 'professional'],
     });
   }
-<<<<<<< HEAD
-  private async validateProfessionalAndAppointment(
-    manager: EntityManager,
-    appointmentId: string,
-    professionalId: string,
-  ): Promise<Appointment> {
-    const professional = await manager.findOne(User, {
-      where: { id: professionalId, role: Role.PROFESSIONAL },
-    });
-    if (!professional) throw new NotFoundException (`Professional with ID ${professionalId} not found`);
-
-    const appointment = await manager.findOne(Appointment, {
-      where: { id: appointmentId },
-      relations: ['professional', 'client'],
-    });
-    if (!appointment) throw new NotFoundException(`Appointmetn with ID ${appointmentId} not found`);
-
-    if (appointment.professional.id !== professionalId) {
-      throw new NotFoundException('Unauthorized');
-    }
-
-    return appointment;
-  }
-
-async updateAppointment(
-    appointmentId: string,
-    professionalId: string,
-    dto: UpdateAppointmentDto,
-  ): Promise<Appointment> {
-    return this.dataSource.transaction(async (manager) => {
-      await this.validateProfessionalAndAppointment(manager, appointmentId, professionalId);
-
-      const { status, date, time } = dto;
-    const updateData: Partial<Appointment> = {};
-    if (status !== undefined) updateData.status = status;
-    if (date !== undefined) updateData.date = date;
-    if (time !== undefined) updateData.time = time;
-
-   await manager.update(Appointment, { id: appointmentId }, updateData);
-    return (await manager.findOneOrFail(Appointment, {
-      where: { id: appointmentId },
-      relations: ['professional', 'client'],
-    }));
-  });
 }
-
-}
-  
-=======
-}
->>>>>>> e81dcabc5ed54eff0cd75e6840387296097e43b9

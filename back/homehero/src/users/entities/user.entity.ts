@@ -54,12 +54,7 @@ export class User {
     @Column({type:'enum', enum: Role})
     role: Role;
     
-<<<<<<< HEAD
-    @OneToMany(() => Appointment, appoiment=> appoiment.client,{cascade: true, onDelete: 'CASCADE'})
-    @JoinColumn({name: 'appointment_id'})
-=======
     @OneToMany(() => Appointment, appoiment=> appoiment.client)
->>>>>>> e81dcabc5ed54eff0cd75e6840387296097e43b9
     clientAppointments: Appointment[];
     
     @OneToMany(()=>Appointment, appoiment=> appoiment.professional,{cascade: true, onDelete: 'CASCADE'})

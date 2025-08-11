@@ -54,11 +54,6 @@ export class Appointment {
   @ManyToOne(() => User, (user) => user.clientAppointments)
   @JoinColumn({ name: 'client_id' })
   client: User;
-<<<<<<< HEAD
-
-
-=======
->>>>>>> e81dcabc5ed54eff0cd75e6840387296097e43b9
 
   @ManyToOne(() => User, (user) => user.professionalAppointments)
   @JoinColumn({ name: 'professional_id' })

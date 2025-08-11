@@ -21,13 +21,10 @@ export class AppointmentController {
   constructor(private readonly appointmentService: AppointmentService) {}
 
   @Post()
-<<<<<<< HEAD
-=======
   @UseGuards(LogginGuard)
->>>>>>> e81dcabc5ed54eff0cd75e6840387296097e43b9
-create(@Body() createAppointmentDto: CreateAppointmentDto) {
-  return this.appointmentService.createAppointment(createAppointmentDto);
-}
+    create(@Body() createAppointmentDto: CreateAppointmentDto) {
+    return this.appointmentService.createAppointment(createAppointmentDto);
+  }
 
   @Get()
   @Roles(Role.ADMIN)

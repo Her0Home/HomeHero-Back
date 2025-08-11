@@ -140,5 +140,33 @@ export class UsersService {
     return `El user con el id: ${id}, se modifico correctamente`
 
   }
+
+  async getAllProfesional (page: number, limit: number): Promise<User[] | undefined>{
+
+    try {
+
+      const safePage = page && page>0 ? page: 1;
+      const safeLimit = limit && limit>0? limit : 2;
+
+      const profesionals: User[] | null = await this.userRepository.find({where:{role: Role.PROFESSIONAL}})
+      if(!profesionals){
+        throw new InternalServerErrorException('Error al mostrar los profesionales');
+      }
+
+      const start:number = (safePage-1)*safeLimit;
+      const end:number = safeLimit + start;
+
+      const profesionales: User[] | null = profesionals.slice(start,end)
+
+      return profesionales;
+      
+    } catch (error) {
+      throw new InternalServerErrorException('Error al mostrar los profesionales', error);
+    }
+
+
+
+
+  }
   
 }
