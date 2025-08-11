@@ -21,5 +21,6 @@ export class Category {
 
   @ManyToMany(()=>User, user=>user.categories)
   professional: User[];
+  category: Category;
 }
 

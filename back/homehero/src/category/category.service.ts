@@ -2,7 +2,7 @@ import { Injectable, NotFoundException } from '@nestjs/common';
 import { CreateCategoryDto } from './dto/create-category.dto';
 import { UpdateCategoryDto } from './dto/update-category.dto';
 import { InjectRepository } from '@nestjs/typeorm';
-import { Not, Repository } from 'typeorm';
+import { Repository } from 'typeorm';
 import { Category } from './entities/category.entity';
 
 @Injectable()
@@ -56,5 +56,18 @@ export class CategoryService {
     }
     await this.categoryRepository.delete({ id });
     return category;
+  }
+
+  async chooseCategory(userId: string, categoryId: string) {
+    const user = await this.categoryRepository.findOne({ where: { id: Number(userId) } });
+    if (!user) {
+      throw new NotFoundException(`El usuario con id ${userId} no existe`);
+    }
+    const category = await this.categoryRepository.findOne({ where: { id: Number(categoryId) } });
+    if (!category) {
+      throw new NotFoundException(`La categoria con id ${categoryId} no existe`);
+    }
+    user.category = category;
+    return this.categoryRepository.save(user);
   }
 }
