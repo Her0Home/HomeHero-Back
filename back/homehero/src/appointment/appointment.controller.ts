@@ -4,10 +4,6 @@ import {
   Post,
   Body,
   Param,
-<<<<<<< HEAD
-  Delete,
-=======
->>>>>>> 377f6ebf0ed12320f149e9c5a3009e4c23e068dd
   ParseUUIDPipe,
   Put,
 } from '@nestjs/common';
@@ -20,10 +16,6 @@ export class AppointmentController {
   constructor(private readonly appointmentService: AppointmentService) {}
 
   @Post()
-<<<<<<< HEAD
-  @Post()
-=======
->>>>>>> 377f6ebf0ed12320f149e9c5a3009e4c23e068dd
 create(@Body() createAppointmentDto: CreateAppointmentDto) {
   return this.appointmentService.createAppointment(createAppointmentDto);
 }
@@ -47,8 +39,4 @@ create(@Body() createAppointmentDto: CreateAppointmentDto) {
     return this.appointmentService.updateAppointment(id, professionalId, updateAppointmentDto); 
   }
 
-<<<<<<< HEAD
 }
-=======
-}
->>>>>>> 377f6ebf0ed12320f149e9c5a3009e4c23e068dd
