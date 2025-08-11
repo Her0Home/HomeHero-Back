@@ -55,7 +55,6 @@ export class User {
     role: Role;
     
     @OneToMany(() => Appointment, appoiment=> appoiment.client)
-    @JoinColumn({name: 'appointment_id'})
     clientAppointments: Appointment[];
     
     @OneToMany(()=>Appointment, appoiment=> appoiment.professional)
@@ -86,8 +85,10 @@ export class User {
     @JoinColumn({ name: 'image_id' })
     image: Image[];
 
-    @OneToMany(() => Chat, chat => chat.user)
-    @JoinColumn({ name: 'chat_id' })
-    chat: Chat[];
+    @OneToMany(() => Chat, (chat) => chat.cliente)
+    clientChats: Chat[];
+
+    @OneToMany(() => Chat, (chat) => chat.profesional)
+    profesionalChats: Chat[];
 
 }

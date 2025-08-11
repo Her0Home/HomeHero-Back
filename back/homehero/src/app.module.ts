@@ -16,6 +16,9 @@ import { ImagesModule } from './images/images.module';
 import { JwtModule } from '@nestjs/jwt';
 import { CategoryModule } from './category/category.module';
 import { SubcategoryModule } from './subcategory/subcategory.module';
+import { MessageModule } from './message/message.module';
+import { ChatGateway } from './chat/chat.gateway';
+import { EventEmitterModule } from '@nestjs/event-emitter';
 
 @Module({
   imports: [
@@ -28,14 +31,15 @@ import { SubcategoryModule } from './subcategory/subcategory.module';
       useFactory: (ConfigService: ConfigService) =>
         ConfigService.get('typeorm')!,
     }),
+      EventEmitterModule.forRoot(),
      CategoryModule,
      SubcategoryModule,
      SeederModule,
     AppointmentModule,
     ChatModule,
+    MessageModule,
     UsersModule,
     AddresModule,
-    AuthModule,
     ImagesModule,
     AuthModule,
     JwtModule.register({

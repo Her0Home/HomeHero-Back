@@ -1,6 +1,5 @@
 import { CanActivate, ExecutionContext, Injectable, UnauthorizedException } from '@nestjs/common';
 import { JwtService } from '@nestjs/jwt';
-import { log } from 'console';
 import { Observable } from 'rxjs';
 import { Role } from 'src/users/assets/roles';
 
@@ -31,7 +30,7 @@ export class LogginGuard implements CanActivate {
 
       request.user = user;
 
-      log(user)
+   
       return true;
     } catch (error) {
       throw new UnauthorizedException('Invalid or expired token');
