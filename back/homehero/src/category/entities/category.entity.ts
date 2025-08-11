@@ -13,7 +13,7 @@ export class Category {
   @Column("simple-array")
   subCategoryArray: string[];
 
-  @Column()
+  @Column({nullable: true})// Para la precarga de categorias luego se le asigna un usuario a esa categoria//
   users_id: number;
 
   @OneToMany(() => SubCategory, (subcategory) => subcategory.category)

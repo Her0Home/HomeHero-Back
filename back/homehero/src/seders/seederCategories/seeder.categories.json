@@ -1,0 +1,83 @@
+[
+  {
+    "name": "Plomería",
+    "subCategoryArray": [
+      "Destape de cañerías",
+      "Instalación de grifería y sanitarios",
+      "Reparación de fugas",
+      "Mantenimiento de calentadores"
+    ]
+  },
+  {
+    "name": "Electricidad",
+    "subCategoryArray": [
+      "Instalaciones eléctricas residenciales",
+      "Reparación de cortocircuitos",
+      "Instalación de paneles solares",
+      "Sistemas de iluminación y domótica"
+    ]
+  },
+  {
+    "name": "Cerrajería",
+    "subCategoryArray": [
+      "Apertura de urgencia 24/7",
+      "Instalación de cerraduras de alta seguridad",
+      "Duplicado de llaves con chip",
+      "Mantenimiento de cerraduras"
+    ]
+  },
+  {
+    "name": "Paseo de Perros",
+    "subCategoryArray": [
+      "Paseos individuales personalizados",
+      "Paseos grupales para socialización",
+      "Cuidado a domicilio (Pet Sitting)",
+      "Adiestramiento básico en paseo"
+    ]
+  },
+  {
+    "name": "Pintura",
+    "subCategoryArray": [
+      "Pintura de interiores",
+      "Pintura de fachadas",
+      "Aplicación de estuco y texturizados",
+      "Impermeabilización de superficies"
+    ]
+  },
+  {
+    "name": "Jardinería",
+    "subCategoryArray": [
+      "Mantenimiento de césped y jardines",
+      "Poda de árboles y arbustos",
+      "Diseño de paisajes",
+      "Instalación de sistemas de riego"
+    ]
+  },
+  {
+    "name": "Carpintería",
+    "subCategoryArray": [
+      "Fabricación de muebles a medida",
+      "Reparación de puertas y ventanas",
+      "Instalación de pisos de madera",
+      "Restauración de muebles antiguos"
+    ]
+  },
+  {
+    "name": "Aseo y Limpieza",
+    "subCategoryArray": [
+      "Aseo doméstico por días",
+      "Limpieza profunda de espacios",
+      "Limpieza de tapetes y muebles",
+      "Desinfección de ambientes"
+    ]
+  },
+  {
+    "name": "Técnico de Electrodomésticos",
+    "subCategoryArray": [
+      "Reparación de neveras y nevecones",
+      "Reparación de lavadoras y secadoras",
+      "Mantenimiento de aires acondicionados",
+      "Instalación y reparación de estufas"
+    ]
+  }
+]
