@@ -2,7 +2,7 @@ import { Controller, Get, Post, Body, Patch, Param, Delete, UseInterceptors, Par
 import { UsersService } from './users.service';
 import { CreateClienteDto } from './dto/create-user.dto';
 import { ExcludePasswordInterceptor } from 'src/interceptor/exclude-password/exclude-password.interceptor';
-import { CreateProfesionalDto } from './dto/create-user-profesional';
+import { CreateProfesionalDto } from './dto/create-userProfesional.dto';
 import { ChangeRoleInterceptor } from 'src/interceptor/change-role/change-role.interceptor';
 import { Role } from './assets/roles';
 import { LogginGuard } from 'src/guards/loggin.guard';
