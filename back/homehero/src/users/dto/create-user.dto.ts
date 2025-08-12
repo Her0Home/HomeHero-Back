@@ -2,7 +2,7 @@ import { IsEmail, IsEnum, IsNotEmpty, IsString } from "class-validator";
 import { Role } from "../assets/roles";
 import { Type } from "class-transformer";
 
-export class CreateClienteDto {
+export class CreateUserDto {
 
     @IsString()
     @IsNotEmpty()

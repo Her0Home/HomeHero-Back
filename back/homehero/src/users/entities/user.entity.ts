@@ -22,10 +22,10 @@ export class User {
     email: string;
 
     @Column({type:'date'})
-    birthdate: Date;
+    birthdate?: Date;
 
     @Column({type:'bigint', unique: true, nullable: false})
-    dni: number;
+    dni?: number;
 
     
     @Column({type:'varchar'})
@@ -35,7 +35,7 @@ export class User {
     description?: string;
 
     @Column({type:'varchar'})
-    password: string;
+    password?: string;
 
     @Column({type:'decimal', precision: 10, scale: 1, default: 0})
     avaregeRating?: number;
@@ -57,23 +57,23 @@ export class User {
     @OneToMany(() => Appointment, appoiment=> appoiment.client)
     clientAppointments: Appointment[];
     
-    @OneToMany(()=>Appointment, appoiment=> appoiment.professional)
+    @OneToMany(()=>Appointment, appoiment=> appoiment.professional,{cascade: true, onDelete: 'CASCADE'})
     professionalAppointments: Appointment[];
     
     
-    @OneToOne(()=> Membership, membership => membership.user)
+    @OneToOne(()=> Membership, membership => membership.user,{cascade: true, onDelete: 'CASCADE'})
     membership: Membership;
 
-    @ManyToMany(()=>Category, category=>category.professional)
+    @ManyToMany(()=>Category, category=>category.professional,{cascade: true})
     @JoinTable({name:'professional_category'})
     categories: Category[];
     
     
-    @ManyToMany(() => SubCategory, subcategory => subcategory.professionals)
+    @ManyToMany(() => SubCategory, subcategory => subcategory.professionals,{cascade: true})
     @JoinTable({name: 'professional_subcategories'})
     subcategories?: SubCategory[];
     
-    @OneToMany(()=> Addre, addre=> addre.user)
+    @OneToMany(()=> Addre, addre=> addre.user,{cascade: true, onDelete: 'CASCADE'})
     @JoinColumn({name:'addres_id'})
     addres: Addre[]
     // @OneToMany(() => Addres, addres => addres.user)
