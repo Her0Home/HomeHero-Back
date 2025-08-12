@@ -1,4 +1,4 @@
-import { Controller, Get, Post, Body, Patch, Param, Delete, UseInterceptors} from '@nestjs/common';
+import { Controller, Get, Post, Body,  UseInterceptors} from '@nestjs/common';
 import { UsersService } from './users.service';
 import { CreateClienteDto } from './dto/create-user.dto';
 import { ExcludePasswordInterceptor } from 'src/interceptor/exclude-password/exclude-password.interceptor';
@@ -19,8 +19,8 @@ export class UsersController {
 
   @Get()
   getAllUser(){
-    
   }
+  
 }
 
 @Controller('user/profesional')
