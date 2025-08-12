@@ -22,10 +22,10 @@ export class User {
     email: string;
 
     @Column({type:'date'})
-    birthdate: Date;
+    birthdate?: Date;
 
     @Column({type:'bigint', unique: true, nullable: false})
-    dni: number;
+    dni?: number;
 
     
     @Column({type:'varchar'})
@@ -35,7 +35,7 @@ export class User {
     description?: string;
 
     @Column({type:'varchar'})
-    password: string;
+    password?: string;
 
     @Column({type:'decimal', precision: 10, scale: 1, default: 0})
     avaregeRating?: number;
