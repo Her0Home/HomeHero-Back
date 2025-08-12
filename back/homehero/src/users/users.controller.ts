@@ -1,29 +1,31 @@
 import { Controller, Get, Post, Body, Patch, Param, Delete, UseInterceptors, ParseUUIDPipe, Put, UseGuards, Query} from '@nestjs/common';
 import { UsersService } from './users.service';
-import { CreateClienteDto } from './dto/create-user.dto';
+import { CreateUserDto } from './dto/create-user.dto';
 import { ExcludePasswordInterceptor } from 'src/interceptor/exclude-password/exclude-password.interceptor';
-import { CreateProfesionalDto } from './dto/create-user-profesional';
 import { ChangeRoleInterceptor } from 'src/interceptor/change-role/change-role.interceptor';
 import { Role } from './assets/roles';
 import { LogginGuard } from 'src/guards/loggin.guard';
 import { Roles } from 'src/decorators/role.decorator';
 import { RolesGuard } from 'src/guards/roles.guard';
+import { VerifyRoleGuard } from 'src/guards/verify-role.guard';
+import { ApiBearerAuth } from '@nestjs/swagger';
 // import { UpdateUserDto } from './dto/update-user.dto';
 
-@Controller('users/clientes')
+@Controller('users')
 export class UsersController {
   constructor(private readonly usersService: UsersService) {}
 
-
-  @UseInterceptors(ExcludePasswordInterceptor)
-  @UseGuards(LogginGuard)
+  @ApiBearerAuth()
+  @UseInterceptors(ChangeRoleInterceptor,ExcludePasswordInterceptor)
+  @UseGuards(VerifyRoleGuard)
   @Post()
-  create(@Body() createUserDto: CreateClienteDto) {
+  create(@Body() createUserDto:CreateUserDto ) {
     return this.usersService.create(createUserDto);
   }
 
-  @Get()
+  @ApiBearerAuth()
   @UseInterceptors(ExcludePasswordInterceptor)
+  @Get()
   @UseGuards(LogginGuard)
   getProfesional (@Query('page') page: string, @Query('limit') limit:string){
 
@@ -33,24 +35,13 @@ export class UsersController {
 
 }
 
-@Controller('user/profesional')
-export class profesionalController {
-  constructor(private readonly userService: UsersService){}
-  
-  @UseInterceptors(ChangeRoleInterceptor)
-  @UseInterceptors(ExcludePasswordInterceptor)
-  @Post()
-  createProfesional(@Body() userProfessional: CreateProfesionalDto) {
-    return this.userService.createProfessional(userProfessional)
-  }
-
-}
-
 
 @Controller('user/admin')
 export class adminController{
   
   constructor( private readonly userService: UsersService){}
+
+  @ApiBearerAuth()
   @Roles(Role.ADMIN)
   @UseGuards(LogginGuard,RolesGuard)
   @UseInterceptors(ExcludePasswordInterceptor)
@@ -60,15 +51,17 @@ export class adminController{
   }
 
 
+  @ApiBearerAuth()
   @Roles(Role.ADMIN)
   @UseGuards(LogginGuard,RolesGuard)
   @UseInterceptors(ExcludePasswordInterceptor)
-  @Delete()
-  deleteUser(@Body('id', new ParseUUIDPipe) id:string) {
+  @Delete(':id')
+  deleteUser(@Param('id', new ParseUUIDPipe) id:string) {
     return this.userService.DeleteUser(id);
   }
 
 
+  @ApiBearerAuth()
   @Roles(Role.ADMIN)
   @UseGuards(LogginGuard,RolesGuard)
   @UseInterceptors(ExcludePasswordInterceptor)
@@ -80,6 +73,7 @@ export class adminController{
   }
 
 
+  @ApiBearerAuth()
   @Roles(Role.ADMIN)
   @UseGuards(LogginGuard,RolesGuard)
   @UseInterceptors(ExcludePasswordInterceptor)

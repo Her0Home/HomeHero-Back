@@ -23,7 +23,7 @@ export class AuthService {
       throw new NotFoundException('Datos invalidos');
     }
 
-    const comparePassword = await bcrypt.compare(credentials.password, findUser.password)
+    const comparePassword = await bcrypt.compare(credentials.password, findUser.password!)
 
     if(!comparePassword){
       throw new NotFoundException('Datos invalidos');

@@ -32,4 +32,10 @@ export class CategoryController {
   async remove(@Param('id', new ParseUUIDPipe()) id: string) {
     return this.categoryService.remove(+id);
   }
+
+  @Patch('choose-category')
+  async chooseCatehory(@Body('categoryId') categoryId: string, @Req() req) {
+    const userId = req.user.id;
+    return this.categoryService.chooseCategory(userId, categoryId);
+  }
 }
