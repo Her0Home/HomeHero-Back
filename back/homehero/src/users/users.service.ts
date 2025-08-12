@@ -4,7 +4,7 @@ import { InjectRepository } from '@nestjs/typeorm';
 import { User } from './entities/user.entity';
 import { Repository } from 'typeorm';
 import * as bcrypt from 'bcrypt'
-import { CreateProfesionalDto } from './dto/create-user-profesional';
+import { CreateProfesionalDto } from './dto/create-userProfesional.dto';
 import { DeleteResult } from 'typeorm/browser';
 import { Role } from './assets/roles';
 // import { UpdateUserDto } from './dto/update-user.dto';

@@ -13,6 +13,7 @@ export class CategoryService {
   ) {}
   async findAll() {
     const categories = await this.categoryRepository.find();
+    console.log(categories);
     return 'todavia no hay categorias' + categories;
   }
 
