@@ -1,10 +1,9 @@
 import { BadRequestException, Injectable, InternalServerErrorException, NotFoundException, ParseUUIDPipe } from '@nestjs/common';
-import { CreateClienteDto } from './dto/create-user.dto';
+import { CreateUserDto } from './dto/create-user.dto';
 import { InjectRepository } from '@nestjs/typeorm';
 import { User } from './entities/user.entity';
 import { Repository } from 'typeorm';
 import * as bcrypt from 'bcrypt'
-import { CreateProfesionalDto } from './dto/create-userProfesional.dto';
 import { DeleteResult } from 'typeorm/browser';
 import { Role } from './assets/roles';
 // import { UpdateUserDto } from './dto/update-user.dto';
@@ -20,7 +19,7 @@ export class UsersService {
     return hashPassword;
   }
 
-  async create(createUserDto: CreateClienteDto): Promise <User> {
+  async create(createUserDto: CreateUserDto): Promise <User> {
     try {
 
       const foundUser: User | null = await this.userRepository.findOne({where:{email: createUserDto.email, dni: createUserDto.dni}});
@@ -41,25 +40,7 @@ export class UsersService {
       throw new NotFoundException(`Error creating user: ${error.message}`);
     }
   }
-
-  async createProfessional (user: CreateProfesionalDto): Promise<User>{
-
-    const findUser: User | null = await this.userRepository.findOne({where:{email: user.email, dni: user.dni}});
-    if(findUser){
-      throw new BadRequestException('Usuario ya existente con estos datos');
-    }
-
-    const {password, ...rest} = user;
-
-    const hasPassword = await this.hashPassword(password);
-
-    const newUserProfesional: User = this.userRepository.create({password: hasPassword, ...rest});
-
-    const newProfesional: User = await this.userRepository.save(newUserProfesional);
-
-    return newProfesional;
-
-  }
+  
 
   async getAllUser () {
 
