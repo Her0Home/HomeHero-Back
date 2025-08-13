@@ -51,7 +51,7 @@ export class User {
     @Column({type:'boolean', default: true})
     isActive: boolean;
     
-    @Column({type:'enum', enum: Role})
+    @Column({type:'enum', enum: Role, default:Role.NOTVERIFY})
     role: Role;
     
     @OneToMany(() => Appointment, appoiment=> appoiment.client)
