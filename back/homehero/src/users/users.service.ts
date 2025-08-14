@@ -6,13 +6,15 @@ import { Repository } from 'typeorm';
 import * as bcrypt from 'bcrypt'
 import { DeleteResult } from 'typeorm/browser';
 import { Role } from './assets/roles';
+import { JwtService } from '@nestjs/jwt';
 // import { UpdateUserDto } from './dto/update-user.dto';
 
 @Injectable()
 export class UsersService {
 
-  constructor(@InjectRepository(User) private userRepository: Repository<User>) {}
-
+  constructor(@InjectRepository(User) private userRepository: Repository<User>,
+  )
+   {}
 
   async hashPassword(password: string){
     const hashPassword = await bcrypt.hash(password,10)
