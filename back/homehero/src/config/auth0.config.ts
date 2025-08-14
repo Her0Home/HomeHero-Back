@@ -9,6 +9,7 @@ export const config = {
   baseURL: process.env.AUTH0_BASE_URL,
   clientID: process.env.AUTH0_CLIENT_ID,
   issuerBaseURL: process.env.AUTH0_ISSUER_BASE_URL,
+   clientSecret: process.env.AUTH0_CLIENT_SECRET,
   routes: {
     callback: '/auth0/callback',
   },
