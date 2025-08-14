@@ -12,5 +12,10 @@ export const config = {
   routes: {
     callback: '/auth0/callback',
   },
-  scope: 'openid profile email',
+  authorizationParams: {
+    response_type: 'code',
+    
+    scope: 'openid profile email', 
+
+}
 }
