@@ -12,5 +12,5 @@ export const config = {
   routes: {
     callback: '/auth0/callback',
   },
-
+  scope: 'openid profile email',
 }
