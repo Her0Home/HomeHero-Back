@@ -1,4 +1,4 @@
-import { Controller, Get, Post, Body, Patch, Param, Delete, UseInterceptors, ParseUUIDPipe, Put, UseGuards, Query, Req} from '@nestjs/common';
+import { Controller, Get, Post, Body, Patch, Param, Delete, UseInterceptors, ParseUUIDPipe, Put, UseGuards, Query, Req, UnauthorizedException } from '@nestjs/common';
 import { UsersService } from './users.service';
 import { CreateUserDto } from './dto/create-user.dto';
 import { ExcludePasswordInterceptor } from 'src/interceptor/exclude-password/exclude-password.interceptor';
@@ -9,7 +9,7 @@ import { Roles } from 'src/decorators/role.decorator';
 import { RolesGuard } from 'src/guards/roles.guard';
 import { VerifyRoleGuard } from 'src/guards/verify-role.guard';
 import { ApiBearerAuth } from '@nestjs/swagger';
-import { Request } from 'express';
+import type { Request } from 'express';
 // import { UpdateUserDto } from './dto/update-user.dto';
 
 @Controller('users')
@@ -33,14 +33,8 @@ export class UsersController {
     return this.usersService.getAllProfesional(+page, +limit);
 
   }
-  @Get('auth0/protected')
-    getAuth0Protected(@Req() req: Request) {
-      console.log(req.oidc.user);
-      return JSON.stringify(req.oidc.user);
-    }
 
 }
-
 
 @Controller('user/admin')
 export class adminController{

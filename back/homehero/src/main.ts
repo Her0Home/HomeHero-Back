@@ -19,6 +19,7 @@ async function bootstrap() {
   const document = SwaggerModule.createDocument(app,swaggerDocument);
   SwaggerModule.setup('api', app, document);
 
+  
   app.use(auth(auth0Config));
   app.useGlobalPipes(new ValidationPipe({ 
       whitelist: true,
