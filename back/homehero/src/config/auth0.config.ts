@@ -10,13 +10,12 @@ export const config = {
   clientID: process.env.AUTH0_CLIENT_ID,
   issuerBaseURL: process.env.AUTH0_ISSUER_BASE_URL,
    clientSecret: process.env.AUTH0_CLIENT_SECRET,
-  routes: {
+   routes: {
     callback: '/auth0/callback',
   },
-  authorizationParams: {
-    response_type: 'code',
-    
+ authorizationParams: {
+    response_type: 'code', 
     scope: 'openid profile email', 
-
-}
+  },
+  
 }
