@@ -19,6 +19,7 @@ import { SubcategoryModule } from './subcategory/subcategory.module';
 import { MessageModule } from './message/message.module';
 import { ChatGateway } from './chat/chat.gateway';
 import { EventEmitterModule } from '@nestjs/event-emitter';
+import { EmailModule } from './email/email.module';
 
 @Module({
   imports: [
@@ -47,6 +48,7 @@ import { EventEmitterModule } from '@nestjs/event-emitter';
       secret: process.env.SECRET_KEY,
       signOptions:{expiresIn: '1h'}
     }),
+    EmailModule,
   ],
   controllers: [AppController],
   providers: [AppService],

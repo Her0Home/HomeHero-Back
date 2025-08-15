@@ -6,12 +6,16 @@ import { Repository } from 'typeorm';
 import * as bcrypt from 'bcrypt'
 import { DeleteResult } from 'typeorm/browser';
 import { Role } from './assets/roles';
+import { EmailService } from 'src/email/email.service';
 // import { UpdateUserDto } from './dto/update-user.dto';
 
 @Injectable()
 export class UsersService {
 
-  constructor(@InjectRepository(User) private userRepository: Repository<User>) {}
+  constructor(
+    @InjectRepository(User) private userRepository: Repository<User>,
+    private emailService: EmailService
+) {}
 
 
   async hashPassword(password: string){
@@ -34,6 +38,9 @@ export class UsersService {
 
       const newCliente: User = this.userRepository.create({password:hasPassword, ...rest});
       const  newUserCliente: User = await this.userRepository.save(newCliente);
+
+      await this.emailService.sendEmailCreate(newCliente.email, newCliente.name)
+
       return newUserCliente;
       
     } catch (error) {
@@ -147,6 +154,17 @@ export class UsersService {
 
 
 
+
+  }
+
+
+  async getUserFilter(role: Role, email?: string,id?:string, name?: string){
+
+    try {
+              
+    } catch (error) {
+      
+    }
 
   }
   
