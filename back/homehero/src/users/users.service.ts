@@ -7,10 +7,14 @@ import * as bcrypt from 'bcrypt'
 import { DeleteResult } from 'typeorm/browser';
 import { Role } from './assets/roles';
 import { JwtService } from '@nestjs/jwt';
+import Stripe from 'stripe';
 // import { UpdateUserDto } from './dto/update-user.dto';
 
 @Injectable()
 export class UsersService {
+  findByStripeCustomerId(customerId: string | Stripe.Customer | Stripe.DeletedCustomer | null) {
+      throw new Error('Method not implemented.');
+  }
 
   constructor(@InjectRepository(User) private userRepository: Repository<User>,
   )

@@ -58,7 +58,12 @@ export class User {
 
     @Column({ type: 'jsonb', nullable: true })
     metadata?: any;
-    
+
+     
+
+    @Column({ nullable: true })
+    stripeCustomerId: string;
+
     @OneToMany(() => Appointment, appoiment=> appoiment.client)
     clientAppointments: Appointment[];
     
@@ -95,5 +100,7 @@ export class User {
 
     @OneToMany(() => Chat, (chat) => chat.profesional)
     profesionalChats: Chat[];
+     
+
 
 }

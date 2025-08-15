@@ -1,14 +1,17 @@
-// import Stripe from 'stripe';
+import Stripe from 'stripe';
+import dotenv from 'dotenv';
 
-// const stripeSecretKey = process.env.STRIPE_SECRET_KEY || '';
+dotenv.config();
 
-// if (!stripeSecretKey) {
-//   console.error('La clave secreta de Stripe no está configurada');
-//   process.exit(1);
-// }
+const stripeSecretKey = process.env.STRIPE_SECRET_KEY;
 
-// const stripe = new Stripe(stripeSecretKey, {
-//   apiVersion: '2023-10-16', 
-// });
+if (!stripeSecretKey) {
+  console.error('La clave secreta de Stripe no está configurada');
+  process.exit(1);
+}
 
-// export default stripe;
+const stripe = new Stripe(stripeSecretKey, {
+  apiVersion: '2025-07-30.basil',
+});
+
+export default stripe;
