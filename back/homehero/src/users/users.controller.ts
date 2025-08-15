@@ -83,4 +83,19 @@ export class adminController{
     return this.userService.changeRole(id, newRole);
 
   }
+
+  @ApiBearerAuth()
+  @Roles(Role.ADMIN)
+  @UseGuards(LogginGuard,RolesGuard)
+  @UseInterceptors(ExcludePasswordInterceptor)
+  @Get()
+
+  verProfesionalesClientes(
+  @Query('role') role: Role, 
+  @Query('name') name?: string, 
+  @Query('email') email?: string,
+  @Query('id', new ParseUUIDPipe()) id?:string){
+
+  }
+
 }

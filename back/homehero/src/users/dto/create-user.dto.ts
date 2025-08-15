@@ -1,4 +1,4 @@
-import { IsEmail, IsEnum, IsNotEmpty, IsString } from "class-validator";
+import { IsEmail, IsEnum, IsNotEmpty, IsOptional, IsString } from "class-validator";
 import { Role } from "../assets/roles";
 import { Type } from "class-transformer";
 
@@ -28,7 +28,8 @@ export class CreateUserDto {
     @IsNotEmpty()
     password: string;
 
-    @IsNotEmpty()
-    role: Role;
+    @IsEnum(Role)
+    @IsOptional()
+    role?: Role;
 
 }
