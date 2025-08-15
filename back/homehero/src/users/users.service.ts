@@ -6,27 +6,18 @@ import { Repository } from 'typeorm';
 import * as bcrypt from 'bcrypt'
 import { DeleteResult } from 'typeorm/browser';
 import { Role } from './assets/roles';
-<<<<<<< HEAD
 import { EmailService } from 'src/email/email.service';
-=======
 import { JwtService } from '@nestjs/jwt';
->>>>>>> f6104f792f2470498a88673daffb7c9f86e567cf
 // import { UpdateUserDto } from './dto/update-user.dto';
 
 @Injectable()
 export class UsersService {
 
-<<<<<<< HEAD
   constructor(
     @InjectRepository(User) private userRepository: Repository<User>,
     private emailService: EmailService
 ) {}
 
-=======
-  constructor(@InjectRepository(User) private userRepository: Repository<User>,
-  )
-   {}
->>>>>>> f6104f792f2470498a88673daffb7c9f86e567cf
 
   async hashPassword(password: string){
     const hashPassword = await bcrypt.hash(password,10)
@@ -150,6 +141,9 @@ export class UsersService {
       if(!profesionals){
         throw new InternalServerErrorException('Error al mostrar los profesionales');
       }
+      
+      console.log('arrglando...');
+      
 
       const start:number = (safePage-1)*safeLimit;
       const end:number = safeLimit + start;
