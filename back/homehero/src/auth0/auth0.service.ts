@@ -37,11 +37,9 @@ export class Auth0Service {
         const existingUserByEmail = await this.findByEmail(auth0UserData.email);
 
         if (existingUserByEmail) {
-          // Usuario existe, lo vinculamos
           existingUserByEmail.auth0Id = auth0UserData.sub;
           user = await this.userRepository.save(existingUserByEmail);
         } else {
-          // Usuario es nuevo, lo creamos
           const newUser = this.userRepository.create({
             auth0Id: auth0UserData.sub,
             name: auth0UserData.name || 'User',
@@ -55,14 +53,12 @@ export class Auth0Service {
           user = await this.userRepository.save(newUser);
         }
       } else {
-        // Usuario ya existía, lo actualizamos
         user.name = auth0UserData.name || user.name;
         user.imageProfile = auth0UserData.picture || user.imageProfile;
         user.metadata = auth0UserData;
         await this.userRepository.save(user);
       }
 
-      // ✅ CORRECCIÓN: Nos aseguramos de que el 'user' tenga un ID antes de firmar el token.
       if (!user || !user.id) {
         throw new InternalServerErrorException(
           'El usuario no se pudo guardar o no tiene ID.',
@@ -78,7 +74,7 @@ export class Auth0Service {
       const token = this.jwtService.sign(payload);
       return { user, token };
     } catch (error) {
-      console.error('💥 ERROR DETALLADO en processAuth0User:', error);
+      console.error('error', error);
       if (error.code === '23505') {
         throw new ConflictException('El usuario con este email ya existe.');
       }
