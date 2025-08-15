@@ -14,6 +14,8 @@ export class User {
     @PrimaryGeneratedColumn('uuid')
     id: string;
 
+    @Column({ unique: true, nullable: true })
+    auth0Id?: string;
 
     @Column({type:'varchar'})
     name: string;
@@ -21,30 +23,30 @@ export class User {
     @Column({type:'varchar', unique: true})
     email: string;
 
-    @Column({type:'date'})
+    @Column({type:'date',nullable: true})
     birthdate?: Date;
 
-    @Column({type:'bigint', unique: true, nullable: false})
+    @Column({type:'bigint', unique: true, nullable: true})
     dni?: number;
 
     
-    @Column({type:'varchar'})
+    @Column({type:'varchar',nullable: true})
     imageProfile?:string;
 
-    @Column({type:'varchar', default:'Sin descripción'})
+    @Column({type:'varchar', default:'Sin descripción',nullable: true})
     description?: string;
 
-    @Column({type:'varchar'})
+    @Column({type:'varchar',nullable: true})
     password?: string;
 
-    @Column({type:'decimal', precision: 10, scale: 1, default: 0})
+    @Column({type:'decimal', precision: 10, scale: 1, default: 0,nullable: true})
     avaregeRating?: number;
 
-    @Column({type:'integer', default: 0})
+    @Column({type:'integer', default: 0,nullable: true})
     totalAppointments?: number;
     
     
-    @Column({type:'boolean', default: false})
+    @Column({type:'boolean', default: false,})
     isVerified: boolean;
     
     
@@ -53,6 +55,9 @@ export class User {
     
     @Column({type:'enum', enum: Role, default:Role.NOTVERIFY})
     role: Role;
+
+    @Column({ type: 'jsonb', nullable: true })
+    metadata?: any;
     
     @OneToMany(() => Appointment, appoiment=> appoiment.client)
     clientAppointments: Appointment[];

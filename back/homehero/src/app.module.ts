@@ -20,6 +20,7 @@ import { MessageModule } from './message/message.module';
 import { ChatGateway } from './chat/chat.gateway';
 import { EventEmitterModule } from '@nestjs/event-emitter';
 import { EmailModule } from './email/email.module';
+import { Auth0Module } from './auth0/auth0.module';
 
 @Module({
   imports: [
@@ -36,6 +37,7 @@ import { EmailModule } from './email/email.module';
      CategoryModule,
      SubcategoryModule,
      SeederModule,
+      Auth0Module,
     AppointmentModule,
     ChatModule,
     MessageModule,
