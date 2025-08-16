@@ -19,6 +19,7 @@ import { SubcategoryModule } from './subcategory/subcategory.module';
 import { MessageModule } from './message/message.module';
 import { ChatGateway } from './chat/chat.gateway';
 import { EventEmitterModule } from '@nestjs/event-emitter';
+import { EmailModule } from './email/email.module';
 import { Auth0Module } from './auth0/auth0.module';
 import { StripeModule } from './stripe/stripe.module';
 
@@ -52,7 +53,11 @@ import { StripeModule } from './stripe/stripe.module';
       secret: process.env.SECRET_KEY,
       signOptions:{expiresIn: '1h'}
     }),
+<<<<<<< HEAD
  
+=======
+    EmailModule,
+>>>>>>> 4a683b195aa7cefd2e1c4722be269f24571402e3
   ],
   controllers: [AppController],
   providers: [AppService],

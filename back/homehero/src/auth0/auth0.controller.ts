@@ -20,37 +20,31 @@ loginWithGoogle(@Req() req: Request, @Res() res: Response) {
 }
 
  
-  @Get('callback')
-async auth0Callback(@Req() req: Request) {
-  console.log('Callback recibido, datos de req.oidc:', JSON.stringify({
-    isAuthenticated: req.oidc?.isAuthenticated,
-    userExists: !!req.oidc?.user,
-    user: req.oidc?.user
-  }));
+@Get('callback')
+  async auth0Callback(@Req() req: Request, @Res() res: Response) { // 1. Inyecta @Res()
+    console.log('Callback recibido, procesando para redirección...');
 
-  if (!req.oidc?.user) {
-    console.error('No se encontraron datos de usuario de Auth0');
-    throw new UnauthorizedException('No se encontraron datos de usuario de Auth0');
+    if (!req.oidc?.user) {
+      console.error('No se encontraron datos de usuario de Auth0');
+      return res.redirect('https://home-hero-front-cc1o.vercel.app/login-error');
+    }
+
+    const { user, token } = await this.auth0Service.processAuth0User(
+      req.oidc.user,
+    );
+
+    const frontendUrl = 'https://home-hero-front-cc1o.vercel.app/';
+    const params = new URLSearchParams();
+    params.append('token', token);
+    
+
+    const needsProfileCompletion = !user.dni;
+    params.append('needsProfileCompletion', String(needsProfileCompletion));
+    params.append('userName', user.name);
+
+
+    return res.redirect(`${frontendUrl}?${params.toString()}`);
   }
-
-  const { user, token } = await this.auth0Service.processAuth0User(
-    req.oidc.user,
-  );
-
-  return {
-    message: 'Authentication successful',
-    user: {
-      id: user.id,
-      name: user.name,
-      email: user.email,
-      role: user.role,
-      isVerified: user.isVerified,
-      imageProfile: user.imageProfile,
-      needsProfileCompletion: !user.dni,
-    },
-    token,
-  };
-}
   
   @Get('protected')
   async processAuth0(@Req() req: Request) {

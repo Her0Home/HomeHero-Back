@@ -6,8 +6,15 @@ import { Repository } from 'typeorm';
 import * as bcrypt from 'bcrypt'
 import { DeleteResult } from 'typeorm/browser';
 import { Role } from './assets/roles';
+<<<<<<< HEAD
+import { EmailService } from 'src/email/email.service';
+=======
 import { JwtService } from '@nestjs/jwt';
+<<<<<<< HEAD
 import Stripe from 'stripe';
+=======
+>>>>>>> f6104f792f2470498a88673daffb7c9f86e567cf
+>>>>>>> 4a683b195aa7cefd2e1c4722be269f24571402e3
 // import { UpdateUserDto } from './dto/update-user.dto';
 
 @Injectable()
@@ -16,9 +23,17 @@ export class UsersService {
       throw new Error('Method not implemented.');
   }
 
+<<<<<<< HEAD
+  constructor(
+    @InjectRepository(User) private userRepository: Repository<User>,
+    private emailService: EmailService
+) {}
+
+=======
   constructor(@InjectRepository(User) private userRepository: Repository<User>,
   )
    {}
+>>>>>>> f6104f792f2470498a88673daffb7c9f86e567cf
 
   async hashPassword(password: string){
     const hashPassword = await bcrypt.hash(password,10)
@@ -40,6 +55,9 @@ export class UsersService {
 
       const newCliente: User = this.userRepository.create({password:hasPassword, ...rest});
       const  newUserCliente: User = await this.userRepository.save(newCliente);
+
+      await this.emailService.sendEmailCreate(newCliente.email, newCliente.name)
+
       return newUserCliente;
       
     } catch (error) {
@@ -153,6 +171,17 @@ export class UsersService {
 
 
 
+
+  }
+
+
+  async getUserFilter(role: Role, email?: string,id?:string, name?: string){
+
+    try {
+              
+    } catch (error) {
+      
+    }
 
   }
   
