@@ -53,7 +53,11 @@ export class User {
     @Column({type:'boolean', default: true})
     isActive: boolean;
     
+<<<<<<< HEAD
     @Column({type:'enum', enum: Role, })
+=======
+    @Column({type:'enum', enum: Role, default:Role.NOTVERIFY})
+>>>>>>> 7714122d5c7f9b10df29ff85ec05898e661df438
     role: Role;
 
     @Column({ type: 'jsonb', nullable: true })
