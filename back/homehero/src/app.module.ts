@@ -19,7 +19,10 @@ import { SubcategoryModule } from './subcategory/subcategory.module';
 import { MessageModule } from './message/message.module';
 import { ChatGateway } from './chat/chat.gateway';
 import { EventEmitterModule } from '@nestjs/event-emitter';
+import { EmailModule } from './email/email.module';
 import { Auth0Module } from './auth0/auth0.module';
+import { StripeModule } from './stripe/stripe.module';
+
 
 @Module({
   imports: [
@@ -43,13 +46,14 @@ import { Auth0Module } from './auth0/auth0.module';
     UsersModule,
     AddresModule,
     ImagesModule,
+    StripeModule,
     AuthModule,
     JwtModule.register({
       global: true,
       secret: process.env.SECRET_KEY,
       signOptions:{expiresIn: '1h'}
     }),
-    Auth0Module,
+    EmailModule,
   ],
   controllers: [AppController],
   providers: [AppService],

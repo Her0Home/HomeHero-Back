@@ -53,12 +53,15 @@ export class User {
     @Column({type:'boolean', default: true})
     isActive: boolean;
     
-    @Column({type:'enum', enum: Role})
+    @Column({type:'enum', enum: Role, })
     role: Role;
 
     @Column({ type: 'jsonb', nullable: true })
     metadata?: any;
-    
+     
+    @Column({ nullable: true })
+    stripeCustomerId: string;
+
     @OneToMany(() => Appointment, appoiment=> appoiment.client)
     clientAppointments: Appointment[];
     
