@@ -6,17 +6,17 @@ import { Auth0Service } from './auth0.service';
 export class Auth0Controller {
   constructor(private readonly auth0Service: Auth0Service) {}
 
- @Get('google')
-loginWithGoogle(@Req() req: Request, @Res() res: Response) {
+//  @Get('google')
+// loginWithGoogle(@Req() req: Request, @Res() res: Response) {
   
-  const auth0Domain = process.env.AUTH0_ISSUER_BASE_URL;
-  const clientId = process.env.AUTH0_CLIENT_ID;
-  const redirectUri = encodeURIComponent('https://homehero-back.onrender.com/auth0/callback');
-  const url = `${auth0Domain}/authorize?client_id=${clientId}&response_type=code&scope=openid%20profile%20email&redirect_uri=${redirectUri}&connection=google-oauth2`;
+//   const auth0Domain = process.env.AUTH0_ISSUER_BASE_URL;
+//   const clientId = process.env.AUTH0_CLIENT_ID;
+//   const redirectUri = encodeURIComponent('https://homehero-back.onrender.com/auth0/callback');
+//   const url = `${auth0Domain}/authorize?client_id=${clientId}&response_type=code&scope=openid%20profile%20email&redirect_uri=${redirectUri}&connection=google-oauth2`;
   
   
-  return res.redirect(url);
-}
+//   return res.redirect(url);
+// }
 
  
   @Get('callback')
