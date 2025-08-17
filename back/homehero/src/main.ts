@@ -5,6 +5,7 @@ import { DocumentBuilder, SwaggerModule } from '@nestjs/swagger';
 import { auth } from 'express-openid-connect';
 import {config as auth0Config} from './config/auth0.config';
 import * as express from 'express';
+import session from 'express-session';
 
 
 async function bootstrap() {
@@ -19,6 +20,15 @@ async function bootstrap() {
 
   const document = SwaggerModule.createDocument(app,swaggerDocument);
   SwaggerModule.setup('api', app, document);
+
+  
+app.use(
+    session({
+      secret: process.env.SESSION_SECRET || 'default_session_secret', 
+      resave: false,
+      saveUninitialized: false,
+    }),
+  );
 
   
   app.use('/stripe/webhook', express.raw({ type: 'application/json' }));
