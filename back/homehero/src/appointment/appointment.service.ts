@@ -82,7 +82,6 @@ export class AppointmentService {
         try {
           await this.chatService.createChatForAppointment(updatedAppointment);
         } catch (error) {
-          console.error('Error al crear chat para la cita:', error);
           
         }
       }

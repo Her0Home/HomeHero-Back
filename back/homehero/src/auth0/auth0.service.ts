@@ -29,7 +29,6 @@ export class Auth0Service {
     auth0UserData: any,
   ): Promise<{ user: User; token: string }> {
     try {
-      console.log('Procesando usuario Auth0:', JSON.stringify(auth0UserData));
 
       let user = await this.findByAuth0Id(auth0UserData.sub);
 
@@ -74,7 +73,6 @@ export class Auth0Service {
       const token = this.jwtService.sign(payload);
       return { user, token };
     } catch (error) {
-      console.error('error', error);
       if (error.code === '23505') {
         throw new ConflictException('El usuario con este email ya existe.');
       }

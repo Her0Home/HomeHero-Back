@@ -31,66 +31,111 @@ export class StripeWebhookController {
     }
     
     try {
-    
       const event = this.stripeService.constructEvent(
         request['rawBody'],
         signature,
         webhookSecret,
       );
 
- 
       switch (event.type) {
+        case 'customer.subscription.created':
+        case 'customer.subscription.updated': {
+          await this.handleSubscriptionChange(event.data.object);
+          break;
+        }
+        
         case 'invoice.payment_succeeded': {
           const invoice = event.data.object as Stripe.Invoice & { subscription?: string; payment_intent?: string };
           const subscriptionId = invoice.subscription;
           const paymentIntentId = invoice.payment_intent;
           
-         
           const customerId = invoice.customer;
           
-          // Buscar el usuario por su customerId
+      
           const user = await this.userRepository.findOne({ 
             where: { stripeCustomerId: typeof customerId === 'string' ? customerId : undefined } 
           });
           
           if (user) {
-      
+       
             await this.stripeService.registerPayment(
               user.id,
-              invoice.amount_paid / 100, // Convertir de centavos a unidad monetaria
+              invoice.amount_paid / 100,
               paymentIntentId ?? '',
               subscriptionId,
             );
+            
+            
+            if (subscriptionId) {
+              const subscription = await this.stripeService.getSubscription(subscriptionId);
+              await this.updateUserMembershipStatus(user, subscription.status === 'active');
+            }
           }
           break;
         }
         
         case 'invoice.payment_failed': {
-          const invoice = event.data.object as Stripe.Invoice & { payment_intent?: string };
+          const invoice = event.data.object as Stripe.Invoice & { payment_intent?: string; subscription?: string };
           const paymentIntentId = invoice.payment_intent;
+          const subscriptionId = invoice.subscription;
           
-          // Marcar el pago como fallido si existe
+          
           if (paymentIntentId) {
             await this.stripeService.updatePaymentStatus(paymentIntentId, false);
+          }
+          
+         
+          if (subscriptionId) {
+            const subscription = await this.stripeService.getSubscription(subscriptionId);
+            const customerId = subscription.customer;
+            const user = await this.userRepository.findOne({ 
+              where: { stripeCustomerId: typeof customerId === 'string' ? customerId : undefined } 
+            });
+            
+            if (user && subscription.status !== 'active') {
+              await this.updateUserMembershipStatus(user, false);
+            }
           }
           break;
         }
         
         case 'customer.subscription.deleted': {
-          const subscription = event.data.object;
-          // Aquí podrías actualizar el estado de la suscripción en tu base de datos
-          // Por ejemplo, marcar la membresía como expirada
+          await this.handleSubscriptionChange(event.data.object, false);
           break;
         }
-        
-        default:
-          console.log(`Evento de Stripe no manejado: ${event.type}`);
       }
       
       return { received: true };
     } catch (err) {
-      console.error('Error de webhook:', err.message);
       throw new HttpException('Webhook error: ' + err.message, HttpStatus.BAD_REQUEST);
+    }
+  }
+
+  private async handleSubscriptionChange(subscription: Stripe.Subscription, checkStatus = true) {
+    try {
+      const customerId = subscription.customer;
+      const user = await this.userRepository.findOne({ 
+        where: { stripeCustomerId: typeof customerId === 'string' ? customerId : undefined } 
+      });
+      
+      if (!user) {
+        return;
+      }
+      
+  
+      const isActive = checkStatus ? subscription.status === 'active' : false;
+      
+      await this.updateUserMembershipStatus(user, isActive);
+    } catch (error) {
+    }
+  }
+
+  private async updateUserMembershipStatus(user: User, isActive: boolean) {
+
+    if (user.isMembresyActive !== isActive) {
+      user.isMembresyActive = isActive;
+      await this.userRepository.save(user);
+    
     }
   }
 }

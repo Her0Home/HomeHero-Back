@@ -1,4 +1,4 @@
-import { Injectable, NotFoundException } from '@nestjs/common';
+import { BadRequestException, Injectable, NotFoundException } from '@nestjs/common';
 import { ConfigService } from '@nestjs/config';
 import { InjectRepository } from '@nestjs/typeorm';
 import { Repository } from 'typeorm';
@@ -150,6 +150,9 @@ export class StripeService {
 
     return this.paymentRepository.save(payment);
   }
+  async findUserByStripeCustomerId(customerId: string): Promise<User | null> {
+  return this.userRepository.findOne({ where: { stripeCustomerId: customerId } });
+}
 
 
   async updatePaymentStatus(stripePaymentId: string, status: boolean): Promise<void> {
@@ -170,6 +173,12 @@ export class StripeService {
       relations: ['user'], 
     });
   }
+  async updateUserMembershipStatus(userId: string, isActive: boolean): Promise<void> {
+  await this.userRepository.update(
+    { id: userId },
+    { isMembresyActive: isActive }
+  );
+}
 
   async updateUserStripeCustomerId(userId: string, customerId: string): Promise<void> {
     await this.userRepository.update(
@@ -187,7 +196,7 @@ export class StripeService {
   // Crear un PaymentMethod de prueba esto se borrara luego
   async createTestPaymentMethod(cardNumber: string = '4242424242424242'): Promise<string> {
   try {
-    // En lugar de enviar el número de tarjeta, usamos tokens de prueba
+   
     const paymentMethod = await this.stripe.paymentMethods.create({
       type: 'card',
       card: {
@@ -195,11 +204,9 @@ export class StripeService {
       },
     });
     
-    console.log(`PaymentMethod creado con éxito: ${paymentMethod.id}`);
     return paymentMethod.id;
   } catch (error) {
-    console.error('Error al crear PaymentMethod de prueba:', error.message);
-    throw new Error(`Error al crear PaymentMethod: ${error.message}`);
+    throw new error (`Error al crear PaymentMethod: ${error.message}`);
   }
 }
 }
