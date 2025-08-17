@@ -7,6 +7,7 @@ import { SubCategory } from "src/subcategory/entities/subcategory.entity";
 import { Category } from "src/category/entities/category.entity";
 import { Image } from "src/images/entities/image.entity";
 import { Chat } from "src/chat/entities/chat.entity";
+import { Payment } from "src/stripe/entities/stripe.entity";
 
 @Entity({name: 'users'})
 export class User {
@@ -58,7 +59,10 @@ export class User {
 
     @Column({ type: 'jsonb', nullable: true })
     metadata?: any;
-    
+     
+    @Column({ nullable: true })
+    stripeCustomerId: string;
+
     @OneToMany(() => Appointment, appoiment=> appoiment.client)
     clientAppointments: Appointment[];
     
@@ -74,6 +78,10 @@ export class User {
     categories: Category[];
     
     
+
+     @OneToMany(() => Payment, payment => payment.user)
+     payments: Payment[];
+
     @ManyToMany(() => SubCategory, subcategory => subcategory.professionals,{cascade: true})
     @JoinTable({name: 'professional_subcategories'})
     subcategories?: SubCategory[];

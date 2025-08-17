@@ -8,49 +8,43 @@ export class Auth0Controller {
 
  @Get('google')
 loginWithGoogle(@Req() req: Request, @Res() res: Response) {
-  console.log('Iniciando login con Google...');
   
-
   const auth0Domain = process.env.AUTH0_ISSUER_BASE_URL;
   const clientId = process.env.AUTH0_CLIENT_ID;
   const redirectUri = encodeURIComponent('https://homehero-back.onrender.com/auth0/callback');
   const url = `${auth0Domain}/authorize?client_id=${clientId}&response_type=code&scope=openid%20profile%20email&redirect_uri=${redirectUri}&connection=google-oauth2`;
+  
   
   return res.redirect(url);
 }
 
  
   @Get('callback')
-async auth0Callback(@Req() req: Request) {
-  console.log('Callback recibido, datos de req.oidc:', JSON.stringify({
-    isAuthenticated: req.oidc?.isAuthenticated,
-    userExists: !!req.oidc?.user,
-    user: req.oidc?.user
-  }));
+  async auth0Callback(@Req() req: Request, @Res() res: Response) { 
 
-  if (!req.oidc?.user) {
-    console.error('No se encontraron datos de usuario de Auth0');
-    throw new UnauthorizedException('No se encontraron datos de usuario de Auth0');
+    if (!req.oidc?.user) {
+
+  
+      return res.redirect('https://home-hero-front-cc1o.vercel.app/login-error');
+    }
+
+
+    const { user, token } = await this.auth0Service.processAuth0User(
+      req.oidc.user,
+    );
+
+
+    const frontendUrl = 'https://home-hero-front-cc1o.vercel.app/';
+    const params = new URLSearchParams();
+    params.append('token', token);
+    
+
+    const needsProfileCompletion = !user.dni;
+    params.append('needsProfileCompletion', String(needsProfileCompletion));
+    params.append('userName', user.name);
+
+    return res.redirect(`${frontendUrl}?${params.toString()}`);
   }
-
-  const { user, token } = await this.auth0Service.processAuth0User(
-    req.oidc.user,
-  );
-
-  return {
-    message: 'Authentication successful',
-    user: {
-      id: user.id,
-      name: user.name,
-      email: user.email,
-      role: user.role,
-      isVerified: user.isVerified,
-      imageProfile: user.imageProfile,
-      needsProfileCompletion: !user.dni,
-    },
-    token,
-  };
-}
   
   @Get('protected')
   async processAuth0(@Req() req: Request) {
