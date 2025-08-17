@@ -5,6 +5,7 @@ import { StripeService } from './stripe.service';
 import { InjectRepository } from '@nestjs/typeorm';
 import { Repository } from 'typeorm';
 import { User } from '../users/entities/user.entity';
+import Stripe from 'stripe';
 
 @Controller('stripe/webhooks')
 export class StripeWebhookController {
@@ -30,34 +31,34 @@ export class StripeWebhookController {
     }
     
     try {
-
+    
       const event = this.stripeService.constructEvent(
         request['rawBody'],
         signature,
         webhookSecret,
       );
 
-
+ 
       switch (event.type) {
         case 'invoice.payment_succeeded': {
-          const invoice = event.data.object;
-          const subscriptionId = (invoice as any).subscription;
-          const paymentIntentId = (invoice as any).payment_intent;
+          const invoice = event.data.object as Stripe.Invoice & { subscription?: string; payment_intent?: string };
+          const subscriptionId = invoice.subscription;
+          const paymentIntentId = invoice.payment_intent;
           
-
+         
           const customerId = invoice.customer;
           
-    
+          // Buscar el usuario por su customerId
           const user = await this.userRepository.findOne({ 
             where: { stripeCustomerId: typeof customerId === 'string' ? customerId : undefined } 
           });
           
           if (user) {
-            // Registrar el pago exitoso
+      
             await this.stripeService.registerPayment(
               user.id,
-              invoice.amount_paid / 100, 
-              paymentIntentId,
+              invoice.amount_paid / 100, // Convertir de centavos a unidad monetaria
+              paymentIntentId ?? '',
               subscriptionId,
             );
           }
@@ -65,9 +66,10 @@ export class StripeWebhookController {
         }
         
         case 'invoice.payment_failed': {
-          const invoice = event.data.object;
-          const paymentIntentId = (invoice as any).payment_intent;
+          const invoice = event.data.object as Stripe.Invoice & { payment_intent?: string };
+          const paymentIntentId = invoice.payment_intent;
           
+          // Marcar el pago como fallido si existe
           if (paymentIntentId) {
             await this.stripeService.updatePaymentStatus(paymentIntentId, false);
           }
@@ -76,7 +78,8 @@ export class StripeWebhookController {
         
         case 'customer.subscription.deleted': {
           const subscription = event.data.object;
-        
+          // Aquí podrías actualizar el estado de la suscripción en tu base de datos
+          // Por ejemplo, marcar la membresía como expirada
           break;
         }
         

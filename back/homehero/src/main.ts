@@ -4,6 +4,7 @@ import { ValidationPipe } from '@nestjs/common';
 import { DocumentBuilder, SwaggerModule } from '@nestjs/swagger';
 import { auth } from 'express-openid-connect';
 import {config as auth0Config} from './config/auth0.config';
+import * as express from 'express';
 
 
 async function bootstrap() {
@@ -20,6 +21,7 @@ async function bootstrap() {
   SwaggerModule.setup('api', app, document);
 
   
+  app.use('/stripe/webhook', express.raw({ type: 'application/json' }));
   app.use(auth(auth0Config));
   app.useGlobalPipes(new ValidationPipe({ 
       whitelist: true,

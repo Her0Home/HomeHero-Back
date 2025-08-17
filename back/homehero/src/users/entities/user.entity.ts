@@ -7,6 +7,7 @@ import { SubCategory } from "src/subcategory/entities/subcategory.entity";
 import { Category } from "src/category/entities/category.entity";
 import { Image } from "src/images/entities/image.entity";
 import { Chat } from "src/chat/entities/chat.entity";
+import { Payment } from "src/stripe/entities/stripe.entity";
 
 @Entity({name: 'users'})
 export class User {
@@ -53,11 +54,7 @@ export class User {
     @Column({type:'boolean', default: true})
     isActive: boolean;
     
-<<<<<<< HEAD
-    @Column({type:'enum', enum: Role, })
-=======
     @Column({type:'enum', enum: Role, default:Role.NOTVERIFY})
->>>>>>> 7714122d5c7f9b10df29ff85ec05898e661df438
     role: Role;
 
     @Column({ type: 'jsonb', nullable: true })
@@ -81,6 +78,10 @@ export class User {
     categories: Category[];
     
     
+
+     @OneToMany(() => Payment, payment => payment.user)
+     payments: Payment[];
+
     @ManyToMany(() => SubCategory, subcategory => subcategory.professionals,{cascade: true})
     @JoinTable({name: 'professional_subcategories'})
     subcategories?: SubCategory[];
