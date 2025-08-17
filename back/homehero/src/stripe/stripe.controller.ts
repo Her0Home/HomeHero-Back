@@ -4,6 +4,8 @@ import { CreatePaymentDto } from './dto/createPayment.dto';
 import { CheckoutSessionDto } from './dto/checkoutPayment.dto';
 import { AuthGuard } from '@nestjs/passport';
 import { Role } from 'src/users/assets/roles';
+import { RolesGuard } from 'src/guards/roles.guard';
+import { Roles } from 'src/decorators/role.decorator';
 
 @Controller('stripe')
 export class StripeController {
@@ -12,7 +14,8 @@ export class StripeController {
   ) {}
 
   @Post('create-subscription')
-  @UseGuards(AuthGuard('jwt'))
+  @Roles(Role.PROFESSIONAL)
+  @UseGuards(AuthGuard('jwt'), RolesGuard)
   async createSubscription(@Body() createPaymentDto: CreatePaymentDto) {
     const { userId, priceId, paymentMethodId, amount } = createPaymentDto;
     
@@ -61,11 +64,14 @@ export class StripeController {
       paymentIntentId,
       subscription.id,
     );
+    if (subscription.status === 'active') {
+    await this.stripeService.updateUserMembershipStatus(userId, true);
+  }
     
     return {
       subscriptionId: subscription.id,
       paymentId: payment.UniqueID,
-      status: subscription.status,
+      PaymentStatus: subscription.status,
     };
   }
 
