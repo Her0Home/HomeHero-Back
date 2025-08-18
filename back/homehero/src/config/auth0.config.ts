@@ -37,12 +37,10 @@ export const getAuth0Config = (auth0Service: Auth0Service) => {
         }
 
         if (!userPayload) {
-          console.error('Auth0 afterCallback: No se encontraron datos del usuario en la sesión.');
           const errorUrl = new URL('https://home-hero-front-cc1o.vercel.app/');
           errorUrl.searchParams.set('error', 'true');
           errorUrl.searchParams.set('message', 'user_data_not_found');
           res.redirect(errorUrl.toString());
-          // Se añade 'as any' para satisfacer a TypeScript
           return false as any; 
         } 
 
@@ -53,20 +51,18 @@ export const getAuth0Config = (auth0Service: Auth0Service) => {
         frontendUrl.searchParams.set('needsProfileCompletion', String(!user.dni));
         frontendUrl.searchParams.set('userName', user.name || '');
         
-        console.log(`Redirigiendo manualmente a: ${frontendUrl.toString()}`);
         
         res.redirect(frontendUrl.toString());
         
-        // Se añade 'as any' para satisfacer a TypeScript
+   
         return false as any;
         
       } catch (error) {
-        console.error('--- ERROR DETECTADO EN afterCallback ---', error);
+       
         const errorUrl = new URL('https://home-hero-front-cc1o.vercel.app/');
         errorUrl.searchParams.set('error', 'true');
         errorUrl.searchParams.set('message', 'internal_processing_error');
         res.redirect(errorUrl.toString());
-        // Se añade 'as any' para satisfacer a TypeScript
         return false as any; 
       }
     },
