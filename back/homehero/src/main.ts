@@ -15,6 +15,15 @@ async function bootstrap() {
   app.getHttpAdapter().getInstance().set('trust proxy', 1);
   app.use(cookieParser()); // Usamos cookie-parser para leer las cookies
 
+  app.use((req, res, next) => {
+  const originalRedirect = res.redirect;
+  res.redirect = function(url) {
+    console.log(`--- REDIRECT interceptado a: ${url} ---`);
+    return originalRedirect.call(this, url);
+  };
+  next();
+});
+
   // --- MIDDLEWARE DE VERIFICACIÓN --- 
   // Este middleware se ejecuta ANTES que el de Auth0 para inspeccionar la petición.
   app.use((req, res, next) => {
