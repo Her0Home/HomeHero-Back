@@ -1,3 +1,5 @@
+
+
 import { Auth0Service } from '../auth0/auth0.service';
 import { config as dotenvConfig } from 'dotenv';
 import { jwtDecode } from 'jwt-decode';
@@ -26,7 +28,6 @@ export const getAuth0Config = (auth0Service: Auth0Service) => {
     },
     afterCallback: async (req, res, session) => {
       const frontendUrl = 'https://home-hero-front-cc1o.vercel.app/';
-      const finalRedirectUrl = new URL(frontendUrl);
 
       try {
         let userPayload = null;
@@ -38,33 +39,26 @@ export const getAuth0Config = (auth0Service: Auth0Service) => {
 
         if (!userPayload) {
           console.error('Auth0 afterCallback: No se encontraron datos del usuario en la sesión.');
-          finalRedirectUrl.searchParams.set('error', 'true');
-          finalRedirectUrl.searchParams.set('message', 'user_data_not_found');
-        } else {
-            const { user, token } = await auth0Service.processAuth0User(userPayload);
-            // Guardamos los datos en la sesión para que el endpoint /profile los pueda leer
-            (session as any).app_metadata = {
-                jwt_token: token,
-                user_id: user.id,
-                user_role: user.role,
-            };
-            finalRedirectUrl.searchParams.set('token', token);
-            finalRedirectUrl.searchParams.set('needsProfileCompletion', String(!user.dni));
-            finalRedirectUrl.searchParams.set('userName', user.name);
+          const errorParams = new URLSearchParams({ error: 'true', message: 'user_data_not_found' }).toString();
+          return res.redirect(`${frontendUrl}?${errorParams}`);
         }
+
+        const { user, token } = await auth0Service.processAuth0User(userPayload);
+        
+        const successParams = new URLSearchParams();
+        successParams.append('token', token);
+        successParams.append('needsProfileCompletion', String(!user.dni));
+        successParams.append('userName', user.name);
+        
+        return res.redirect(`${frontendUrl}?${successParams.toString()}`);
+
       } catch (error) {
         console.error('--- ERROR DETECTADO EN afterCallback ---');
         console.error('Mensaje de Error:', error.message);
-        finalRedirectUrl.searchParams.set('error', 'true');
-        finalRedirectUrl.searchParams.set('message', 'processing_error');
+        
+        const errorParams = new URLSearchParams({ error: 'true', message: 'processing_error' }).toString();
+        return res.redirect(`${frontendUrl}?${errorParams}`);
       }
-
-      // Guardamos la URL final en la sesión y redirigimos a nuestro propio endpoint.
-      if (session) {
-        (session as any).finalRedirectUrl = finalRedirectUrl.toString();
-      }
-      session.returnTo = '/auth0/finish';
-      return session;
     },
     authorizationParams: {
       response_type: 'code',
