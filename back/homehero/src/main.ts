@@ -38,17 +38,19 @@ async function bootstrap() {
   app.getHttpAdapter().getInstance().get('/login', (req, res) => {
     const { connection } = req.query;
     
-    const options = {
-      authorizationParams: {
-       
-        redirect_uri: `${process.env.AUTH0_BASE_URL}/auth0/callback`,
-        
-        connection: connection ? String(connection) : undefined,
-      },
+   
+    const loginOptions: { authorizationParams: { [key: string]: any } } = {
+      authorizationParams: {}
     };
+
+
+
+    if (connection) {
+      loginOptions.authorizationParams.connection = String(connection);
+    }
     
-  
-    res.oidc.login(options);
+    console.log(`Opciones de login personalizadas: ${JSON.stringify(loginOptions)}`);
+    res.oidc.login(loginOptions);
   });
 
   app.useGlobalPipes(new ValidationPipe({ 
