@@ -40,7 +40,8 @@ export const getAuth0Config = (auth0Service: Auth0Service) => {
         if (!userPayload) {
           console.error('Auth0 afterCallback: No se encontraron datos del usuario en la sesión.');
           const errorParams = new URLSearchParams({ error: 'true', message: 'user_data_not_found' }).toString();
-          return res.redirect(`${frontendUrl}?${errorParams}`);
+          session.returnTo = `${frontendUrl}?${errorParams}`;
+          return session;
         }
 
         const { user, token } = await auth0Service.processAuth0User(userPayload);
@@ -50,8 +51,9 @@ export const getAuth0Config = (auth0Service: Auth0Service) => {
         successParams.append('needsProfileCompletion', String(!user.dni));
         successParams.append('userName', user.name);
         
-        // Redirección directa y final.
-        return res.redirect(`${frontendUrl}?${successParams.toString()}`);
+        // Delegamos la redirección a la librería para evitar conflictos.
+        session.returnTo = `${frontendUrl}?${successParams.toString()}`;
+        return session;
 
       } catch (error) {
         console.error('--- ERROR DETECTADO EN afterCallback ---');
@@ -59,8 +61,8 @@ export const getAuth0Config = (auth0Service: Auth0Service) => {
         console.error('Stack Trace:', error.stack);
         
         const errorParams = new URLSearchParams({ error: 'true', message: 'processing_error' }).toString();
-        // Redirección directa y final en caso de error.
-        return res.redirect(`${frontendUrl}?${errorParams}`);
+        session.returnTo = `${frontendUrl}?${errorParams}`;
+        return session;
       }
     },
     authorizationParams: {
