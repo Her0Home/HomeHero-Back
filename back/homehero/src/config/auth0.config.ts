@@ -1,13 +1,8 @@
-/*
- * ----------------------------------------------------------------
- * ARCHIVO 1: auth0.config.ts (VERSIÓN FINAL MEJORADA)
- * ----------------------------------------------------------------
- * Combinamos la configuración de cookies con una búsqueda de usuario
- * más robusta para máxima compatibilidad.
- */
+
 
 import { Auth0Service } from '../auth0/auth0.service';
 import { config as dotenvConfig } from 'dotenv';
+import { jwtDecode } from 'jwt-decode'; // Importamos la nueva librería
 
 dotenvConfig({ path: '.env.development' });
 
@@ -37,23 +32,19 @@ export const getAuth0Config = (auth0Service: Auth0Service) => {
     afterCallback: async (req, res, session) => {
       const frontendUrl = 'https://home-hero-front-cc1o.vercel.app/';
 
-       console.log('--- CONTENIDO COMPLETO DE SESSION ---');
-  console.log(JSON.stringify(session, (key, val) => {
-    if (key === 'req' || key === 'res') return '[Circular]';
-    return val;
-  }, 2));
-  console.log('--- KEYS DE SESSION ---');
-  console.log(Object.keys(session));
-  console.log('--- FIN CONTENIDO ---');
-
       try {
-        // --- LÓGICA DE BÚSQUEDA DE USUARIO MEJORADA ---
-        // Buscamos los datos del usuario en session.user (versiones antiguas)
-        // o en session.id_token_claims (versiones más recientes).
-        const userPayload = session.user || session.id_token_claims;
+        // --- LÓGICA FINAL PARA OBTENER EL USUARIO ---
+        let userPayload = null;
+        if (session.id_token) {
+          // Si el id_token existe, lo decodificamos para obtener los datos del usuario.
+          userPayload = jwtDecode(session.id_token);
+        } else {
+          // Como respaldo, mantenemos la lógica anterior.
+          userPayload = session.user || session.id_token_claims;
+        }
 
         if (!userPayload) {
-          console.error('Auth0 afterCallback: No se encontraron datos del usuario en session.user ni en session.id_token_claims.');
+          console.error('Auth0 afterCallback: No se encontraron datos del usuario en la sesión.');
           const errorParams = new URLSearchParams({ error: 'true', message: 'user_data_not_found' }).toString();
           session.returnTo = `${frontendUrl}?${errorParams}`;
           return session;
