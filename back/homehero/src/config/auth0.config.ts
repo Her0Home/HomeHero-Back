@@ -55,7 +55,7 @@ export const getAuth0Config = (auth0Service: Auth0Service) => {
         finalRedirectUrl.searchParams.set('message', 'processing_error');
       }
 
-
+      // Guardamos la URL final en la sesión y redirigimos a nuestro propio endpoint.
       if (session) {
         (session as any).finalRedirectUrl = finalRedirectUrl.toString();
       }
