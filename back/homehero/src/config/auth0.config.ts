@@ -20,7 +20,6 @@ export const getAuth0Config = (auth0Service: Auth0Service) => {
         secure: true,
         sameSite: 'None',
         domain: 'homehero-back.onrender.com',
-        partitioned: true,
       },
     },
     // -----------------------------------------
