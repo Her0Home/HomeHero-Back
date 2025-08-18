@@ -21,11 +21,19 @@ export const getAuth0Config = (auth0Service: Auth0Service) => {
       const frontendUrl = 'https://home-hero-front-cc1o.vercel.app/';
 
 
-      if (!session.user) {
-        console.error('Auth0 afterCallback: El objeto session.user no fue encontrado.');
+      console.log('--- Auth0 afterCallback DEBUG START ---');
+      console.log('Request Headers:', JSON.stringify(req.headers, null, 2));
+      console.log('Request Cookies:', JSON.stringify(req.cookies, null, 2));
+      console.log('Session Object:', JSON.stringify(session, null, 2));
+      console.log('--- Auth0 afterCallback DEBUG END ---');
+
+
+
+      if (!session || !session.user) { // Verificación más robusta
+        console.error('Auth0 afterCallback: El objeto session o session.user no fue encontrado.');
         const errorParams = new URLSearchParams({
           error: 'true',
-          message: 'user_not_found'
+          message: 'user_session_not_found' // Mensaje de error más específico
         }).toString();
         res.redirect(`${frontendUrl}?${errorParams}`);
         return session;
@@ -34,13 +42,13 @@ export const getAuth0Config = (auth0Service: Auth0Service) => {
       try {
 
         const { user, token } = await auth0Service.processAuth0User(session.user);
+        
 
         session.app_metadata = {
           jwt_token: token,
           user_id: user.id,
           user_role: user.role,
         };
-        
 
         const successParams = new URLSearchParams();
         successParams.append('token', token);
@@ -52,7 +60,7 @@ export const getAuth0Config = (auth0Service: Auth0Service) => {
 
       } catch (error) {
         console.error('Error en el hook afterCallback:', error);
-
+  
         const errorParams = new URLSearchParams({
           error: 'true',
           message: 'processing_error'
@@ -66,4 +74,4 @@ export const getAuth0Config = (auth0Service: Auth0Service) => {
       scope: 'openid profile email',
     },
   };
-};
+}
