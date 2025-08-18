@@ -34,11 +34,12 @@ async function bootstrap() {
   app.use(auth(auth0Config));
 
   app.getHttpAdapter().getInstance().get('/login', (req, res) => {
-    const connection = req.query.connection; 
-    
+    const { connection } = req.query; 
     const options = {
       authorizationParams: {
-        
+       
+        redirect_uri: `${process.env.AUTH0_BASE_URL}/auth0/callback`,
+   
         connection: connection ? String(connection) : undefined,
       },
     };
@@ -46,6 +47,7 @@ async function bootstrap() {
 
     res.oidc.login(options);
   });
+  
 
   app.useGlobalPipes(new ValidationPipe({ 
       whitelist: true,
