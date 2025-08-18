@@ -58,17 +58,18 @@ async function bootstrap() {
   const auth0Service = app.get(Auth0Service);
   const auth0Config = getAuth0Config(auth0Service);
 
+  
+  
+  app.use(auth(auth0Config));
+
   app.getHttpAdapter().getInstance().get('/login', (req, res) => {
     res.oidc.login({
-      // Le decimos a Auth0 que la URL de retorno final es el frontend.
       returnTo: 'https://home-hero-front-cc1o.vercel.app',
       authorizationParams: {
         redirect_uri: `${process.env.AUTH0_BASE_URL}/auth0/callback`,
       },
     });
   });
-  
-  app.use(auth(auth0Config));
   app.useGlobalPipes(new ValidationPipe({ 
       whitelist: true,
       forbidNonWhitelisted: false,
