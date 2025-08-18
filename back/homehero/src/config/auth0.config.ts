@@ -25,10 +25,6 @@ export const getAuth0Config = (auth0Service: Auth0Service) => {
     routes: {
       callback: '/auth0/callback',
       postLogoutRedirect: 'https://home-hero-front-cc1o.vercel.app/',
-      // --- LA CLAVE DE LA SOLUCIÓN ---
-      // Esta es la instrucción oficial para decirle a la librería a dónde ir
-      // después de que el callback se procese exitosamente.
-      postLoginRedirect: '/auth/finalize',
     },
     
     afterCallback: async (req, res, session) => {
@@ -42,7 +38,12 @@ export const getAuth0Config = (auth0Service: Auth0Service) => {
 
         if (!userPayload) {
           console.error('Auth0 afterCallback: No se encontraron datos del usuario en la sesión.');
-          return session;
+          const errorUrl = new URL('https://home-hero-front-cc1o.vercel.app/');
+          errorUrl.searchParams.set('error', 'true');
+          errorUrl.searchParams.set('message', 'user_data_not_found');
+          res.redirect(errorUrl.toString());
+          // Se añade 'as any' para satisfacer a TypeScript
+          return false as any; 
         } 
 
         const { user, token } = await auth0Service.processAuth0User(userPayload);
@@ -52,18 +53,21 @@ export const getAuth0Config = (auth0Service: Auth0Service) => {
         frontendUrl.searchParams.set('needsProfileCompletion', String(!user.dni));
         frontendUrl.searchParams.set('userName', user.name || '');
         
-        // Preparamos la sesión con la URL final y la bandera.
-        session.isAuthenticatedAndProcessed = true;
-        session.finalRedirectUrl = frontendUrl.toString();
+        console.log(`Redirigiendo manualmente a: ${frontendUrl.toString()}`);
         
-        console.log(`Sesión preparada. La ruta postLoginRedirect debería llevar a /auth/finalize.`);
+        res.redirect(frontendUrl.toString());
         
-        // Devolvemos la sesión para que la librería continúe.
-        return session;
+        // Se añade 'as any' para satisfacer a TypeScript
+        return false as any;
         
       } catch (error) {
         console.error('--- ERROR DETECTADO EN afterCallback ---', error);
-        return session;
+        const errorUrl = new URL('https://home-hero-front-cc1o.vercel.app/');
+        errorUrl.searchParams.set('error', 'true');
+        errorUrl.searchParams.set('message', 'internal_processing_error');
+        res.redirect(errorUrl.toString());
+        // Se añade 'as any' para satisfacer a TypeScript
+        return false as any; 
       }
     },
     
