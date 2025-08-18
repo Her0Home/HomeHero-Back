@@ -62,21 +62,25 @@ async function bootstrap() {
   
   app.use(auth(auth0Config));
 
-  app.getHttpAdapter().getInstance().get('/', (req, res) => {
-    console.log('--- HANDLER DE RAÍZ INVOCADO ---');
+  app.getHttpAdapter().getInstance().get('/auth/finalize', (req, res) => {
+    console.log('--- HANDLER DE /auth/finalize INVOCADO ---');
     
     if (!req.oidc || !req.oidc.session) {
-      console.log('ERROR: El objeto req.oidc.session no existe.');
-      return res.send('Hello World! Session object not found.');
+      console.log('ERROR: El objeto req.oidc.session no existe en /auth/finalize.');
+      const errorUrl = new URL('https://home-hero-front-cc1o.vercel.app/');
+      errorUrl.searchParams.set('error', 'true');
+      errorUrl.searchParams.set('message', 'session_not_found');
+      return res.redirect(errorUrl.toString());
     }
 
-    console.log('Contenido completo de la sesión en la raíz:', JSON.stringify(req.oidc.session));
+    console.log('Contenido de la sesión en /auth/finalize:', JSON.stringify(req.oidc.session));
 
     if (req.oidc.session.isAuthenticatedAndProcessed) {
-      console.log('ÉXITO: Se encontró la bandera isAuthenticatedAndProcessed. Procediendo a la redirección final.');
+      console.log('ÉXITO: Se encontró la bandera. Procediendo a la redirección final.');
       
       const finalUrl = req.oidc.session.finalRedirectUrl;
       
+      // Limpiamos la sesión para evitar que se reutilice.
       delete req.oidc.session.isAuthenticatedAndProcessed;
       delete req.oidc.session.finalRedirectUrl;
       
@@ -84,13 +88,19 @@ async function bootstrap() {
         console.log(`Redirigiendo a la URL final: ${finalUrl}`);
         return res.redirect(finalUrl);
       } else {
-        console.log('ERROR: La bandera estaba presente, pero finalRedirectUrl no. Algo salió mal.');
-        return res.send('Error: Final URL not found in session.');
+        console.log('ERROR: La bandera estaba presente, pero finalRedirectUrl no.');
+        const errorUrl = new URL('https://home-hero-front-cc1o.vercel.app/');
+        errorUrl.searchParams.set('error', 'true');
+        errorUrl.searchParams.set('message', 'final_url_not_found');
+        return res.redirect(errorUrl.toString());
       }
     }
     
-    console.log('INFO: No se encontró la bandera de sesión. Es una visita normal a la raíz.');
-    return res.send('Hello World! Welcome to HomeHero Backend.');
+    console.log('INFO: No se encontró la bandera de sesión. Redirigiendo con error.');
+    const errorUrl = new URL('https://home-hero-front-cc1o.vercel.app/');
+    errorUrl.searchParams.set('error', 'true');
+    errorUrl.searchParams.set('message', 'auth_flag_not_found');
+    return res.redirect(errorUrl.toString());
   });
   app.useGlobalPipes(new ValidationPipe({ 
       whitelist: true,

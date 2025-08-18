@@ -38,8 +38,6 @@ export const getAuth0Config = (auth0Service: Auth0Service) => {
 
         if (!userPayload) {
           console.error('Auth0 afterCallback: No se encontraron datos del usuario en la sesión.');
-          // En caso de error, simplemente devolvemos la sesión sin modificar.
-          // El usuario será redirigido a la raíz sin estar autenticado.
           return session;
         } 
 
@@ -50,20 +48,22 @@ export const getAuth0Config = (auth0Service: Auth0Service) => {
         frontendUrl.searchParams.set('needsProfileCompletion', String(!user.dni));
         frontendUrl.searchParams.set('userName', user.name || '');
         
-        // --- LA CLAVE DE LA SOLUCIÓN ---
-        // Guardamos la URL final y una bandera en la sesión.
-        // Esto es como dejar una "nota" para que el manejador de la ruta raíz en main.ts la lea.
+        // Preparamos la sesión con la URL final y la bandera.
         session.isAuthenticatedAndProcessed = true;
         session.finalRedirectUrl = frontendUrl.toString();
         
-        console.log(`Sesión preparada para el redirect final. URL: ${session.finalRedirectUrl}`);
+        // --- LA CLAVE DE LA SOLUCIÓN ---
+        // Le decimos a la librería que, después de este callback,
+        // debe redirigir a nuestro nuevo endpoint dedicado.
+        session.returnTo = `${process.env.AUTH0_BASE_URL}/auth/finalize`;
         
-        // Devolvemos la sesión para que la librería continúe su flujo (hacia la raíz del backend).
+        console.log(`Sesión preparada. Redirigiendo a: ${session.returnTo}`);
+        
+        // Devolvemos la sesión para que la librería continúe.
         return session;
         
       } catch (error) {
         console.error('--- ERROR DETECTADO EN afterCallback ---', error);
-        // En caso de un error crítico, también devolvemos la sesión sin modificar.
         return session;
       }
     },
