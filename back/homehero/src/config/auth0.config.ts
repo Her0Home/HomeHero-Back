@@ -37,6 +37,15 @@ export const getAuth0Config = (auth0Service: Auth0Service) => {
     afterCallback: async (req, res, session) => {
       const frontendUrl = 'https://home-hero-front-cc1o.vercel.app/';
 
+       console.log('--- CONTENIDO COMPLETO DE SESSION ---');
+  console.log(JSON.stringify(session, (key, val) => {
+    if (key === 'req' || key === 'res') return '[Circular]';
+    return val;
+  }, 2));
+  console.log('--- KEYS DE SESSION ---');
+  console.log(Object.keys(session));
+  console.log('--- FIN CONTENIDO ---');
+
       try {
         // --- LÓGICA DE BÚSQUEDA DE USUARIO MEJORADA ---
         // Buscamos los datos del usuario en session.user (versiones antiguas)
