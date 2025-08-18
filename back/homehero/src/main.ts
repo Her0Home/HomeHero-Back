@@ -3,7 +3,7 @@ import { AppModule } from './app.module';
 import { ValidationPipe } from '@nestjs/common';
 import { DocumentBuilder, SwaggerModule } from '@nestjs/swagger';
 import { auth } from 'express-openid-connect';
-import { Auth0Config } from './config/auth0.config';
+import { getAuth0Config } from './config/auth0.config';
 import * as express from 'express';
 import session from 'express-session';
 import { Auth0Service } from './auth0/auth0.service';
