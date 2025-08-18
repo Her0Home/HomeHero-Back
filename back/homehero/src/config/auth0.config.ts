@@ -16,65 +16,69 @@ export const getAuth0Config = (auth0Service: Auth0Service) => {
     
     session: {
       cookie: {
-        secure: true,
-        sameSite: 'None',
+        secure: true, // Debe ser true en producción con HTTPS
+        sameSite: 'None', // 'None' (mayúscula inicial) es el valor canónico
       },
     },
 
     routes: {
       callback: '/auth0/callback',
-      // Removemos postLoginUrl que causa el error
+      // Es buena práctica definir explícitamente a dónde volver después del logout
+      postLogoutRedirect: 'https://home-hero-front-cc1o.vercel.app/',
     },
     
     afterCallback: async (req, res, session) => {
       try {
-        let userPayload = null;
+        let userPayload: any = null;
+
         if (session.id_token) {
           userPayload = jwtDecode(session.id_token);
         } else {
+          // Fallback por si el id_token no está presente directamente en la sesión
           userPayload = session.user || session.id_token_claims;
         }
 
         if (!userPayload) {
           console.error('Auth0 afterCallback: No se encontraron datos del usuario en la sesión.');
-          // Podemos manejar el error aquí si es necesario
+          const errorUrl = new URL('https://home-hero-front-cc1o.vercel.app/');
+          errorUrl.searchParams.set('error', 'true');
+          errorUrl.searchParams.set('message', 'user_data_not_found');
+          session.returnTo = errorUrl.toString();
           return session;
         } 
 
         const { user, token } = await auth0Service.processAuth0User(userPayload);
         
-        // Guardamos los datos en la sesión
+        // Guardamos datos importantes en la sesión para que la librería los persista
         session.app_metadata = {
           jwt_token: token,
           user_id: user.id,
           user_role: user.role,
         };
         
-        // Importante: En lugar de configurar session.returnTo, vamos a redirigir directamente
-        // usando res.redirect() aquí
-        
+     
         const frontendUrl = new URL('https://home-hero-front-cc1o.vercel.app/');
         frontendUrl.searchParams.set('token', token);
         frontendUrl.searchParams.set('needsProfileCompletion', String(!user.dni));
-        frontendUrl.searchParams.set('userName', user.name);
+        frontendUrl.searchParams.set('userName', user.name || ''); // Aseguramos que no sea null
+
+        console.log(`Estableciendo session.returnTo para la redirección final: ${frontendUrl.toString()}`);
+        session.returnTo = frontendUrl.toString();
         
-        console.log(`Redirigiendo directamente a: ${frontendUrl.toString()}`);
-        res.redirect(frontendUrl.toString());
-        
-        // Retornamos false para evitar procesamiento adicional
-        return false;
+
+        return session;
         
       } catch (error) {
-        console.error('--- ERROR DETECTADO EN afterCallback ---');
-        console.error('Mensaje de Error:', error.message);
+        console.error('--- ERROR CRÍTICO DETECTADO EN afterCallback ---');
+        console.error('Mensaje de Error:', error instanceof Error ? error.message : String(error));
         
-        // En caso de error, también redirigir al frontend con un mensaje de error
+
         const errorUrl = new URL('https://home-hero-front-cc1o.vercel.app/');
         errorUrl.searchParams.set('error', 'true');
-        errorUrl.searchParams.set('message', 'processing_error');
+        errorUrl.searchParams.set('message', 'internal_processing_error');
         
-        res.redirect(errorUrl.toString());
-        return false;
+        session.returnTo = errorUrl.toString();
+        return session;
       }
     },
     
