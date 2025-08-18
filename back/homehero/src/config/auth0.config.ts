@@ -1,5 +1,3 @@
-
-
 import { Auth0Service } from '../auth0/auth0.service';
 import { config as dotenvConfig } from 'dotenv';
 
@@ -16,37 +14,37 @@ export const getAuth0Config = (auth0Service: Auth0Service) => {
     clientSecret: process.env.AUTH0_CLIENT_SECRET,
     routes: {
       callback: '/auth0/callback',
-      
-      postLoginRedirect: '/auth0/redirect',
+      // La propiedad postLoginRedirect ha sido eliminada.
     },
     afterCallback: async (req, res, session) => {
+      const frontendUrl = 'https://home-hero-front-cc1o.vercel.app/';
+
       try {
-       
         if (!session.user) {
           console.error('Auth0 afterCallback: El objeto session.user no fue encontrado.');
-         
-          session.app_metadata = { error: 'user_session_not_found' };
+          const errorParams = new URLSearchParams({ error: 'true', message: 'user_session_not_found' }).toString();
+          // Le decimos a la librería a dónde redirigir en caso de error.
+          session.returnTo = `${frontendUrl}?${errorParams}`;
           return session;
         }
 
-        
+        // 1. Procesamos el usuario y generamos el token
         const { user, token } = await auth0Service.processAuth0User(session.user);
         
-      
-        session.app_metadata = {
-          jwt_token: token,
-          user_id: user.id,
-          user_role: user.role,
-          needs_profile_completion: !user.dni,
-          user_name: user.name,
-        };
+        // 2. Construimos la URL de éxito final
+        const successParams = new URLSearchParams();
+        successParams.append('token', token);
+        successParams.append('needsProfileCompletion', String(!user.dni));
+        successParams.append('userName', user.name);
         
-
+        // 3. Le decimos a la librería a dónde redirigir al usuario.
+        session.returnTo = `${frontendUrl}?${successParams.toString()}`;
         return session;
 
       } catch (error) {
         console.error('Error en el hook afterCallback:', error);
-        session.app_metadata = { error: 'processing_error' };
+        const errorParams = new URLSearchParams({ error: 'true', message: 'processing_error' }).toString();
+        session.returnTo = `${frontendUrl}?${errorParams}`;
         return session;
       }
     },
