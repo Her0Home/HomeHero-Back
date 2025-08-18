@@ -20,6 +20,7 @@ export const getAuth0Config = (auth0Service: Auth0Service) => {
         secure: true,
         sameSite: 'None',
         domain: 'homehero-back.onrender.com',
+        partitioned: true,
       },
     },
     // -----------------------------------------
@@ -85,7 +86,14 @@ export const getAuth0Config = (auth0Service: Auth0Service) => {
         return session;
 
       } catch (error) {
-        console.error('Error en el hook afterCallback:', error);
+        // --- LOGS DE ERROR MEJORADOS ---
+        console.error('--- ERROR DETECTADO EN afterCallback ---');
+        console.error('Mensaje de Error:', error.message);
+        console.error('Stack Trace:', error.stack);
+        console.error('Objeto de Error Completo:', JSON.stringify(error, null, 2));
+        console.error('--- FIN DEL REPORTE DE ERROR ---');
+        // ------------------------------------
+        
         const errorParams = new URLSearchParams({ error: 'true', message: 'processing_error' }).toString();
         session.returnTo = `${frontendUrl}?${errorParams}`;
         return session;
