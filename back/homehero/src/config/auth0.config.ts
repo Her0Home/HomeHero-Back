@@ -1,6 +1,7 @@
 import { Auth0Service } from '../auth0/auth0.service';
 import { config as dotenvConfig } from 'dotenv';
-import { jwtDecode } from 'jwt-decode';
+const jwtDecode = require('jwt-decode');
+
 
 dotenvConfig({ path: '.env.development' });
 
@@ -17,62 +18,56 @@ export const getAuth0Config = (auth0Service: Auth0Service) => {
     session: {
       cookie: {
         secure: true,
-        sameSite: 'None',
+        sameSite: 'none', // usar 'none' minúscula
       },
     },
 
     routes: {
       callback: '/auth0/callback',
-      postLogoutRedirect: 'https://home-hero-front-cc1o.vercel.app/'
+      postLogoutRedirect: 'https://home-hero-front-cc1o.vercel.app/',
     },
-    
+  
     afterCallback: async (req, res, session) => {
       const frontendUrl = 'https://home-hero-front-cc1o.vercel.app/';
+      const payload = jwtDecode(session.id_token);
 
       try {
-        let userPayload = null;
-        if (session.id_token) {
+        let userPayload: any = null;
+
+        if (session?.id_token) {
+          // jwtDecode puede lanzar si no es un JWT válido; envolver en try/catch si fuera necesario
           userPayload = jwtDecode(session.id_token);
         } else {
-          userPayload = session.user || session.id_token_claims;
+          userPayload = session?.user ?? session?.id_token_claims;
         }
 
         if (!userPayload) {
           console.error('Auth0 afterCallback: No se encontraron datos del usuario en la sesión.');
-          // Modificamos la sesión existente en lugar de devolver un nuevo objeto
-          session.returnTo = `${frontendUrl}?error=true&message=user_data_not_found`;
-          return session;
-        } 
+          const errorParams = new URLSearchParams({ error: 'true', message: 'user_data_not_found' }).toString();
+          // Devuelve la URL en lugar de hacer res.redirect
+          return `${frontendUrl}?${errorParams}`;
+        }
 
         const { user, token } = await auth0Service.processAuth0User(userPayload);
-        
-        // Guardamos los datos en la sesión
-        session.app_metadata = {
-          jwt_token: token,
-          user_id: user.id,
-          user_role: user.role,
-        };
-        
-        // Construimos la URL con parámetros
+
+        // Opcional: si quieres persistir algo en la sesión, puedes modificar `session` aquí
+        // session.app_metadata = { jwt_token: token, user_id: user.id, user_role: user.role };
+
         const params = new URLSearchParams({
           token: token,
           needsProfileCompletion: String(!user.dni),
-          userName: user.name
+          userName: user.name ?? '',
         }).toString();
-        
+
         console.log(`Configurando redirección a: ${frontendUrl}?${params}`);
-        
-        // Configuramos returnTo en la sesión existente
-        session.returnTo = `${frontendUrl}?${params}`;
-        
-        return session;
-        
-      } catch (error) {
+        // DEVUELVE la URL (no usar res.redirect)
+        return `${frontendUrl}?${params}`;
+
+      } catch (error: any) {
         console.error('--- ERROR DETECTADO EN afterCallback ---');
-        console.error('Mensaje de Error:', error.message);
-        
-        session.returnTo = `${frontendUrl}?error=true&message=processing_error`;
-        return session;
+        console.error('Mensaje de Error:', error?.message ?? error);
+        const errorParams = new URLSearchParams({ error: 'true', message: 'processing_error' }).toString();
+        return `${frontendUrl}?${errorParams}`;
       }
     },
     
@@ -80,5 +75,7 @@ export const getAuth0Config = (auth0Service: Auth0Service) => {
       response_type: 'code',
       scope: 'openid profile email',
     },
+    
   };
+  
 };
