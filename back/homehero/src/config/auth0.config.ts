@@ -23,9 +23,6 @@ export const getAuth0Config = (auth0Service: Auth0Service) => {
 
     routes: {
       callback: '/auth0/callback',
-      // Definimos una ruta personalizada para después del login
-      // Esta ruta debe existir en tu aplicación
-      login: false, 
       postLogoutRedirect: 'https://home-hero-front-cc1o.vercel.app/'
     },
     
@@ -42,7 +39,9 @@ export const getAuth0Config = (auth0Service: Auth0Service) => {
 
         if (!userPayload) {
           console.error('Auth0 afterCallback: No se encontraron datos del usuario en la sesión.');
-          return { redirectTo: `${frontendUrl}?error=true&message=user_data_not_found` };
+          // Modificamos la sesión existente en lugar de devolver un nuevo objeto
+          session.returnTo = `${frontendUrl}?error=true&message=user_data_not_found`;
+          return session;
         } 
 
         const { user, token } = await auth0Service.processAuth0User(userPayload);
@@ -54,7 +53,7 @@ export const getAuth0Config = (auth0Service: Auth0Service) => {
           user_role: user.role,
         };
         
-        // IMPORTANTE: En lugar de manipular session.returnTo, usamos la propiedad redirectTo
+        // Construimos la URL con parámetros
         const params = new URLSearchParams({
           token: token,
           needsProfileCompletion: String(!user.dni),
@@ -63,14 +62,17 @@ export const getAuth0Config = (auth0Service: Auth0Service) => {
         
         console.log(`Configurando redirección a: ${frontendUrl}?${params}`);
         
-        // Esta es la clave: retornamos un objeto con redirectTo en lugar de modificar session.returnTo
-        return { redirectTo: `${frontendUrl}?${params}` };
+        // Configuramos returnTo en la sesión existente
+        session.returnTo = `${frontendUrl}?${params}`;
+        
+        return session;
         
       } catch (error) {
         console.error('--- ERROR DETECTADO EN afterCallback ---');
         console.error('Mensaje de Error:', error.message);
         
-        return { redirectTo: `${frontendUrl}?error=true&message=processing_error` };
+        session.returnTo = `${frontendUrl}?error=true&message=processing_error`;
+        return session;
       }
     },
     
