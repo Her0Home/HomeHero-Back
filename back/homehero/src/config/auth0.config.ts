@@ -37,10 +37,11 @@ export const getAuth0Config = (auth0Service: Auth0Service) => {
         }
 
         if (!userPayload) {
-          console.error('Auth0 afterCallback: No se encontraron datos del usuario en la sesión.');
-          // En caso de error, simplemente devolvemos la sesión sin modificar.
-          // El usuario será redirigido a la raíz sin estar autenticado.
-          return session;
+          const errorUrl = new URL('https://home-hero-front-cc1o.vercel.app/');
+          errorUrl.searchParams.set('error', 'true');
+          errorUrl.searchParams.set('message', 'user_data_not_found');
+          res.redirect(errorUrl.toString());
+          return false as any; 
         } 
 
         const { user, token } = await auth0Service.processAuth0User(userPayload);
@@ -50,27 +51,26 @@ export const getAuth0Config = (auth0Service: Auth0Service) => {
         frontendUrl.searchParams.set('needsProfileCompletion', String(!user.dni));
         frontendUrl.searchParams.set('userName', user.name || '');
         
-        // --- LA CLAVE DE LA SOLUCIÓN ---
-        // Guardamos la URL final y una bandera en la sesión.
-        // Esto es como dejar una "nota" para que el manejador de la ruta raíz en main.ts la lea.
-        session.isAuthenticatedAndProcessed = true;
-        session.finalRedirectUrl = frontendUrl.toString();
         
-        console.log(`Sesión preparada para el redirect final. URL: ${session.finalRedirectUrl}`);
+        res.redirect(frontendUrl.toString());
         
-        // Devolvemos la sesión para que la librería continúe su flujo (hacia la raíz del backend).
-        return session;
+   
+        return false as any;
         
       } catch (error) {
-        console.error('--- ERROR DETECTADO EN afterCallback ---', error);
-        // En caso de un error crítico, también devolvemos la sesión sin modificar.
-        return session;
+       
+        const errorUrl = new URL('https://home-hero-front-cc1o.vercel.app/');
+        errorUrl.searchParams.set('error', 'true');
+        errorUrl.searchParams.set('message', 'internal_processing_error');
+        res.redirect(errorUrl.toString());
+        return false as any; 
       }
     },
     
     authorizationParams: {
       response_type: 'code',
       scope: 'openid profile email',
+      connection: 'google-oauth2',
     },
   };
 };

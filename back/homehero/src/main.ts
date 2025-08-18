@@ -13,31 +13,7 @@ async function bootstrap() {
   const app = await NestFactory.create(AppModule);
   
   app.getHttpAdapter().getInstance().set('trust proxy', 1);
-  app.use(cookieParser()); // Usamos cookie-parser para leer las cookies
-
-  app.use((req, res, next) => {
-  const originalRedirect = res.redirect;
-  res.redirect = function(url) {
-    console.log(`--- REDIRECT interceptado a: ${url} ---`);
-    return originalRedirect.call(this, url);
-  };
-  next();
-});
-
-
-
-  // --- MIDDLEWARE DE VERIFICACIÓN --- 
-  // Este middleware se ejecuta ANTES que el de Auth0 para inspeccionar la petición.
-  app.use((req, res, next) => {
-    if (req.path.includes('/auth0/callback')) {
-      console.log('--- DEBUG: INCOMING REQUEST TO CALLBACK ---');
-      console.log('Headers:', JSON.stringify(req.headers, null, 2));
-      // Gracias a cookie-parser, req.cookies estará poblado.
-      console.log('Cookies:', JSON.stringify(req.cookies, null, 2));
-      console.log('--- END DEBUG ---');
-    }
-    next(); // Pasamos la petición al siguiente middleware (el de Auth0)
-  });
+  app.use(cookieParser());
 
   const swaggerDocument = new DocumentBuilder()
   .setTitle('HomeHero')
@@ -50,42 +26,30 @@ async function bootstrap() {
   SwaggerModule.setup('api', app, document);
 
   
-
-
-  
   app.use('/stripe/webhook', express.raw({ type: 'application/json' }));
   
   const auth0Service = app.get(Auth0Service);
   const auth0Config = getAuth0Config(auth0Service);
 
-  
-  
+
   app.use(auth(auth0Config));
 
- app.getHttpAdapter().getInstance().get('/', (req, res) => {
-    // Verificamos si la sesión tiene nuestra bandera especial
-    if (req.oidc && req.oidc.session && req.oidc.session.isAuthenticatedAndProcessed) {
-      console.log('Handler de raíz detectó sesión procesada. Realizando redirect final.');
 
-      const finalUrl = req.oidc.session.finalRedirectUrl;
-      
-      
-      delete req.oidc.session.isAuthenticatedAndProcessed;
-      delete req.oidc.session.finalRedirectUrl;
-      
-     
-      if (finalUrl) {
-        return res.redirect(finalUrl);
-      }
-    }
-   
-    return res.send('Hello World! Welcome to HomeHero Backend.');
-  });
+
   app.useGlobalPipes(new ValidationPipe({ 
       whitelist: true,
       forbidNonWhitelisted: false,
       transform: true,
     }));
+
+    app.use((err, req, res, next) => {
+    if (res.headersSent) {
+      return;
+    }
+    res.status(500).send('Ocurrió un error interno en el servidor.');
+  });
+
+  
   await app.listen(process.env.PORT ?? 3000);
   app.useGlobalPipes(new ValidationPipe({ whitelist: true }));
 }
