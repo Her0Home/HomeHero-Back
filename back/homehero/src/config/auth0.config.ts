@@ -19,6 +19,9 @@ export const getAuth0Config = (auth0Service: Auth0Service) => {
         secure: true,
         sameSite: 'None',
       },
+      // Añadimos una duración absoluta a la sesión. A veces, ser más explícito
+      // con la configuración de la sesión ayuda a que se comporte como se espera.
+      absoluteDuration: 60 * 60 * 24, // 1 día en segundos
     },
 
     routes: {
@@ -26,6 +29,8 @@ export const getAuth0Config = (auth0Service: Auth0Service) => {
       postLogoutRedirect: 'https://home-hero-front-cc1o.vercel.app/',
     },
     
+    // Esta función ahora cumple con la firma de tipos de la librería,
+    // devolviendo siempre un objeto `Session` o una promesa que resuelve a uno.
     afterCallback: async (req, res, session) => {
       const frontendBaseUrl = 'https://home-hero-front-cc1o.vercel.app/';
       
@@ -43,13 +48,13 @@ export const getAuth0Config = (auth0Service: Auth0Service) => {
           const errorUrl = new URL(frontendBaseUrl);
           errorUrl.searchParams.set('error', 'true');
           errorUrl.searchParams.set('message', 'user_data_not_found');
-          // Devolvemos la URL de error directamente para forzar la redirección
-          return errorUrl.toString();
+          session.returnTo = errorUrl.toString();
+          return session;
         } 
 
         const { user, token } = await auth0Service.processAuth0User(userPayload);
         
-        // --- Flujo de Redirección Forzada ---
+        // --- Flujo de Redirección Correcto (según la librería) ---
 
         // 1. Construimos la URL de redirección final
         const frontendUrl = new URL(frontendBaseUrl);
@@ -57,11 +62,14 @@ export const getAuth0Config = (auth0Service: Auth0Service) => {
         frontendUrl.searchParams.set('needsProfileCompletion', String(!user.dni));
         frontendUrl.searchParams.set('userName', user.name || '');
         
-        console.log(`Forzando redirección final a: ${frontendUrl.toString()}`);
+        console.log(`Estableciendo session.returnTo para la redirección final: ${frontendUrl.toString()}`);
         
-        // 2. Devolvemos la URL como un string. Esto anula cualquier otra
-        //    lógica de redirección de la librería y rompe el bucle.
-        return frontendUrl.toString();
+        // 2. Asignamos la URL a `session.returnTo`. Esta es la forma oficial
+        //    de decirle a la librería a dónde redirigir después del callback.
+        session.returnTo = frontendUrl.toString();
+        
+        // 3. Devolvemos el objeto `session` para que la librería continúe su flujo.
+        return session;
         
       } catch (error) {
         console.error('--- ERROR CRÍTICO DETECTADO EN afterCallback ---');
@@ -71,8 +79,8 @@ export const getAuth0Config = (auth0Service: Auth0Service) => {
         errorUrl.searchParams.set('error', 'true');
         errorUrl.searchParams.set('message', 'internal_processing_error');
         
-        // Devolvemos la URL de error directamente
-        return errorUrl.toString();
+        session.returnTo = errorUrl.toString();
+        return session;
       }
     },
     
