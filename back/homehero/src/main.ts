@@ -62,13 +62,24 @@ async function bootstrap() {
   
   app.use(auth(auth0Config));
 
-  app.getHttpAdapter().getInstance().get('/login', (req, res) => {
-    res.oidc.login({
-      returnTo: 'https://home-hero-front-cc1o.vercel.app',
-      authorizationParams: {
-        redirect_uri: `${process.env.AUTH0_BASE_URL}/auth0/callback`,
-      },
-    });
+ app.getHttpAdapter().getInstance().get('/', (req, res) => {
+    // Verificamos si la sesión tiene nuestra bandera especial
+    if (req.oidc && req.oidc.session && req.oidc.session.isAuthenticatedAndProcessed) {
+      console.log('Handler de raíz detectó sesión procesada. Realizando redirect final.');
+
+      const finalUrl = req.oidc.session.finalRedirectUrl;
+      
+      
+      delete req.oidc.session.isAuthenticatedAndProcessed;
+      delete req.oidc.session.finalRedirectUrl;
+      
+     
+      if (finalUrl) {
+        return res.redirect(finalUrl);
+      }
+    }
+   
+    return res.send('Hello World! Welcome to HomeHero Backend.');
   });
   app.useGlobalPipes(new ValidationPipe({ 
       whitelist: true,
