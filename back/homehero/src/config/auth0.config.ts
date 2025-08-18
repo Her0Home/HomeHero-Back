@@ -23,9 +23,7 @@ export const getAuth0Config = (auth0Service: Auth0Service) => {
 
     routes: {
       callback: '/auth0/callback',
-      // Configuramos la ruta después de la autenticación a nuestro controlador personalizado
-      postLoginUrl: '/auth0/callback-redirect',
-      postLogoutRedirect: 'https://home-hero-front-cc1o.vercel.app/'
+      // Removemos postLoginUrl que causa el error
     },
     
     afterCallback: async (req, res, session) => {
@@ -39,24 +37,44 @@ export const getAuth0Config = (auth0Service: Auth0Service) => {
 
         if (!userPayload) {
           console.error('Auth0 afterCallback: No se encontraron datos del usuario en la sesión.');
+          // Podemos manejar el error aquí si es necesario
           return session;
         } 
 
         const { user, token } = await auth0Service.processAuth0User(userPayload);
         
-        // Guardamos los datos en la sesión para que estén disponibles en el controlador
+        // Guardamos los datos en la sesión
         session.app_metadata = {
           jwt_token: token,
           user_id: user.id,
           user_role: user.role,
-          needs_profile_completion: !user.dni
         };
         
-        return session;
+        // Importante: En lugar de configurar session.returnTo, vamos a redirigir directamente
+        // usando res.redirect() aquí
+        
+        const frontendUrl = new URL('https://home-hero-front-cc1o.vercel.app/');
+        frontendUrl.searchParams.set('token', token);
+        frontendUrl.searchParams.set('needsProfileCompletion', String(!user.dni));
+        frontendUrl.searchParams.set('userName', user.name);
+        
+        console.log(`Redirigiendo directamente a: ${frontendUrl.toString()}`);
+        res.redirect(frontendUrl.toString());
+        
+        // Retornamos false para evitar procesamiento adicional
+        return false;
+        
       } catch (error) {
         console.error('--- ERROR DETECTADO EN afterCallback ---');
         console.error('Mensaje de Error:', error.message);
-        return session;
+        
+        // En caso de error, también redirigir al frontend con un mensaje de error
+        const errorUrl = new URL('https://home-hero-front-cc1o.vercel.app/');
+        errorUrl.searchParams.set('error', 'true');
+        errorUrl.searchParams.set('message', 'processing_error');
+        
+        res.redirect(errorUrl.toString());
+        return false;
       }
     },
     
