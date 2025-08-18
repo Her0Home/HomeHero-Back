@@ -25,6 +25,10 @@ export const getAuth0Config = (auth0Service: Auth0Service) => {
     routes: {
       callback: '/auth0/callback',
       postLogoutRedirect: 'https://home-hero-front-cc1o.vercel.app/',
+      // --- LA CLAVE DE LA SOLUCIÓN ---
+      // Esta es la instrucción oficial para decirle a la librería a dónde ir
+      // después de que el callback se procese exitosamente.
+      postLoginRedirect: '/auth/finalize',
     },
     
     afterCallback: async (req, res, session) => {
@@ -52,12 +56,7 @@ export const getAuth0Config = (auth0Service: Auth0Service) => {
         session.isAuthenticatedAndProcessed = true;
         session.finalRedirectUrl = frontendUrl.toString();
         
-        // --- LA CLAVE DE LA SOLUCIÓN ---
-        // Le decimos a la librería que, después de este callback,
-        // debe redirigir a nuestro nuevo endpoint dedicado.
-        session.returnTo = `${process.env.AUTH0_BASE_URL}/auth/finalize`;
-        
-        console.log(`Sesión preparada. Redirigiendo a: ${session.returnTo}`);
+        console.log(`Sesión preparada. La ruta postLoginRedirect debería llevar a /auth/finalize.`);
         
         // Devolvemos la sesión para que la librería continúe.
         return session;
