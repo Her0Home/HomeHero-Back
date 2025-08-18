@@ -29,7 +29,7 @@ async function bootstrap() {
   app.use('/stripe/webhook', express.raw({ type: 'application/json' }));
   
   const auth0Service = app.get(Auth0Service);
-  const auth0Config = Auth0Config(auth0Service);
+  const auth0Config = getAuth0Config(auth0Service);
   
   app.use(auth(auth0Config));
   app.useGlobalPipes(new ValidationPipe({ 
