@@ -18,12 +18,12 @@ export const getAuth0Config = (auth0Service: Auth0Service) => {
     // --- CONFIGURACIÓN CLAVE DE LA SESIÓN ---
     session: {
       cookie: {
-        // secure: true le dice al navegador que solo envíe la cookie sobre HTTPS.
-        // Es requerido para SameSite='None'.
-        secure: true, 
-        // sameSite: 'None' permite que la cookie se envíe en solicitudes
-        // entre diferentes dominios (de Auth0 a tu backend).
+        secure: true,
         sameSite: 'None',
+        // --- CAMBIO FINAL ---
+        // Le decimos explícitamente a la cookie a qué dominio pertenece.
+        // Esto resuelve problemas en entornos de producción con proxies.
+        domain: 'homehero-back.onrender.com',
       },
     },
     // -----------------------------------------
