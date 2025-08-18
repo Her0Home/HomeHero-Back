@@ -3,7 +3,7 @@ import { config as dotenvConfig } from 'dotenv';
 
 dotenvConfig({ path: '.env.development' });
 
-export const getAuth0Config = (auth0Service: Auth0Service) => {
+export const Auth0Config = (auth0Service: Auth0Service) => {
   return {
     authRequired: false,
     auth0Logout: true,
