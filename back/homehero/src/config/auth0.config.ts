@@ -1,5 +1,3 @@
-
-
 import { Auth0Service } from '../auth0/auth0.service';
 import { config as dotenvConfig } from 'dotenv';
 import { jwtDecode } from 'jwt-decode';
@@ -44,6 +42,12 @@ export const getAuth0Config = (auth0Service: Auth0Service) => {
           finalRedirectUrl.searchParams.set('message', 'user_data_not_found');
         } else {
             const { user, token } = await auth0Service.processAuth0User(userPayload);
+            // Guardamos los datos en la sesión para que el endpoint /profile los pueda leer
+            (session as any).app_metadata = {
+                jwt_token: token,
+                user_id: user.id,
+                user_role: user.role,
+            };
             finalRedirectUrl.searchParams.set('token', token);
             finalRedirectUrl.searchParams.set('needsProfileCompletion', String(!user.dni));
             finalRedirectUrl.searchParams.set('userName', user.name);

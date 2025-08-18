@@ -12,7 +12,6 @@ import cookieParser from 'cookie-parser'; // Importamos cookie-parser
 async function bootstrap() {
   const app = await NestFactory.create(AppModule);
   
-  // Set 'trust proxy' on the underlying Express instance
   app.getHttpAdapter().getInstance().set('trust proxy', 1);
   app.use(cookieParser()); // Usamos cookie-parser para leer las cookies
 
