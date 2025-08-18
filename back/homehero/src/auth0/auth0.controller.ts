@@ -5,26 +5,29 @@ import type { Request, Response } from 'express';
 export class Auth0Controller {
   constructor() {}
 
-  @Get('profile')
+   @Get('profile')
   getProfile(@Req() req: Request, @Res() res: Response) {
     if (!req.oidc.isAuthenticated()) {
       throw new UnauthorizedException('No hay una sesión de usuario activa.');
     }
+    const oidcWithSession = req.oidc as Request['oidc'] & { session?: { app_metadata?: any } };
     
-   
     res.json({
       auth0_profile: req.oidc.user,
-      app_data: (req.oidc.user as any)?.app_metadata,
+      app_data: oidcWithSession.session?.app_metadata, 
     });
   }
+
   @Get('finish')
   finishAuth(@Req() req: Request, @Res() res: Response) {
-    const oidcWithSession = req.oidc as typeof req.oidc & { session?: { finalRedirectUrl?: string } };
+    const oidcWithSession = req.oidc as Request['oidc'] & { session?: { finalRedirectUrl?: string } };
     const finalRedirectUrl = oidcWithSession.session?.finalRedirectUrl;
+    
     if (finalRedirectUrl) {
       delete oidcWithSession.session?.finalRedirectUrl;
       return res.redirect(finalRedirectUrl);
     }
+    
     return res.redirect('https://home-hero-front-cc1o.vercel.app/');
   }
 }
