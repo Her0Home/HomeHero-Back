@@ -28,16 +28,24 @@ export class Auth0Service {
   async processAuth0User(
     auth0UserData: any,
   ): Promise<{ user: User; token: string }> {
+    console.log('--- INICIANDO processAuth0User ---');
     try {
+      console.log(`Buscando usuario por Auth0 ID: ${auth0UserData.sub}`);
       let user = await this.findByAuth0Id(auth0UserData.sub);
-
-      if (!user) {
+      
+      if (user) {
+        console.log(`Usuario encontrado por Auth0 ID. ID de DB: ${user.id}`);
+      } else {
+        console.log('Usuario no encontrado por Auth0 ID. Buscando por email...');
         const existingUserByEmail = await this.findByEmail(auth0UserData.email);
 
         if (existingUserByEmail) {
+          console.log(`Usuario encontrado por email. ID de DB: ${existingUserByEmail.id}. Actualizando Auth0 ID...`);
           existingUserByEmail.auth0Id = auth0UserData.sub;
           user = await this.userRepository.save(existingUserByEmail);
+          console.log('Auth0 ID actualizado correctamente.');
         } else {
+          console.log('Ningún usuario existente. Creando nuevo usuario...');
           const newUser = this.userRepository.create({
             auth0Id: auth0UserData.sub,
             name: auth0UserData.name || 'User',
@@ -49,39 +57,32 @@ export class Auth0Service {
             role: Role.CLIENTE,
           });
           user = await this.userRepository.save(newUser);
+          console.log(`Nuevo usuario creado con ID de DB: ${user.id}`);
         }
-      } else {
-        user.name = auth0UserData.name || user.name;
-        user.imageProfile = auth0UserData.picture || user.imageProfile;
-        user.metadata = auth0UserData;
-        await this.userRepository.save(user);
       }
 
-      if (!user || !user.id) {
-        throw new InternalServerErrorException(
-          'El usuario no se pudo guardar o no tiene ID.',
-        );
+      if (!user.id) {
+        throw new InternalServerErrorException('El usuario no tiene ID después de guardar.');
       }
 
+      console.log('Generando token JWT...');
       const payload = {
         id: user.id,
         email: user.email,
         role: user.role,
       };
-
       const token = this.jwtService.sign(payload);
+      console.log('Token JWT generado. Proceso completado exitosamente.');
+      
       return { user, token };
 
     } catch (error) {
-      // --- LOGS DE ERROR DETALLADOS EN EL SERVICIO ---
-      console.error('--- ERROR DETECTADO EN Auth0Service ---');
-      console.error('Mensaje de Error Original:', error.message);
-      console.error('Código de Error (si existe):', error.code);
-      console.error('Stack Trace Original:', error.stack);
+      console.error('--- ERROR DETECTADO DENTRO DE Auth0Service ---');
+      console.error('Mensaje de Error:', error.message);
+      console.error('Stack Trace:', error.stack);
       console.error('--- FIN DEL REPORTE DE ERROR EN SERVICIO ---');
       
-      // Re-lanzamos el error para que el 'afterCallback' lo atrape
-      throw error;
+      throw new InternalServerErrorException(`Error al procesar el usuario: ${error.message}`);
     }
   }
 }
