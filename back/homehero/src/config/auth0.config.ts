@@ -28,6 +28,7 @@ export const getAuth0Config = (auth0Service: Auth0Service) => {
     },
     afterCallback: async (req, res, session) => {
       const frontendUrl = 'https://home-hero-front-cc1o.vercel.app/';
+      const finalRedirectUrl = new URL(frontendUrl);
 
       try {
         let userPayload = null;
@@ -39,31 +40,27 @@ export const getAuth0Config = (auth0Service: Auth0Service) => {
 
         if (!userPayload) {
           console.error('Auth0 afterCallback: No se encontraron datos del usuario en la sesión.');
-          const errorParams = new URLSearchParams({ error: 'true', message: 'user_data_not_found' }).toString();
-          session.returnTo = `${frontendUrl}?${errorParams}`;
-          return session;
+          finalRedirectUrl.searchParams.set('error', 'true');
+          finalRedirectUrl.searchParams.set('message', 'user_data_not_found');
+        } else {
+            const { user, token } = await auth0Service.processAuth0User(userPayload);
+            finalRedirectUrl.searchParams.set('token', token);
+            finalRedirectUrl.searchParams.set('needsProfileCompletion', String(!user.dni));
+            finalRedirectUrl.searchParams.set('userName', user.name);
         }
-
-        const { user, token } = await auth0Service.processAuth0User(userPayload);
-        
-        const successParams = new URLSearchParams();
-        successParams.append('token', token);
-        successParams.append('needsProfileCompletion', String(!user.dni));
-        successParams.append('userName', user.name);
-        
-        // Delegamos la redirección a la librería para evitar conflictos.
-        session.returnTo = `${frontendUrl}?${successParams.toString()}`;
-        return session;
-
       } catch (error) {
         console.error('--- ERROR DETECTADO EN afterCallback ---');
         console.error('Mensaje de Error:', error.message);
-        console.error('Stack Trace:', error.stack);
-        
-        const errorParams = new URLSearchParams({ error: 'true', message: 'processing_error' }).toString();
-        session.returnTo = `${frontendUrl}?${errorParams}`;
-        return session;
+        finalRedirectUrl.searchParams.set('error', 'true');
+        finalRedirectUrl.searchParams.set('message', 'processing_error');
       }
+
+
+      if (session) {
+        (session as any).finalRedirectUrl = finalRedirectUrl.toString();
+      }
+      session.returnTo = '/auth0/finish';
+      return session;
     },
     authorizationParams: {
       response_type: 'code',
