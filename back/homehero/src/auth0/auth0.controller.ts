@@ -17,4 +17,14 @@ export class Auth0Controller {
       app_data: (req.oidc.user as any)?.app_metadata,
     });
   }
+  @Get('finish')
+  finishAuth(@Req() req: Request, @Res() res: Response) {
+    const oidcWithSession = req.oidc as typeof req.oidc & { session?: { finalRedirectUrl?: string } };
+    const finalRedirectUrl = oidcWithSession.session?.finalRedirectUrl;
+    if (finalRedirectUrl) {
+      delete oidcWithSession.session?.finalRedirectUrl;
+      return res.redirect(finalRedirectUrl);
+    }
+    return res.redirect('https://home-hero-front-cc1o.vercel.app/');
+  }
 }
