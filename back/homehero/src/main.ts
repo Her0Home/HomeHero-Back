@@ -68,6 +68,20 @@ async function bootstrap() {
       forbidNonWhitelisted: false,
       transform: true,
     }));
+
+    app.use((err, req, res, next) => {
+    console.error('--- MANEJADOR DE ERRORES GLOBAL ATRAPÓ UN ERROR ---');
+    console.error(`Error: ${err.message}`);
+    // Si la respuesta ya fue enviada (como en nuestro caso con el redirect),
+    // no podemos enviar una nueva respuesta, pero podemos terminar la conexión
+    // y evitar que la aplicación se caiga.
+    if (res.headersSent) {
+      console.log('La respuesta ya fue enviada. El manejador de errores evitará que el servidor se caiga.');
+      return;
+    }
+    // Si la respuesta no ha sido enviada, enviamos un error 500 genérico.
+    res.status(500).send('Ocurrió un error interno en el servidor.');
+  });
   await app.listen(process.env.PORT ?? 3000);
   app.useGlobalPipes(new ValidationPipe({ whitelist: true }));
 }
