@@ -23,9 +23,9 @@ export const getAuth0Config = (auth0Service: Auth0Service) => {
 
     routes: {
       callback: '/auth0/callback',
-
-      postLoginUrl: 'https://home-hero-front-cc1o.vercel.app/',
+      // No usar postLoginUrl, no es una opción válida
     },
+    
     afterCallback: async (req, res, session) => {
       const frontendUrl = 'https://home-hero-front-cc1o.vercel.app/';
       const finalRedirectUrl = new URL(frontendUrl);
@@ -45,7 +45,7 @@ export const getAuth0Config = (auth0Service: Auth0Service) => {
         } else {
           const { user, token } = await auth0Service.processAuth0User(userPayload);
           
-    
+          // Guardamos los datos en la sesión
           session.app_metadata = {
             jwt_token: token,
             user_id: user.id,
@@ -63,11 +63,13 @@ export const getAuth0Config = (auth0Service: Auth0Service) => {
         finalRedirectUrl.searchParams.set('message', 'processing_error');
       }
 
+      // IMPORTANTE: Configuramos la URL de retorno en session.returnTo
       session.returnTo = finalRedirectUrl.toString();
       
-
+      // Retornamos la sesión modificada para que Auth0 se encargue de la redirección
       return session;
     },
+    
     authorizationParams: {
       response_type: 'code',
       scope: 'openid profile email',
