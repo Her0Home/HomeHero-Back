@@ -23,12 +23,14 @@ export const getAuth0Config = (auth0Service: Auth0Service) => {
 
     routes: {
       callback: '/auth0/callback',
-      // No usar postLoginUrl, no es una opción válida
+      // Definimos una ruta personalizada para después del login
+      // Esta ruta debe existir en tu aplicación
+      login: false, 
+      postLogoutRedirect: 'https://home-hero-front-cc1o.vercel.app/'
     },
     
     afterCallback: async (req, res, session) => {
       const frontendUrl = 'https://home-hero-front-cc1o.vercel.app/';
-      const finalRedirectUrl = new URL(frontendUrl);
 
       try {
         let userPayload = null;
@@ -40,34 +42,36 @@ export const getAuth0Config = (auth0Service: Auth0Service) => {
 
         if (!userPayload) {
           console.error('Auth0 afterCallback: No se encontraron datos del usuario en la sesión.');
-          finalRedirectUrl.searchParams.set('error', 'true');
-          finalRedirectUrl.searchParams.set('message', 'user_data_not_found');
-        } else {
-          const { user, token } = await auth0Service.processAuth0User(userPayload);
-          
-          // Guardamos los datos en la sesión
-          session.app_metadata = {
-            jwt_token: token,
-            user_id: user.id,
-            user_role: user.role,
-          };
-          
-          finalRedirectUrl.searchParams.set('token', token);
-          finalRedirectUrl.searchParams.set('needsProfileCompletion', String(!user.dni));
-          finalRedirectUrl.searchParams.set('userName', user.name);
-        }
+          return { redirectTo: `${frontendUrl}?error=true&message=user_data_not_found` };
+        } 
+
+        const { user, token } = await auth0Service.processAuth0User(userPayload);
+        
+        // Guardamos los datos en la sesión
+        session.app_metadata = {
+          jwt_token: token,
+          user_id: user.id,
+          user_role: user.role,
+        };
+        
+        // IMPORTANTE: En lugar de manipular session.returnTo, usamos la propiedad redirectTo
+        const params = new URLSearchParams({
+          token: token,
+          needsProfileCompletion: String(!user.dni),
+          userName: user.name
+        }).toString();
+        
+        console.log(`Configurando redirección a: ${frontendUrl}?${params}`);
+        
+        // Esta es la clave: retornamos un objeto con redirectTo en lugar de modificar session.returnTo
+        return { redirectTo: `${frontendUrl}?${params}` };
+        
       } catch (error) {
         console.error('--- ERROR DETECTADO EN afterCallback ---');
         console.error('Mensaje de Error:', error.message);
-        finalRedirectUrl.searchParams.set('error', 'true');
-        finalRedirectUrl.searchParams.set('message', 'processing_error');
+        
+        return { redirectTo: `${frontendUrl}?error=true&message=processing_error` };
       }
-
-      // IMPORTANTE: Configuramos la URL de retorno en session.returnTo
-      session.returnTo = finalRedirectUrl.toString();
-      
-      // Retornamos la sesión modificada para que Auth0 se encargue de la redirección
-      return session;
     },
     
     authorizationParams: {
