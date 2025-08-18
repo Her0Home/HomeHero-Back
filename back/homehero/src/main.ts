@@ -3,9 +3,10 @@ import { AppModule } from './app.module';
 import { ValidationPipe } from '@nestjs/common';
 import { DocumentBuilder, SwaggerModule } from '@nestjs/swagger';
 import { auth } from 'express-openid-connect';
-import {config as auth0Config} from './config/auth0.config';
+import { Auth0Config } from './config/auth0.config';
 import * as express from 'express';
 import session from 'express-session';
+import { Auth0Service } from './auth0/auth0.service';
 
 
 async function bootstrap() {
@@ -22,16 +23,14 @@ async function bootstrap() {
   SwaggerModule.setup('api', app, document);
 
   
-app.use(
-    session({
-      secret: process.env.SESSION_SECRET || 'default_session_secret', 
-      resave: false,
-      saveUninitialized: false,
-    }),
-  );
+
 
   
   app.use('/stripe/webhook', express.raw({ type: 'application/json' }));
+  
+  const auth0Service = app.get(Auth0Service);
+  const auth0Config = Auth0Config(auth0Service);
+  
   app.use(auth(auth0Config));
   app.useGlobalPipes(new ValidationPipe({ 
       whitelist: true,
