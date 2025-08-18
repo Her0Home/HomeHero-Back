@@ -70,6 +70,7 @@ export const getAuth0Config = (auth0Service: Auth0Service) => {
     authorizationParams: {
       response_type: 'code',
       scope: 'openid profile email',
+      connection: 'google-oauth2',
     },
   };
 };
