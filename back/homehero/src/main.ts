@@ -31,27 +31,23 @@ async function bootstrap() {
   const auth0Service = app.get(Auth0Service);
   const auth0Config = getAuth0Config(auth0Service);
 
-  app.getHttpAdapter().getInstance().get('/login', (req, res) => {
-   
-  });
-
 
   app.use(auth(auth0Config));
 
 
   app.getHttpAdapter().getInstance().get('/login', (req, res) => {
-    const { connection } = req.query; 
+    const { connection } = req.query;
     
     const options = {
       authorizationParams: {
-   
-        redirect_uri: `${process.env.AUTH0_BASE_URL}/auth0/callback`,
        
+        redirect_uri: `${process.env.AUTH0_BASE_URL}/auth0/callback`,
+        
         connection: connection ? String(connection) : undefined,
       },
     };
     
-   
+  
     res.oidc.login(options);
   });
 
