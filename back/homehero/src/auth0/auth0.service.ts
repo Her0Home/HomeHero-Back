@@ -29,7 +29,6 @@ export class Auth0Service {
     auth0UserData: any,
   ): Promise<{ user: User; token: string }> {
     try {
-
       let user = await this.findByAuth0Id(auth0UserData.sub);
 
       if (!user) {
@@ -72,13 +71,17 @@ export class Auth0Service {
 
       const token = this.jwtService.sign(payload);
       return { user, token };
+
     } catch (error) {
-      if (error.code === '23505') {
-        throw new ConflictException('El usuario con este email ya existe.');
-      }
-      throw new InternalServerErrorException(
-        `Error al procesar el usuario: ${error.message}`,
-      );
+      // --- LOGS DE ERROR DETALLADOS EN EL SERVICIO ---
+      console.error('--- ERROR DETECTADO EN Auth0Service ---');
+      console.error('Mensaje de Error Original:', error.message);
+      console.error('Código de Error (si existe):', error.code);
+      console.error('Stack Trace Original:', error.stack);
+      console.error('--- FIN DEL REPORTE DE ERROR EN SERVICIO ---');
+      
+      // Re-lanzamos el error para que el 'afterCallback' lo atrape
+      throw error;
     }
   }
 }
