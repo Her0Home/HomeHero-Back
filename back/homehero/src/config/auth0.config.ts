@@ -1,11 +1,4 @@
-/*
- * ----------------------------------------------------------------
- * ARCHIVO 1: auth0.config.ts (VERSIÓN FINAL)
- * ----------------------------------------------------------------
- * Eliminamos el dominio explícito de la cookie para permitir que el
- * navegador lo gestione automáticamente, solucionando el problema final
- * de la redirección.
- */
+
 
 import { Auth0Service } from '../auth0/auth0.service';
 import { config as dotenvConfig } from 'dotenv';
@@ -23,15 +16,12 @@ export const getAuth0Config = (auth0Service: Auth0Service) => {
     issuerBaseURL: process.env.AUTH0_ISSUER_BASE_URL,
     clientSecret: process.env.AUTH0_CLIENT_SECRET,
     
-    // --- CONFIGURACIÓN CLAVE DE LA SESIÓN ---
     session: {
       cookie: {
         secure: true,
         sameSite: 'None',
-        // La propiedad 'domain' ha sido eliminada para mayor robustez.
       },
     },
-    // -----------------------------------------
 
     routes: {
       callback: '/auth0/callback',
@@ -50,8 +40,7 @@ export const getAuth0Config = (auth0Service: Auth0Service) => {
         if (!userPayload) {
           console.error('Auth0 afterCallback: No se encontraron datos del usuario en la sesión.');
           const errorParams = new URLSearchParams({ error: 'true', message: 'user_data_not_found' }).toString();
-          session.returnTo = `${frontendUrl}?${errorParams}`;
-          return session;
+          return res.redirect(`${frontendUrl}?${errorParams}`);
         }
 
         const { user, token } = await auth0Service.processAuth0User(userPayload);
@@ -61,8 +50,8 @@ export const getAuth0Config = (auth0Service: Auth0Service) => {
         successParams.append('needsProfileCompletion', String(!user.dni));
         successParams.append('userName', user.name);
         
-        session.returnTo = `${frontendUrl}?${successParams.toString()}`;
-        return session;
+        // Redirección directa y final.
+        return res.redirect(`${frontendUrl}?${successParams.toString()}`);
 
       } catch (error) {
         console.error('--- ERROR DETECTADO EN afterCallback ---');
@@ -70,8 +59,8 @@ export const getAuth0Config = (auth0Service: Auth0Service) => {
         console.error('Stack Trace:', error.stack);
         
         const errorParams = new URLSearchParams({ error: 'true', message: 'processing_error' }).toString();
-        session.returnTo = `${frontendUrl}?${errorParams}`;
-        return session;
+        // Redirección directa y final en caso de error.
+        return res.redirect(`${frontendUrl}?${errorParams}`);
       }
     },
     authorizationParams: {
