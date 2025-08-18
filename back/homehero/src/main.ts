@@ -33,6 +33,20 @@ async function bootstrap() {
 
   app.use(auth(auth0Config));
 
+  app.getHttpAdapter().getInstance().get('/login', (req, res) => {
+    const connection = req.query.connection; 
+    
+    const options = {
+      authorizationParams: {
+        
+        connection: connection ? String(connection) : undefined,
+      },
+    };
+    
+
+    res.oidc.login(options);
+  });
+
   app.useGlobalPipes(new ValidationPipe({ 
       whitelist: true,
       forbidNonWhitelisted: false,
@@ -46,20 +60,7 @@ async function bootstrap() {
     res.status(500).send('Ocurrió un error interno en el servidor.');
   });
 
-  app.getHttpAdapter().getInstance().get('/login', (req, res) => {
-    const connection = req.query.connection; 
-    
-    const options = {
-      authorizationParams: {
-
-        connection: connection ? String(connection) : undefined,
-      },
-    };
-    
-
-    res.oidc.login(options);
-  });
-
+  
   await app.listen(process.env.PORT ?? 3000);
   app.useGlobalPipes(new ValidationPipe({ whitelist: true }));
 }
