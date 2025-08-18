@@ -36,20 +36,23 @@ async function bootstrap() {
 
 
   app.getHttpAdapter().getInstance().get('/login', (req, res) => {
+    console.log('--- RUTA /login INVOCADA ---');
     const { connection } = req.query;
     
-   
-    const loginOptions: { authorizationParams: { [key: string]: any } } = {
-      authorizationParams: {}
-    };
+    // Se define el tipo del objeto para que TypeScript sepa qué propiedades puede tener.
+    const loginOptions: { authorizationParams?: { [key: string]: any } } = {};
 
-
-
+    // Si se pasa el parámetro 'connection', lo añadimos a las opciones.
     if (connection) {
-      loginOptions.authorizationParams.connection = String(connection);
+      console.log(`Parámetro 'connection' encontrado: ${connection}. Se intentará redirigir a Google.`);
+      loginOptions.authorizationParams = {
+        connection: String(connection),
+      };
+    } else {
+      console.log("No se encontró el parámetro 'connection'. Se usará el login por defecto.");
     }
     
-    console.log(`Opciones de login personalizadas: ${JSON.stringify(loginOptions)}`);
+    console.log(`Opciones finales para res.oidc.login(): ${JSON.stringify(loginOptions)}`);
     res.oidc.login(loginOptions);
   });
 
