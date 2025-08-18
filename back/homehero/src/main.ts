@@ -62,23 +62,34 @@ async function bootstrap() {
   
   app.use(auth(auth0Config));
 
- app.getHttpAdapter().getInstance().get('/', (req, res) => {
-    // Verificamos si la sesión tiene nuestra bandera especial
-    if (req.oidc && req.oidc.session && req.oidc.session.isAuthenticatedAndProcessed) {
-      console.log('Handler de raíz detectó sesión procesada. Realizando redirect final.');
+  app.getHttpAdapter().getInstance().get('/', (req, res) => {
+    console.log('--- HANDLER DE RAÍZ INVOCADO ---');
+    
+    if (!req.oidc || !req.oidc.session) {
+      console.log('ERROR: El objeto req.oidc.session no existe.');
+      return res.send('Hello World! Session object not found.');
+    }
 
-      const finalUrl = req.oidc.session.finalRedirectUrl;
+    console.log('Contenido completo de la sesión en la raíz:', JSON.stringify(req.oidc.session));
+
+    if (req.oidc.session.isAuthenticatedAndProcessed) {
+      console.log('ÉXITO: Se encontró la bandera isAuthenticatedAndProcessed. Procediendo a la redirección final.');
       
+      const finalUrl = req.oidc.session.finalRedirectUrl;
       
       delete req.oidc.session.isAuthenticatedAndProcessed;
       delete req.oidc.session.finalRedirectUrl;
       
-     
       if (finalUrl) {
+        console.log(`Redirigiendo a la URL final: ${finalUrl}`);
         return res.redirect(finalUrl);
+      } else {
+        console.log('ERROR: La bandera estaba presente, pero finalRedirectUrl no. Algo salió mal.');
+        return res.send('Error: Final URL not found in session.');
       }
     }
-   
+    
+    console.log('INFO: No se encontró la bandera de sesión. Es una visita normal a la raíz.');
     return res.send('Hello World! Welcome to HomeHero Backend.');
   });
   app.useGlobalPipes(new ValidationPipe({ 
