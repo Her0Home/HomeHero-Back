@@ -19,8 +19,6 @@ export const getAuth0Config = (auth0Service: Auth0Service) => {
         secure: true,
         sameSite: 'None',
       },
-      // Añadimos una duración absoluta a la sesión. A veces, ser más explícito
-      // con la configuración de la sesión ayuda a que se comporte como se espera.
       absoluteDuration: 60 * 60 * 24, // 1 día en segundos
     },
 
@@ -29,14 +27,9 @@ export const getAuth0Config = (auth0Service: Auth0Service) => {
       postLogoutRedirect: 'https://home-hero-front-cc1o.vercel.app/',
     },
     
-    // Esta función ahora cumple con la firma de tipos de la librería,
-    // devolviendo siempre un objeto `Session` o una promesa que resuelve a uno.
     afterCallback: async (req, res, session) => {
-      const frontendBaseUrl = 'https://home-hero-front-cc1o.vercel.app/';
-      
       try {
         let userPayload: any = null;
-
         if (session.id_token) {
           userPayload = jwtDecode(session.id_token);
         } else {
@@ -45,41 +38,32 @@ export const getAuth0Config = (auth0Service: Auth0Service) => {
 
         if (!userPayload) {
           console.error('Auth0 afterCallback: No se encontraron datos del usuario en la sesión.');
-          const errorUrl = new URL(frontendBaseUrl);
-          errorUrl.searchParams.set('error', 'true');
-          errorUrl.searchParams.set('message', 'user_data_not_found');
-          session.returnTo = errorUrl.toString();
+          // En caso de error, simplemente devolvemos la sesión sin modificar.
+          // El usuario será redirigido a la raíz sin estar autenticado.
           return session;
         } 
 
         const { user, token } = await auth0Service.processAuth0User(userPayload);
         
-        // --- Flujo de Redirección Correcto (según la librería) ---
-
-        // 1. Construimos la URL de redirección final
-        const frontendUrl = new URL(frontendBaseUrl);
+        const frontendUrl = new URL('https://home-hero-front-cc1o.vercel.app/');
         frontendUrl.searchParams.set('token', token);
         frontendUrl.searchParams.set('needsProfileCompletion', String(!user.dni));
         frontendUrl.searchParams.set('userName', user.name || '');
         
-        console.log(`Estableciendo session.returnTo para la redirección final: ${frontendUrl.toString()}`);
+        // --- LA CLAVE DE LA SOLUCIÓN ---
+        // Guardamos la URL final y una bandera en la sesión.
+        // Esto es como dejar una "nota" para que el manejador de la ruta raíz en main.ts la lea.
+        session.isAuthenticatedAndProcessed = true;
+        session.finalRedirectUrl = frontendUrl.toString();
         
-        // 2. Asignamos la URL a `session.returnTo`. Esta es la forma oficial
-        //    de decirle a la librería a dónde redirigir después del callback.
-        session.returnTo = frontendUrl.toString();
+        console.log(`Sesión preparada para el redirect final. URL: ${session.finalRedirectUrl}`);
         
-        // 3. Devolvemos el objeto `session` para que la librería continúe su flujo.
+        // Devolvemos la sesión para que la librería continúe su flujo (hacia la raíz del backend).
         return session;
         
       } catch (error) {
-        console.error('--- ERROR CRÍTICO DETECTADO EN afterCallback ---');
-        console.error('Mensaje de Error:', error instanceof Error ? error.message : String(error));
-        
-        const errorUrl = new URL(frontendBaseUrl);
-        errorUrl.searchParams.set('error', 'true');
-        errorUrl.searchParams.set('message', 'internal_processing_error');
-        
-        session.returnTo = errorUrl.toString();
+        console.error('--- ERROR DETECTADO EN afterCallback ---', error);
+        // En caso de un error crítico, también devolvemos la sesión sin modificar.
         return session;
       }
     },
