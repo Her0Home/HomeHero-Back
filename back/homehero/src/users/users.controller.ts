@@ -1,4 +1,4 @@
-import { Controller, Get, Post, Body, Patch, Param, Delete, UseInterceptors, ParseUUIDPipe, Put, UseGuards, Query} from '@nestjs/common';
+import { Controller, Get, Post, Body, Patch, Param, Delete, UseInterceptors, ParseUUIDPipe, Put, UseGuards, Query, Req, UnauthorizedException } from '@nestjs/common';
 import { UsersService } from './users.service';
 import { CreateUserDto } from './dto/create-user.dto';
 import { ExcludePasswordInterceptor } from 'src/interceptor/exclude-password/exclude-password.interceptor';
@@ -9,6 +9,9 @@ import { Roles } from 'src/decorators/role.decorator';
 import { RolesGuard } from 'src/guards/roles.guard';
 import { VerifyRoleGuard } from 'src/guards/verify-role.guard';
 import { ApiBearerAuth } from '@nestjs/swagger';
+import type { Request } from 'express';
+import { Email } from 'src/email/entities/email.entity';
+import { filter } from 'rxjs';
 // import { UpdateUserDto } from './dto/update-user.dto';
 
 @Controller('users')
@@ -33,8 +36,21 @@ export class UsersController {
 
   }
 
-}
+  @ApiBearerAuth()
+  @UseInterceptors(ExcludePasswordInterceptor)
+  @Get()
+  @UseGuards(LogginGuard)
+  @Get()
+  getAllUserVerifi(
+    @Query('role') role?: Role | undefined,
+    @Query('emial') email?: string,
+    @Query('id', new ParseUUIDPipe()) id?: string,
+    @Query('name') name? : string
+  ){
+    return this.usersService.getUserFilter({role, email, id, name})
+  }
 
+}
 
 @Controller('user/admin')
 export class adminController{
@@ -83,4 +99,19 @@ export class adminController{
     return this.userService.changeRole(id, newRole);
 
   }
+
+  @ApiBearerAuth()
+  @Roles(Role.ADMIN)
+  @UseGuards(LogginGuard,RolesGuard)
+  @UseInterceptors(ExcludePasswordInterceptor)
+  @Get()
+
+  verProfesionalesClientes(
+  @Query('role') role: Role, 
+  @Query('name') name?: string, 
+  @Query('email') email?: string,
+  @Query('id', new ParseUUIDPipe()) id?:string){
+
+  }
+
 }

@@ -1,0 +1,9 @@
+{
+  "dependencies": {
+    "cookie-parser": "^1.4.7",
+    "jwt-decode": "^4.0.0"
+  },
+  "devDependencies": {
+    "@types/cookie-parser": "^1.4.9"
+  }
+}
