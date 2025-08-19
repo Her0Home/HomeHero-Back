@@ -48,41 +48,41 @@ export class User {
     
     
     @Column({type:'boolean', default: false,})
-    isVerified: boolean;
+    isVerified?: boolean;
 
     @Column({type:'boolean', default: false,})
-    isMembresyActive: boolean;
+    isMembresyActive?: boolean;
 
     @Column({type:'boolean', default: true})
-    isActive: boolean;
+    isActive?: boolean;
     
     @Column({type:'enum', enum: Role, default:Role.UNKNOWN})
-    role: Role;
+    role?: Role;
 
     @Column({ type: 'jsonb', nullable: true })
     metadata?: any;
      
     @Column({ nullable: true })
-    stripeCustomerId: string;
+    stripeCustomerId?: string;
 
     @OneToMany(() => Appointment, appoiment=> appoiment.client)
-    clientAppointments: Appointment[];
+    clientAppointments?: Appointment[];
     
     @OneToMany(()=>Appointment, appoiment=> appoiment.professional,{cascade: true, onDelete: 'CASCADE'})
-    professionalAppointments: Appointment[];
+    professionalAppointments?: Appointment[];
     
     
     @OneToOne(()=> Membership, membership => membership.user,{cascade: true, onDelete: 'CASCADE'})
-    membership: Membership;
+    membership?: Membership;
 
     @ManyToMany(()=>Category, category=>category.professional,{cascade: true})
     @JoinTable({name:'professional_category'})
-    categories: Category[];
+    categories?: Category[];
     
     
 
      @OneToMany(() => Payment, payment => payment.user)
-     payments: Payment[];
+     payments?: Payment[];
 
     @ManyToMany(() => SubCategory, subcategory => subcategory.professionals,{cascade: true})
     @JoinTable({name: 'professional_subcategories'})
@@ -90,7 +90,7 @@ export class User {
     
     @OneToMany(()=> Addre, addre=> addre.user,{cascade: true, onDelete: 'CASCADE'})
     @JoinColumn({name:'addres_id'})
-    addres: Addre[]
+    addres?: Addre[]
     // @OneToMany(() => Addres, addres => addres.user)
     // addresses: Addres[];
 
@@ -98,12 +98,12 @@ export class User {
     // subcategories?: Subcategories[];
     @OneToMany(() => Image, image => image.user)
     @JoinColumn({ name: 'image_id' })
-    image: Image[];
+    image?: Image[];
 
     @OneToMany(() => Chat, (chat) => chat.cliente)
-    clientChats: Chat[];
+    clientChats?: Chat[];
 
     @OneToMany(() => Chat, (chat) => chat.profesional)
-    profesionalChats: Chat[];
+    profesionalChats?: Chat[];
 
 }

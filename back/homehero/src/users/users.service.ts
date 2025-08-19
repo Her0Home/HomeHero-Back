@@ -2,12 +2,13 @@ import { BadRequestException, Injectable, InternalServerErrorException, NotFound
 import { CreateUserDto } from './dto/create-user.dto';
 import { InjectRepository } from '@nestjs/typeorm';
 import { User } from './entities/user.entity';
-import { Repository } from 'typeorm';
+import { ILike, Repository } from 'typeorm';
 import * as bcrypt from 'bcrypt'
 import { DeleteResult } from 'typeorm/browser';
 import { Role } from './assets/roles';
 import { EmailService } from 'src/email/email.service';
 import { JwtService } from '@nestjs/jwt';
+import { writeHeapSnapshot } from 'v8';
 // import { UpdateUserDto } from './dto/update-user.dto';
 
 @Injectable()
@@ -137,7 +138,7 @@ export class UsersService {
       const safePage = page && page>0 ? page: 1;
       const safeLimit = limit && limit>0? limit : 2;
 
-      const profesionals: User[] | null = await this.userRepository.find({where:{role: Role.PROFESSIONAL}})
+      const profesionals: User[] | null = await this.userRepository.find({where:{role: Role.PROFESSIONAL, isVerified: true}})
       if(!profesionals){
         throw new InternalServerErrorException('Error al mostrar los profesionales');
       }
@@ -156,18 +157,35 @@ export class UsersService {
       throw new InternalServerErrorException('Error al mostrar los profesionales', error);
     }
 
-
-
-
   }
 
 
-  async getUserFilter(role: Role, email?: string,id?:string, name?: string){
+  async getUserFilter(filter : {role: Role | undefined, email?: string,id?:string, name?: string, }): Promise<(User[])>{
 
-    try {
+    try {  
+      const where = {isVerified: true};
+      const arrayFilter = Object.entries(filter);
+      arrayFilter.forEach(([key, value]) =>{
+
+        if(!value) return
+
+        if(key==='name'){
+          where[key] = ILike(`%${value}%`);
+        }else{
+          where[key]= value;
+        }
+
+      });
+
+      const users: User[] = await this.userRepository.find({where});
+
+      return users;
+
               
     } catch (error) {
-      
+
+      throw new InternalServerErrorException('Error al buscar los usuarios', error);
+
     }
 
   }

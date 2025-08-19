@@ -10,6 +10,8 @@ import { RolesGuard } from 'src/guards/roles.guard';
 import { VerifyRoleGuard } from 'src/guards/verify-role.guard';
 import { ApiBearerAuth } from '@nestjs/swagger';
 import type { Request } from 'express';
+import { Email } from 'src/email/entities/email.entity';
+import { filter } from 'rxjs';
 // import { UpdateUserDto } from './dto/update-user.dto';
 
 @Controller('users')
@@ -32,6 +34,20 @@ export class UsersController {
 
     return this.usersService.getAllProfesional(+page, +limit);
 
+  }
+
+  @ApiBearerAuth()
+  @UseInterceptors(ExcludePasswordInterceptor)
+  @Get()
+  @UseGuards(LogginGuard)
+  @Get()
+  getAllUserVerifi(
+    @Query('role') role?: Role | undefined,
+    @Query('emial') email?: string,
+    @Query('id', new ParseUUIDPipe()) id?: string,
+    @Query('name') name? : string
+  ){
+    return this.usersService.getUserFilter({role, email, id, name})
   }
 
 }
