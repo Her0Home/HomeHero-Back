@@ -14,14 +14,16 @@ export class CreateUserDto {
     email: string;
 
     @Type(() => Date)//permite convertir de string a Date
-    @IsNotEmpty()
-    birthdate: Date;
+    @IsOptional()
+    birthdate?: Date;
 
 
-    @IsNotEmpty()
-    dni: number;
+
+    @IsOptional()
+    dni?: number;
 
     @IsString()
+    @IsOptional()
     imageProfile?: string;
 
     @IsString()
