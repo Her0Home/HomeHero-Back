@@ -2,12 +2,13 @@ import { BadRequestException, Injectable, InternalServerErrorException, NotFound
 import { CreateUserDto } from './dto/create-user.dto';
 import { InjectRepository } from '@nestjs/typeorm';
 import { User } from './entities/user.entity';
-import { Repository } from 'typeorm';
+import { ILike, Repository } from 'typeorm';
 import * as bcrypt from 'bcrypt'
 import { DeleteResult } from 'typeorm/browser';
 import { Role } from './assets/roles';
 import { EmailService } from 'src/email/email.service';
 import { JwtService } from '@nestjs/jwt';
+import { writeHeapSnapshot } from 'v8';
 // import { UpdateUserDto } from './dto/update-user.dto';
 
 @Injectable()
@@ -162,9 +163,25 @@ export class UsersService {
   }
 
 
-  async getUserFilter(role: Role, email?: string,id?:string, name?: string){
+  async getUserFilter(filter : {role: Role, email?: string,id?:string, name?: string, }){
 
-    try {
+    try { 
+      const where = {};
+      const arrayFilter = Object.entries(filter);
+      arrayFilter.forEach(([key, value]) =>{
+
+        if(!value) return
+
+        if(key==='name'){
+          where[key] = ILike(`%${value}%`);
+        }else{
+          where[key]= value;
+        }
+
+      });
+
+      
+
               
     } catch (error) {
       
