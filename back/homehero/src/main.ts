@@ -26,7 +26,7 @@ async function bootstrap() {
   SwaggerModule.setup('api', app, document);
 
   
-  app.use('/stripe/webhook', express.raw({ type: 'application/json' }));
+  app.use('/stripe/webhooks', express.raw({ type: 'application/json' }));
   
   const auth0Service = app.get(Auth0Service);
   const auth0Config = getAuth0Config(auth0Service);
