@@ -35,7 +35,6 @@ export class AppointmentController {
 
   @Get(':id')
   findOne(@Param('id', new ParseUUIDPipe()) id: string) {
-    console.log(`Buscando cita con ID: ${id}`);
     return this.appointmentService.findOne(id);
   }
 

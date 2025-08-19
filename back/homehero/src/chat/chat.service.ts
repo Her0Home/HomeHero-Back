@@ -60,7 +60,6 @@ export class ChatService {
     }
 
     const result = await this.messageService.markMessagesAsRead(chatId, currentUser.id);
-  console.log('Mensajes marcados como leídos:', result);
   
 
   if (chat.messages && chat.messages.length > 0) {
