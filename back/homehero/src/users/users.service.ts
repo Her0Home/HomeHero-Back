@@ -138,7 +138,7 @@ export class UsersService {
       const safePage = page && page>0 ? page: 1;
       const safeLimit = limit && limit>0? limit : 2;
 
-      const profesionals: User[] | null = await this.userRepository.find({where:{role: Role.PROFESSIONAL}})
+      const profesionals: User[] | null = await this.userRepository.find({where:{role: Role.PROFESSIONAL, isVerified: true}})
       if(!profesionals){
         throw new InternalServerErrorException('Error al mostrar los profesionales');
       }
@@ -157,16 +157,13 @@ export class UsersService {
       throw new InternalServerErrorException('Error al mostrar los profesionales', error);
     }
 
-
-
-
   }
 
 
-  async getUserFilter(filter : {role: Role, email?: string,id?:string, name?: string, }){
+  async getUserFilter(filter : {role: Role | undefined, email?: string,id?:string, name?: string, }): Promise<(User[])>{
 
-    try { 
-      const where = {};
+    try {  
+      const where = {isVerified: true};
       const arrayFilter = Object.entries(filter);
       arrayFilter.forEach(([key, value]) =>{
 
@@ -180,11 +177,15 @@ export class UsersService {
 
       });
 
-      
+      const users: User[] = await this.userRepository.find({where});
+
+      return users;
 
               
     } catch (error) {
-      
+
+      throw new InternalServerErrorException('Error al buscar los usuarios', error);
+
     }
 
   }
