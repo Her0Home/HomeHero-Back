@@ -188,7 +188,7 @@ export class StripeService {
   }
 
 
-  async getUserStripeCustomerId(userId: string): Promise<string | null> {
+  async getUserStripeCustomerId(userId: string): Promise<string | undefined> {
     const user = await this.findUserById(userId);
     return user.stripeCustomerId;
   }
