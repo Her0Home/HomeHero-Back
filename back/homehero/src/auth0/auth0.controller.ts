@@ -25,7 +25,9 @@ export class Auth0Controller {
       profile: {
         id: user.id,
         name: user.name,
-        role: user.role
+        role: user.role,
+        isActive: user.isActive,
+        isVerify: user.isVerified
       }
     };
   }
