@@ -1,6 +1,11 @@
 import { Auth0Service } from '../auth0/auth0.service';
 import { config as dotenvConfig } from 'dotenv';
 
+<<<<<<< HEAD
+=======
+dotenvConfig({ path: '.development.env' });
+>>>>>>> ef10c442bb8d5a163bf9547a86d6e65b5f1bb820
+
 dotenvConfig({ path: '.development.env' });
 
 export const getAuth0Config = (auth0Service: Auth0Service) => {
@@ -15,6 +20,7 @@ export const getAuth0Config = (auth0Service: Auth0Service) => {
     
     session: {
       cookie: {
+        domain: 'homehero-back.onrender.com', // ¡AÑADIDO! Forzamos el dominio de la cookie.
         secure: true,
         httpOnly: true,
         sameSite: 'None',
@@ -27,8 +33,43 @@ export const getAuth0Config = (auth0Service: Auth0Service) => {
       postLogoutRedirect: 'https://home-hero-front-cc1o.vercel.app/',
     },
     
-    // Se ha eliminado temporalmente el 'afterCallback' para diagnóstico
-    // afterCallback: async (req, res, session) => { ... },
+    afterCallback: async (req, res, session) => {
+      try {
+        const FRONTEND_URL = 'https://home-hero-front-cc1o.vercel.app';
+        const ISSUER_BASE_URL = process.env.AUTH0_ISSUER_BASE_URL;
+
+        let userPayload = session?.user ?? req?.oidc?.user ?? null;
+
+        if (!userPayload && session?.access_token) {
+          try {
+            const userInfoResponse = await fetch(`${ISSUER_BASE_URL}/userinfo`, {
+              headers: {
+                Authorization: `Bearer ${session.access_token}`,
+              },
+            });
+
+            if (userInfoResponse.ok) {
+              userPayload = await userInfoResponse.json();
+            }
+          } catch (err) {
+            console.error('Error fetching userinfo:', err);
+          }
+        }
+
+        if (!userPayload) {
+          console.error('afterCallback: No se pudo obtener el perfil del usuario.');
+          return res.redirect(`${FRONTEND_URL}/?error=auth_failed`);
+        }
+
+        await auth0Service.processAuth0User(userPayload);
+
+        return res.redirect(`${FRONTEND_URL}/profile`);
+
+      } catch (error) {
+        console.error('Critical error inside afterCallback:', error);
+        return res.redirect(`${process.env.FRONTEND_URL || 'https://home-hero-front-cc1o.vercel.app'}/?error=internal_error`);
+      }
+    },
 
     authorizationParams: {
       response_type: 'code',
