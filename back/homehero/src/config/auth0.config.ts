@@ -1,8 +1,6 @@
 import { Auth0Service } from '../auth0/auth0.service';
 import { config as dotenvConfig } from 'dotenv';
-// Node.js 18+ ya incluye 'fetch'. Si usas una versión anterior,
-// necesitarás instalar 'node-fetch' (npm i node-fetch) y descomentar la siguiente línea:
-// import fetch from 'node-fetch';
+// Node.js 18+ ya incluye 'fetch'.
 
 dotenvConfig({ path: '.development.env' });
 
@@ -15,11 +13,9 @@ export const getAuth0Config = (auth0Service: Auth0Service) => {
     clientID: process.env.AUTH0_CLIENT_ID,
     issuerBaseURL: process.env.AUTH0_ISSUER_BASE_URL,
     clientSecret: process.env.AUTH0_CLIENT_SECRET,
-    attemptSilentLogin: false, // ¡AÑADIDO! Desactiva el silent login para evitar el conflicto.
     
     session: {
       cookie: {
-        domain: 'homehero-back.onrender.com', 
         secure: true,
         httpOnly: true,
         sameSite: 'None',
@@ -30,23 +26,20 @@ export const getAuth0Config = (auth0Service: Auth0Service) => {
       login: '/login',
       callback: '/callback',
       postLogoutRedirect: 'https://home-hero-front-cc1o.vercel.app/',
+      // ¡NUEVO! Ruta a la que se redirige después de que el callback se procesa.
+      postCallback: '/auth0/redirect-to-front'
     },
     
     afterCallback: async (req, res, session) => {
       try {
-        const FRONTEND_URL = 'https://home-hero-front-cc1o.vercel.app';
         const ISSUER_BASE_URL = process.env.AUTH0_ISSUER_BASE_URL;
-
         let userPayload = session?.user ?? req?.oidc?.user ?? null;
 
         if (!userPayload && session?.access_token) {
           try {
             const userInfoResponse = await fetch(`${ISSUER_BASE_URL}/userinfo`, {
-              headers: {
-                Authorization: `Bearer ${session.access_token}`,
-              },
+              headers: { Authorization: `Bearer ${session.access_token}` },
             });
-
             if (userInfoResponse.ok) {
               userPayload = await userInfoResponse.json();
             }
@@ -55,18 +48,21 @@ export const getAuth0Config = (auth0Service: Auth0Service) => {
           }
         }
 
-        if (!userPayload) {
-          console.error('afterCallback: No se pudo obtener el perfil del usuario.');
-          return res.redirect(`${FRONTEND_URL}/?error=auth_failed`);
+        if (userPayload) {
+          // Solo procesamos el usuario en la DB.
+          await auth0Service.processAuth0User(userPayload);
+        } else {
+            console.error('afterCallback: No se pudo obtener el perfil del usuario.');
         }
 
-        await auth0Service.processAuth0User(userPayload);
-
-        return res.redirect(FRONTEND_URL);
+        // ¡LA SOLUCIÓN CLAVE! Devolvemos la sesión para que el middleware continúe.
+        // El middleware guardará la sesión y luego redirigirá a 'postCallback'.
+        return session;
 
       } catch (error) {
         console.error('Critical error inside afterCallback:', error);
-        return res.redirect(`${process.env.FRONTEND_URL || 'https://home-hero-front-cc1o.vercel.app'}/?error=internal_error`);
+        // Aún así, devolvemos la sesión para que el middleware maneje el error.
+        return session;
       }
     },
 
