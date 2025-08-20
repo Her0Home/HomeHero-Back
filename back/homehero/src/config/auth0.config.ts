@@ -1,7 +1,7 @@
 import { Auth0Service } from '../auth0/auth0.service';
 import { config as dotenvConfig } from 'dotenv';
 
-// Cuidado con la ruta del .env en producción, Render usa variables de entorno directamente.
+
 dotenvConfig({ path: '.development.env' });
 
 export const getAuth0Config = (auth0Service: Auth0Service) => {
@@ -19,7 +19,7 @@ export const getAuth0Config = (auth0Service: Auth0Service) => {
         secure: true,
         httpOnly: true,
         sameSite: 'None',
-        proxy: true, 
+        proxy: true,
       },
     },
 
@@ -30,31 +30,46 @@ export const getAuth0Config = (auth0Service: Auth0Service) => {
     },
     
     afterCallback: async (req, res, session) => {
-      // ---- INICIO DE CÓDIGO DE DIAGNÓSTICO ----
-      console.log('--- Auth0: afterCallback triggered ---');
-      console.log('Session object received:', JSON.stringify(session, null, 2));
-      // ---- FIN DE CÓDIGO DE DIAGNÓSTICO ----
-
       try {
-        const userPayload = session.user;
+        const FRONTEND_URL = 'https://home-hero-front-cc1o.vercel.app';
+        const ISSUER_BASE_URL = process.env.AUTH0_ISSUER_BASE_URL;
 
+        // 1. Intenta obtener el perfil del usuario desde múltiples fuentes, en orden de fiabilidad.
+        let userPayload = session?.user ?? req?.oidc?.user ?? null;
+
+        // 2. Si no se encontró el perfil y tenemos un access_token, lo pedimos al endpoint /userinfo.
+        //    Este es el método de respaldo más robusto.
+        if (!userPayload && session?.access_token) {
+          try {
+            const userInfoResponse = await fetch(`${ISSUER_BASE_URL}/userinfo`, {
+              headers: {
+                Authorization: `Bearer ${session.access_token}`,
+              },
+            });
+
+            if (userInfoResponse.ok) {
+              userPayload = await userInfoResponse.json();
+            }
+          } catch (err) {
+            console.error('Error fetching userinfo:', err);
+          }
+        }
+
+        // 3. Si después de todos los intentos no tenemos un perfil, la autenticación falló.
         if (!userPayload) {
-          // Si llegamos aquí, el log anterior nos dirá por qué la sesión está vacía.
-          console.error('Error: session.user is missing. Redirecting with auth_failed.');
-          return res.redirect('https://home-hero-front-cc1o.vercel.app/?error=auth_failed');
-        } 
+          console.error('afterCallback: No se pudo obtener el perfil del usuario.');
+          return res.redirect(`${FRONTEND_URL}/?error=auth_failed`);
+        }
 
-        console.log('session.user found. Processing user in database...');
+        // 4. Sincronizamos al usuario con nuestra base de datos.
         await auth0Service.processAuth0User(userPayload);
-        
-        console.log('User processed successfully. Redirecting to frontend profile.');
-        res.redirect('https://home-hero-front-cc1o.vercel.app/profile');
-        
-        return session;
-        
+
+        // 5. Redirigimos al frontend a una URL limpia. La sesión ya está en la cookie.
+        return res.redirect(`${FRONTEND_URL}/profile`);
+
       } catch (error) {
-        console.error("Critical error inside afterCallback:", error);
-        return res.redirect('https://home-hero-front-cc1o.vercel.app/?error=internal_error');
+        console.error('Critical error inside afterCallback:', error);
+        return res.redirect(`${process.env.FRONTEND_URL || 'https://home-hero-front-cc1o.vercel.app'}/?error=internal_error`);
       }
     },
 
