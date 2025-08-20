@@ -1,6 +1,5 @@
 import { Auth0Service } from '../auth0/auth0.service';
 import { config as dotenvConfig } from 'dotenv';
-// Node.js 18+ ya incluye 'fetch'.
 
 dotenvConfig({ path: '.development.env' });
 
