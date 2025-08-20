@@ -6,7 +6,6 @@ dotenvConfig({ path: '.development.env' });
 
 export const getAuth0Config = (auth0Service: Auth0Service) => {
   return {
-    proxy: true,
     authRequired: false,
     auth0Logout: true,
     secret: process.env.AUTH0_SECRET,
