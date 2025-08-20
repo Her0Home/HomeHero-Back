@@ -1,5 +1,6 @@
 import { Controller, Get, Req, Res, UnauthorizedException } from '@nestjs/common';
-import { Request, Response } from 'express';
+// ¡CORREGIDO! Se añade 'type' para cumplir con las reglas de TypeScript.
+import type { Request, Response } from 'express';
 import { Auth0Service } from './auth0.service';
 
 @Controller('auth0')
