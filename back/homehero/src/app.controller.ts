@@ -13,7 +13,7 @@ export class AppController {
 @Get()
 handleRoot(@Req() req: Request, @Res() res: Response) {
   if (req.oidc && req.oidc.isAuthenticated()) {
-   res.redirect('http://localhost:3000/auth/callback');
+   res.redirect('http://localhost:3000/callback');
   } else {
     res.send(this.appService.getHello());
   }
