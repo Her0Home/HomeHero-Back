@@ -22,7 +22,7 @@ export class Auth0Controller {
 
     return {
       token: token,
-      profile: {
+      user: {
         id: user.id,
         name: user.name,
         role: user.role,
