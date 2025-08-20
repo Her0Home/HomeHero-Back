@@ -50,7 +50,7 @@ export class Auth0Service {
             metadata: auth0UserData,
             isActive: true,
             isVerified: auth0UserData.email_verified || false,
-            role: Role.CLIENTE,
+            role: Role.UNKNOWN,
           });
           user = await this.userRepository.save(newUser);
        

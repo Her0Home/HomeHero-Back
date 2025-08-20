@@ -25,10 +25,7 @@ export class Auth0Controller {
       profile: {
         id: user.id,
         name: user.name,
-        email: user.email,
-        role: user.role,
-        imageProfile: user.imageProfile,
-        needsProfileCompletion: !user.dni,
+        role: user.role
       }
     };
   }
