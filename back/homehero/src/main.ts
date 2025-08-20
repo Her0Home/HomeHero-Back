@@ -44,13 +44,6 @@ async function bootstrap() {
       transform: true,
     }));
 
-    app.use((err, req, res, next) => {
-    if (res.headersSent) {
-      return;
-    }
-    res.status(500).send('Ocurrió un error interno en el servidor.');
-  });
-
   
   await app.listen(process.env.PORT ?? 3000);
   app.useGlobalPipes(new ValidationPipe({ whitelist: true }));

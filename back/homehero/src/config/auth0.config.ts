@@ -1,6 +1,8 @@
 import { Auth0Service } from '../auth0/auth0.service';
 import { config as dotenvConfig } from 'dotenv';
-
+// Node.js 18+ ya incluye 'fetch'. Si usas una versión anterior,
+// necesitarás instalar 'node-fetch' (npm i node-fetch) y descomentar la siguiente línea:
+// import fetch from 'node-fetch';
 
 dotenvConfig({ path: '.development.env' });
 
@@ -16,7 +18,7 @@ export const getAuth0Config = (auth0Service: Auth0Service) => {
     
     session: {
       cookie: {
-        domain: 'homehero-back.onrender.com', // ¡AÑADIDO! Forzamos el dominio de la cookie.
+        domain: 'homehero-back.onrender.com', 
         secure: true,
         httpOnly: true,
         sameSite: 'None',
@@ -59,7 +61,9 @@ export const getAuth0Config = (auth0Service: Auth0Service) => {
 
         await auth0Service.processAuth0User(userPayload);
 
-        return res.redirect(`${FRONTEND_URL}/profile`);
+        // ---- ¡CORREGIDO! ----
+        // Redirigimos a la página principal del frontend
+        return res.redirect(FRONTEND_URL);
 
       } catch (error) {
         console.error('Critical error inside afterCallback:', error);
