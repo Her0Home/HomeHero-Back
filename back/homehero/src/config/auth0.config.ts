@@ -13,6 +13,7 @@ export const getAuth0Config = (auth0Service: Auth0Service) => {
     clientID: process.env.AUTH0_CLIENT_ID,
     issuerBaseURL: process.env.AUTH0_ISSUER_BASE_URL,
     clientSecret: process.env.AUTH0_CLIENT_SECRET,
+    attemptSilentLogin: false, // Previene conflictos de headers
     
     session: {
       cookie: {
@@ -26,8 +27,6 @@ export const getAuth0Config = (auth0Service: Auth0Service) => {
       login: '/login',
       callback: '/callback',
       postLogoutRedirect: 'https://home-hero-front-cc1o.vercel.app/',
-      // ¡NUEVO! Ruta a la que se redirige después de que el callback se procesa.
-      postCallback: '/auth0/redirect-to-front'
     },
     
     afterCallback: async (req, res, session) => {
@@ -49,19 +48,16 @@ export const getAuth0Config = (auth0Service: Auth0Service) => {
         }
 
         if (userPayload) {
-          // Solo procesamos el usuario en la DB.
+          // Solo sincronizamos al usuario con nuestra base de datos.
           await auth0Service.processAuth0User(userPayload);
-        } else {
-            console.error('afterCallback: No se pudo obtener el perfil del usuario.');
         }
 
-        // ¡LA SOLUCIÓN CLAVE! Devolvemos la sesión para que el middleware continúe.
-        // El middleware guardará la sesión y luego redirigirá a 'postCallback'.
+        // Devolvemos la sesión para que el middleware continúe su flujo
+        // (crear cookie y redirigir a la baseURL, es decir, '/').
         return session;
 
       } catch (error) {
         console.error('Critical error inside afterCallback:', error);
-        // Aún así, devolvemos la sesión para que el middleware maneje el error.
         return session;
       }
     },

@@ -1,6 +1,5 @@
-import { Controller, Get, Req, Res, UnauthorizedException } from '@nestjs/common';
-// ¡CORREGIDO! Se añade 'type' para cumplir con las reglas de TypeScript.
-import type { Request, Response } from 'express';
+import { Controller, Get, Req, UnauthorizedException } from '@nestjs/common';
+import type { Request } from 'express';
 import { Auth0Service } from './auth0.service';
 
 @Controller('auth0')
@@ -10,17 +9,6 @@ export class Auth0Controller {
   ) {}
 
   /**
-   * Este endpoint es el destino final después de que el middleware de Auth0
-   * ha procesado exitosamente el callback y ha creado la sesión.
-   * Su única responsabilidad es redirigir al usuario al frontend.
-   */
-  @Get('redirect-to-front')
-  redirectToFront(@Res() res: Response) {
-    // Ahora que la sesión está garantizada, redirigimos al frontend.
-    res.redirect('https://home-hero-front-cc1o.vercel.app');
-  }
-
-  /**
    * Endpoint protegido para que el frontend obtenga los datos del usuario
    * y un token JWT personalizado.
    * Solo es accesible si el usuario tiene una cookie de sesión válida.
@@ -28,7 +16,7 @@ export class Auth0Controller {
   @Get('profile')
   async getProfile(@Req() req: Request) {
     // El middleware de Auth0 nos da 'req.oidc' para verificar la sesión.
-    if (!req.oidc.isAuthenticated()) {
+    if (!req.oidc || !req.oidc.isAuthenticated()) {
       throw new UnauthorizedException('No hay una sesión de usuario activa.');
     }
     
@@ -53,3 +41,4 @@ export class Auth0Controller {
     };
   }
 }
+

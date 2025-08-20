@@ -1,5 +1,6 @@
 import { Controller, Get } from '@nestjs/common';
 import { AppService } from './app.service';
+import type { Request, Response } from 'express';
 
 @Controller()
 export class AppController {
@@ -9,4 +10,14 @@ export class AppController {
   getHello(): string {
     return this.appService.getHello();
   }
+   @Get()
+  handleRoot(@Req() req: Request, @Res() res: Response) {
+    if (req.oidc && req.oidc.isAuthenticated()) {
+      res.redirect('https://home-hero-front-cc1o.vercel.app');
+    } else {
+      
+      res.send(this.appService.getHello());
+    }
+  }
 }
+
