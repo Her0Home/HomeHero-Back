@@ -1,76 +1,60 @@
 import { Auth0Service } from '../auth0/auth0.service';
 import { config as dotenvConfig } from 'dotenv';
-import { jwtDecode } from 'jwt-decode';
 
-dotenvConfig({ path: '.env.development' });
+dotenvConfig({ path: '.development.env' });
 
 export const getAuth0Config = (auth0Service: Auth0Service) => {
   return {
     authRequired: false,
     auth0Logout: true,
     secret: process.env.AUTH0_SECRET,
-    baseURL: process.env.AUTH0_BASE_URL,
+    baseURL: process.env.AUTH0_BASE_URL, 
     clientID: process.env.AUTH0_CLIENT_ID,
     issuerBaseURL: process.env.AUTH0_ISSUER_BASE_URL,
     clientSecret: process.env.AUTH0_CLIENT_SECRET,
     
+ 
     session: {
       cookie: {
-        secure: true,
-        sameSite: 'None',
+        secure: process.env.NODE_ENV !== 'development',
+        httpOnly: true,
+        sameSite: 'lax',
       },
-      absoluteDuration: 60 * 60 * 24, // 1 día en segundos
     },
 
     routes: {
-      callback: '/auth0/callback',
+
+      login: '/login',
+
       postLogoutRedirect: 'https://home-hero-front-cc1o.vercel.app/',
     },
     
     afterCallback: async (req, res, session) => {
       try {
-        let userPayload: any = null;
-        if (session.id_token) {
-          userPayload = jwtDecode(session.id_token);
-        } else {
-          userPayload = session.user || session.id_token_claims;
-        }
+        const userPayload = session.user;
 
         if (!userPayload) {
-          const errorUrl = new URL('https://home-hero-front-cc1o.vercel.app/');
-          errorUrl.searchParams.set('error', 'true');
-          errorUrl.searchParams.set('message', 'user_data_not_found');
-          res.redirect(errorUrl.toString());
-          return false as any; 
+          return res.redirect('https://home-hero-front-cc1o.vercel.app/?error=auth_failed');
         } 
 
-        const { user, token } = await auth0Service.processAuth0User(userPayload);
         
-        const frontendUrl = new URL('https://home-hero-front-cc1o.vercel.app/');
-        frontendUrl.searchParams.set('token', token);
-        frontendUrl.searchParams.set('needsProfileCompletion', String(!user.dni));
-        frontendUrl.searchParams.set('userName', user.name || '');
+        await auth0Service.processAuth0User(userPayload);
         
+       
+        res.redirect('https://home-hero-front-cc1o.vercel.app/profile'); // O a la página que necesiten
         
-        res.redirect(frontendUrl.toString());
-        
-   
-        return false as any;
+        return session;
         
       } catch (error) {
-       
-        const errorUrl = new URL('https://home-hero-front-cc1o.vercel.app/');
-        errorUrl.searchParams.set('error', 'true');
-        errorUrl.searchParams.set('message', 'internal_processing_error');
-        res.redirect(errorUrl.toString());
-        return false as any; 
+        console.error("Error en afterCallback:", error);
+        return res.redirect('https://home-hero-front-cc1o.vercel.app/?error=internal_error');
       }
     },
-    
+
     authorizationParams: {
       response_type: 'code',
       scope: 'openid profile email',
-      connection: 'google-oauth2',
+      connection: 'google-oauth2', // Redirige directamente a Google
     },
   };
 };
