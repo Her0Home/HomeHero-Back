@@ -11,6 +11,15 @@ import { Auth0Service } from './auth0/auth0.service';
 
 async function bootstrap() {
   const app = await NestFactory.create(AppModule);
+
+   app.enableCors({
+    origin: [
+      'http://localhost:3000', // Para tus pruebas locales
+      'https://home-hero-front-cc1o.vercel.app' // Para producción
+    ],
+    methods: 'GET,HEAD,PUT,PATCH,POST,DELETE,OPTIONS',
+    credentials: true, // ¡MUY IMPORTANTE! Permite que el frontend envíe cookies.
+  });
   
   app.getHttpAdapter().getInstance().set('trust proxy', 1);
 
