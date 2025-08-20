@@ -6,14 +6,13 @@ import { auth } from 'express-openid-connect';
 import { getAuth0Config } from './config/auth0.config';
 import * as express from 'express';
 import { Auth0Service } from './auth0/auth0.service';
-import cookieParser from 'cookie-parser'; // Importamos cookie-parser
+
 
 
 async function bootstrap() {
   const app = await NestFactory.create(AppModule);
   
   app.getHttpAdapter().getInstance().set('trust proxy', 1);
-  app.use(cookieParser());
 
   const swaggerDocument = new DocumentBuilder()
   .setTitle('HomeHero')
@@ -25,7 +24,6 @@ async function bootstrap() {
   const document = SwaggerModule.createDocument(app,swaggerDocument);
   SwaggerModule.setup('api', app, document);
 
-  app.use(cookieParser());
 
   
   app.use('/stripe/webhooks', express.raw({ type: 'application/json' }));
@@ -35,8 +33,6 @@ async function bootstrap() {
 
 
   app.use(auth(auth0Config));
-
-
 
   app.useGlobalPipes(new ValidationPipe({ 
       whitelist: true,
