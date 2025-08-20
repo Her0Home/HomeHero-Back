@@ -16,9 +16,9 @@ export const getAuth0Config = (auth0Service: Auth0Service) => {
  
     session: {
       cookie: {
-        secure: process.env.NODE_ENV !== 'development',
+        secure: true, 
         httpOnly: true,
-        sameSite: 'Lax',
+        sameSite: 'None', 
       },
     },
 
