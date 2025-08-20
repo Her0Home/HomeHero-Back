@@ -15,6 +15,7 @@ export const getAuth0Config = (auth0Service: Auth0Service) => {
     clientID: process.env.AUTH0_CLIENT_ID,
     issuerBaseURL: process.env.AUTH0_ISSUER_BASE_URL,
     clientSecret: process.env.AUTH0_CLIENT_SECRET,
+    attemptSilentLogin: false, // ¡AÑADIDO! Desactiva el silent login para evitar el conflicto.
     
     session: {
       cookie: {
@@ -61,8 +62,6 @@ export const getAuth0Config = (auth0Service: Auth0Service) => {
 
         await auth0Service.processAuth0User(userPayload);
 
-        // ---- ¡CORREGIDO! ----
-        // Redirigimos a la página principal del frontend
         return res.redirect(FRONTEND_URL);
 
       } catch (error) {
