@@ -1,10 +1,6 @@
 import { Auth0Service } from '../auth0/auth0.service';
 import { config as dotenvConfig } from 'dotenv';
 
-<<<<<<< HEAD
-=======
-dotenvConfig({ path: '.development.env' });
->>>>>>> ef10c442bb8d5a163bf9547a86d6e65b5f1bb820
 
 dotenvConfig({ path: '.development.env' });
 
