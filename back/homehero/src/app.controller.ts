@@ -13,8 +13,7 @@ export class AppController {
 @Get()
 handleRoot(@Req() req: Request, @Res() res: Response) {
   if (req.oidc && req.oidc.isAuthenticated()) {
-    // Si hay una sesión activa, te envío al frontend para que pida el token.
-    res.redirect('https://home-hero-front-cc1o.vercel.app/auth/callback');
+   res.redirect('http://localhost:3000/auth/callback');
   } else {
     res.send(this.appService.getHello());
   }
