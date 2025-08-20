@@ -19,6 +19,7 @@ export const getAuth0Config = (auth0Service: Auth0Service) => {
         secure: true,
         httpOnly: true,
         sameSite: 'None',
+        proxy: true, 
       },
     },
 
