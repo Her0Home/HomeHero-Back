@@ -10,6 +10,16 @@ export class Addre {
     @Column()
     addres: string;
 
+    @Column()
+    streetNumber:number ; 
+
+    @Column()
+    city : string;
+
+    @Column()
+    aptoNumber : string; 
+    
+    
     @ManyToOne(()=>User, user=>user.addres)
     @JoinColumn({name: 'user_id'})
     user: User;
