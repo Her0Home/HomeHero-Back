@@ -14,11 +14,11 @@ async function bootstrap() {
 
    app.enableCors({
     origin: [
-      'http://localhost:3000', // Para tus pruebas locales
-      'https://home-hero-front-cc1o.vercel.app' // Para producción
+      'http://localhost:3000', 
+      'https://home-hero-front-cc1o.vercel.app'
     ],
     methods: 'GET,HEAD,PUT,PATCH,POST,DELETE,OPTIONS',
-    credentials: true, // ¡MUY IMPORTANTE! Permite que el frontend envíe cookies.
+    credentials: true,
   });
   
   app.getHttpAdapter().getInstance().set('trust proxy', 1);

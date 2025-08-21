@@ -47,12 +47,11 @@ export const getAuth0Config = (auth0Service: Auth0Service) => {
         }
 
         if (userPayload) {
-          // Solo sincronizamos al usuario con nuestra base de datos.
+          
           await auth0Service.processAuth0User(userPayload);
         }
 
-        // Devolvemos la sesión para que el middleware continúe su flujo
-        // (crear cookie y redirigir a la baseURL, es decir, '/').
+      
         return session;
 
       } catch (error) {
