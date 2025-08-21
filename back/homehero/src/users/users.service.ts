@@ -41,12 +41,17 @@ export class UsersService {
       const newCliente: User = this.userRepository.create({password:hasPassword, ...rest});
       const  newUserCliente: User = await this.userRepository.save(newCliente);
 
-      await this.emailService.sendEmailCreate(newCliente.email, newCliente.name)
+      // await this.emailService.sendEmailCreate(newCliente.email, newCliente.name)
+
+      // console.log(newUserCliente);
+      
 
       return newUserCliente;
       
     } catch (error) {
-      throw new NotFoundException(`Error creating user: ${error.message}`);
+      console.log(error);
+      
+      throw new NotFoundException(`Error creating user!!: ${error.message}`, error );
     }
   }
   

@@ -5,6 +5,7 @@ import { User } from 'src/users/entities/user.entity';
 import { Repository } from 'typeorm';
 import * as bcrypt from 'bcrypt';
 import { JwtService } from '@nestjs/jwt';
+import { ResponseLoginDTO } from './dto/response-auth.dto';
 
 @Injectable()
 export class AuthService {
@@ -15,7 +16,7 @@ export class AuthService {
   ){}
 
 
-  async logIn(credentials: credentialsDto): Promise<{ message: string; token: string }>{
+  async logIn(credentials: credentialsDto): Promise<ResponseLoginDTO>{
 
     const findUser: User | null = await this.userRepository.findOne({where:{email: credentials.email}});
 
@@ -36,11 +37,20 @@ export class AuthService {
       dni: findUser.dni,
     }
 
+    const user = {
+      isActive: findUser.isActive,
+      
+      isVerified: findUser.isVerified,
+      
+      role: findUser.role,
+      
+      id: findUser.id,
+      
+      name: findUser.name,
+    }
+
     const token = this.jwtservice.sign(payload);
-    return { message: 'Login successful', token: token };
+    return { message: 'Login successful', token: token, user:user};
   }
-
-
-
 
 }
