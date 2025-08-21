@@ -1,22 +1,35 @@
-import { Controller, Get, Req, Res, UnauthorizedException } from '@nestjs/common';
-import type { Request, Response } from 'express';
+import { Controller, Get, Req, UnauthorizedException } from '@nestjs/common';
+import type { Request } from 'express';
+import { Auth0Service } from './auth0.service';
 
 @Controller('auth0')
 export class Auth0Controller {
-  constructor() {}
+  constructor(
+    private readonly auth0Service: Auth0Service,
+  ) {}
 
+ 
   @Get('profile')
-  getProfile(@Req() req: Request, @Res() res: Response) {
-    if (!req.oidc.isAuthenticated()) {
+  async getProfile(@Req() req: Request) {
+    if (!req.oidc || !req.oidc.isAuthenticated()) {
       throw new UnauthorizedException('No hay una sesión de usuario activa.');
     }
     
-    const oidcWithSession = req.oidc as Request['oidc'] & { session?: { app_metadata?: any } };
+    const auth0Profile = req.oidc.user;
     
-    res.json({
-      auth0_profile: req.oidc.user,
-      app_data: oidcWithSession.session?.app_metadata, 
-    });
-  }
 
+    const { token, user } = await this.auth0Service.processAuth0User(auth0Profile);
+
+    return {
+      token: token,
+      user: {
+        id: user.id,
+        name: user.name,
+        role: user.role,
+        isActive: user.isActive,
+        isVerify: user.isVerified
+      }
+    };
+  }
 }
+

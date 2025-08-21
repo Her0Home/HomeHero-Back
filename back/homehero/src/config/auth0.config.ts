@@ -1,8 +1,7 @@
 import { Auth0Service } from '../auth0/auth0.service';
 import { config as dotenvConfig } from 'dotenv';
-import { jwtDecode } from 'jwt-decode';
 
-dotenvConfig({ path: '.env.development' });
+dotenvConfig({ path: '.development.env' });
 
 export const getAuth0Config = (auth0Service: Auth0Service) => {
   return {
@@ -13,60 +12,54 @@ export const getAuth0Config = (auth0Service: Auth0Service) => {
     clientID: process.env.AUTH0_CLIENT_ID,
     issuerBaseURL: process.env.AUTH0_ISSUER_BASE_URL,
     clientSecret: process.env.AUTH0_CLIENT_SECRET,
+    attemptSilentLogin: false, // Previene conflictos de headers
     
     session: {
       cookie: {
         secure: true,
+        httpOnly: true,
         sameSite: 'None',
       },
-      absoluteDuration: 60 * 60 * 24, // 1 día en segundos
     },
 
     routes: {
-      callback: '/auth0/callback',
+      login: '/login',
+      callback: '/callback',
       postLogoutRedirect: 'https://home-hero-front-cc1o.vercel.app/',
     },
     
     afterCallback: async (req, res, session) => {
       try {
-        let userPayload: any = null;
-        if (session.id_token) {
-          userPayload = jwtDecode(session.id_token);
-        } else {
-          userPayload = session.user || session.id_token_claims;
+        const ISSUER_BASE_URL = process.env.AUTH0_ISSUER_BASE_URL;
+        let userPayload = session?.user ?? req?.oidc?.user ?? null;
+
+        if (!userPayload && session?.access_token) {
+          try {
+            const userInfoResponse = await fetch(`${ISSUER_BASE_URL}/userinfo`, {
+              headers: { Authorization: `Bearer ${session.access_token}` },
+            });
+            if (userInfoResponse.ok) {
+              userPayload = await userInfoResponse.json();
+            }
+          } catch (err) {
+            console.error('Error fetching userinfo:', err);
+          }
         }
 
-        if (!userPayload) {
-          const errorUrl = new URL('https://home-hero-front-cc1o.vercel.app/');
-          errorUrl.searchParams.set('error', 'true');
-          errorUrl.searchParams.set('message', 'user_data_not_found');
-          res.redirect(errorUrl.toString());
-          return false as any; 
-        } 
+        if (userPayload) {
+          
+          await auth0Service.processAuth0User(userPayload);
+        }
 
-        const { user, token } = await auth0Service.processAuth0User(userPayload);
-        
-        const frontendUrl = new URL('https://home-hero-front-cc1o.vercel.app/');
-        frontendUrl.searchParams.set('token', token);
-        frontendUrl.searchParams.set('needsProfileCompletion', String(!user.dni));
-        frontendUrl.searchParams.set('userName', user.name || '');
-        
-        
-        res.redirect(frontendUrl.toString());
-        
-   
-        return false as any;
-        
+      
+        return session;
+
       } catch (error) {
-       
-        const errorUrl = new URL('https://home-hero-front-cc1o.vercel.app/');
-        errorUrl.searchParams.set('error', 'true');
-        errorUrl.searchParams.set('message', 'internal_processing_error');
-        res.redirect(errorUrl.toString());
-        return false as any; 
+        console.error('Critical error inside afterCallback:', error);
+        return session;
       }
     },
-    
+
     authorizationParams: {
       response_type: 'code',
       scope: 'openid profile email',

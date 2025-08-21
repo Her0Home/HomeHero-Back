@@ -50,6 +50,15 @@ export class UsersController {
     return this.usersService.getUserFilter({role, email, id, name})
   }
 
+   @ApiBearerAuth()
+  @UseGuards(LogginGuard)
+  @UseInterceptors(ExcludePasswordInterceptor)
+  @Get(':id')
+  GetUserById(@Param('id', new ParseUUIDPipe()) id: string) {
+
+    return this.usersService.getUserById(id);
+
+  }
 }
 
 @Controller('user/admin')

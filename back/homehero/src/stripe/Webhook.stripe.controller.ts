@@ -32,7 +32,7 @@ export class StripeWebhookController {
     
     try {
       const event = this.stripeService.constructEvent(
-        request.body,
+        request['rawBody'],
         signature,
         webhookSecret,
       );

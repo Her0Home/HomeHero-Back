@@ -13,7 +13,8 @@ export class EmailService {
     try {
       
       const url:string = 'https://openai.com/es-419/'
-  
+      console.log(email);
+      
       await this.mailerService.sendMail({
         to: email,
         subject:'Bienvenido a Home Hero',// Asunto del Email
@@ -26,7 +27,7 @@ export class EmailService {
       })
 
     } catch (error) {
-      throw new InternalServerErrorException('No se pudo encontrar la direccion del correo');
+      throw new InternalServerErrorException('No se pudo encontrar la direccion del correo', error);
     }
 
   

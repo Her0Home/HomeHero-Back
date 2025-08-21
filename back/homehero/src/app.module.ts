@@ -22,6 +22,7 @@ import { EventEmitterModule } from '@nestjs/event-emitter';
 import { EmailModule } from './email/email.module';
 import { Auth0Module } from './auth0/auth0.module';
 import { StripeModule } from './stripe/stripe.module';
+import { CommentsModule } from './comments/comments.module';
 
 
 @Module({
@@ -54,6 +55,7 @@ import { StripeModule } from './stripe/stripe.module';
       signOptions:{expiresIn: '1h'}
     }),
     EmailModule,
+    CommentsModule,
   ],
   controllers: [AppController],
   providers: [AppService],
