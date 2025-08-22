@@ -8,6 +8,7 @@ import { Category } from "src/category/entities/category.entity";
 import { Image } from "src/images/entities/image.entity";
 import { Chat } from "src/chat/entities/chat.entity";
 import { Payment } from "src/stripe/entities/stripe.entity";
+import { Comment } from "src/comments/entities/comment.entity";
 
 @Entity({name: 'users'})
 export class User {
@@ -30,7 +31,6 @@ export class User {
     @Column({type:'bigint', unique: true, nullable: true})
     dni?: number;
 
-    
     @Column({type:'varchar',nullable: true})
     imageProfile?:string;
 
@@ -70,7 +70,12 @@ export class User {
     
     @OneToMany(()=>Appointment, appoiment=> appoiment.professional,{cascade: true, onDelete: 'CASCADE'})
     professionalAppointments?: Appointment[];
+
+    @OneToMany(() => Comment, comment => comment.sender)
+    sentComments: Comment[];
     
+    @OneToMany(() => Comment, comment => comment.receiver)
+    receivedComments: Comment[];
     
     @OneToOne(()=> Membership, membership => membership.user,{cascade: true, onDelete: 'CASCADE'})
     membership?: Membership;

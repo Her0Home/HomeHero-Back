@@ -55,9 +55,7 @@ export class UsersController {
   @UseInterceptors(ExcludePasswordInterceptor)
   @Get(':id')
   GetUserById(@Param('id', new ParseUUIDPipe()) id: string) {
-
     return this.usersService.getUserById(id);
-
   }
 }
 
