@@ -19,17 +19,9 @@ export class UsersController {
   constructor(private readonly usersService: UsersService) {}
 
   @ApiBearerAuth()
-  @UseInterceptors(ChangeRoleInterceptor,ExcludePasswordInterceptor)
-  @UseGuards(VerifyRoleGuard)
-  @Post()
-  create(@Body() createUserDto:CreateUserDto ) {
-    return this.usersService.create(createUserDto);
-  }
-
-  @ApiBearerAuth()
   @UseInterceptors(ExcludePasswordInterceptor)
-  @Get()
   @UseGuards(LogginGuard)
+  @Get('profesionals')  
   getProfesional (@Query('page') page: string, @Query('limit') limit:string){
 
     return this.usersService.getAllProfesional(+page, +limit);
@@ -38,19 +30,18 @@ export class UsersController {
 
   @ApiBearerAuth()
   @UseInterceptors(ExcludePasswordInterceptor)
-  @Get()
   @UseGuards(LogginGuard)
-  @Get()
+  @Get('filter')
   getAllUserVerifi(
     @Query('role') role?: Role | undefined,
-    @Query('emial') email?: string,
-    @Query('id', new ParseUUIDPipe()) id?: string,
+    @Query('email') email?: string,
+    @Query('id', new ParseUUIDPipe({optional: true})) id?: string,
     @Query('name') name? : string
   ){
     return this.usersService.getUserFilter({role, email, id, name})
   }
 
-   @ApiBearerAuth()
+  @ApiBearerAuth()
   @UseGuards(LogginGuard)
   @UseInterceptors(ExcludePasswordInterceptor)
   @Get(':id')
@@ -59,12 +50,6 @@ export class UsersController {
     return this.usersService.getUserById(id);
 
   }
-}
-
-@Controller('user/admin')
-export class adminController{
-  
-  constructor( private readonly userService: UsersService){}
 
   @ApiBearerAuth()
   @Roles(Role.ADMIN)
@@ -72,9 +57,8 @@ export class adminController{
   @UseInterceptors(ExcludePasswordInterceptor)
   @Get()
   getAllUser(){
-    return this.userService.getAllUser()
+    return this.usersService.getAllUser()
   }
-
 
   @ApiBearerAuth()
   @Roles(Role.ADMIN)
@@ -82,8 +66,25 @@ export class adminController{
   @UseInterceptors(ExcludePasswordInterceptor)
   @Delete(':id')
   deleteUser(@Param('id', new ParseUUIDPipe) id:string) {
-    return this.userService.DeleteUser(id);
+    return this.usersService.DeleteUser(id);
   }
+
+  @ApiBearerAuth()
+  @UseGuards(LogginGuard)
+  @UseInterceptors(ExcludePasswordInterceptor)
+  @Put('changeRole/:id')
+  postRole(@Param('id', new ParseUUIDPipe()) id: string, @Body('role') newRole: Role){
+  
+    return this.usersService.changeRole(id, newRole);
+  
+  }
+}
+
+@Controller('user/admin')
+export class adminController{
+  
+  constructor( private readonly userService: UsersService){}
+
 
 
   @ApiBearerAuth()
@@ -96,31 +97,4 @@ export class adminController{
     return this.userService.getUserById(id);
 
   }
-
-
-  @ApiBearerAuth()
-  @Roles(Role.ADMIN)
-  @UseGuards(LogginGuard,RolesGuard)
-  @UseInterceptors(ExcludePasswordInterceptor)
-  @Put('changeRole/:id')
-  postRole(@Param('id', new ParseUUIDPipe()) id: string, @Body('role') newRole: Role){
-
-    return this.userService.changeRole(id, newRole);
-
-  }
-
-  @ApiBearerAuth()
-  @Roles(Role.ADMIN)
-  @UseGuards(LogginGuard,RolesGuard)
-  @UseInterceptors(ExcludePasswordInterceptor)
-  @Get()
-
-  verProfesionalesClientes(
-  @Query('role') role: Role, 
-  @Query('name') name?: string, 
-  @Query('email') email?: string,
-  @Query('id', new ParseUUIDPipe()) id?:string){
-
-  }
-
 }

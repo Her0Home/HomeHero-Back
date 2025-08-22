@@ -19,43 +19,6 @@ export class UsersService {
     private emailService: EmailService
 ) {}
 
-
-  async hashPassword(password: string){
-    const hashPassword = await bcrypt.hash(password,10)
-    return hashPassword;
-  }
-
-  async create(createUserDto: CreateUserDto): Promise <User> {
-    try {
-
-      const foundUser: User | null = await this.userRepository.findOne({where:{email: createUserDto.email, dni: createUserDto.dni}});
-
-      if(foundUser){
-        throw new NotFoundException(`User with email ${createUserDto.email} already exists`);
-      }
-
-      const {password, ...rest} = createUserDto;
-
-      const hasPassword= await this.hashPassword(password);
-
-      const newCliente: User = this.userRepository.create({password:hasPassword, ...rest});
-      const  newUserCliente: User = await this.userRepository.save(newCliente);
-
-      // await this.emailService.sendEmailCreate(newCliente.email, newCliente.name)
-
-      // console.log(newUserCliente);
-      
-
-      return newUserCliente;
-      
-    } catch (error) {
-      console.log(error);
-      
-      throw new NotFoundException(`Error creating user!!: ${error.message}`, error );
-    }
-  }
-  
-
   async getAllUser () {
 
     try {
@@ -120,9 +83,6 @@ export class UsersService {
   async changeRole (id: string, newRole: Role){
 
     if(!Object.values(Role).includes(newRole)){
-      console.log('roles:',Role);
-      console.log('newRole:', newRole);
-      
       throw new BadRequestException(`El rol ${newRole} no es valido`);
     }
 
@@ -148,7 +108,6 @@ export class UsersService {
         throw new InternalServerErrorException('Error al mostrar los profesionales');
       }
       
-      console.log('arrglando...');
       
 
       const start:number = (safePage-1)*safeLimit;
@@ -181,6 +140,8 @@ export class UsersService {
         }
 
       });
+
+      console.log(where);
 
       const users: User[] = await this.userRepository.find({where});
 
