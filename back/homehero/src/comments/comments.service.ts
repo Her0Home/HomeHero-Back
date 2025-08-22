@@ -6,6 +6,7 @@ import { User } from '../users/entities/user.entity';
 import { Appointment } from '../appointment/entities/appointment.entity';
 import { CreateCommentDto } from './dto/create-comment.dto';
 import { AppointmentStatus } from '../appointment/Enum/appointmentStatus.enum';
+import { ProfanityFilterService } from '../FilterComents/filterComents.service';
 
 @Injectable()
 export class CommentsService {
@@ -17,6 +18,7 @@ export class CommentsService {
     @InjectRepository(Appointment)
     private appointmentsRepository: Repository<Appointment>,
     private dataSource: DataSource,
+    private profanityFilterService: ProfanityFilterService,
   ) {}
 
   async create(userId: string, createCommentDto: CreateCommentDto): Promise<Comment> {
@@ -30,7 +32,6 @@ export class CommentsService {
     if (!appointment) {
       throw new NotFoundException('Cita no encontrada');
     }
-
 
     if (appointment.status !== AppointmentStatus.COMPLETED) {
       throw new BadRequestException('No se puede comentar en citas no completadas');
@@ -57,6 +58,14 @@ export class CommentsService {
 
     if (existingComment) {
       throw new BadRequestException('Ya has comentado en esta cita');
+    }
+
+    // Verificar si el comentario contiene palabras inapropiadas
+    if (content && this.profanityFilterService.hasProfanity(content)) {
+      const badWords = this.profanityFilterService.findProfanityWords(content);
+      throw new BadRequestException(
+        `Tu comentario contiene lenguaje inapropiado: ${badWords.join(', ')}. Por favor, revísalo.`
+      );
     }
 
     const queryRunner = this.dataSource.createQueryRunner();
@@ -106,6 +115,7 @@ export class CommentsService {
     }
   }
 
+  // Los demás métodos permanecen iguales
   async findAll(): Promise<Comment[]> {
     return this.commentsRepository.find({
       relations: ['sender', 'receiver', 'appointment'],
