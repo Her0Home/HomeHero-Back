@@ -16,7 +16,7 @@ export class Addre {
     @Column()
     city : string;
 
-    @Column()
+    @Column({nullable: true})
     aptoNumber : string; 
     
     
