@@ -7,6 +7,7 @@ import { User } from '../users/entities/user.entity';
 import { JwtStrategy } from './strategies/jwt.strategy';
 import { AuthService } from './auth.service';
 import { AuthController } from './auth.controller';
+import { EmailModule } from 'src/email/email.module';
 
 @Module({
   imports: [
@@ -19,7 +20,7 @@ import { AuthController } from './auth.controller';
         signOptions: { expiresIn: '1h' }
       }),
     }),
-    TypeOrmModule.forFeature([User]),
+    TypeOrmModule.forFeature([User]), EmailModule,
   ],
   controllers: [AuthController],
   providers: [AuthService, JwtStrategy],

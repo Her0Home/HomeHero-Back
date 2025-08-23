@@ -51,6 +51,12 @@ export class Appointment {
   })
   imageService: string;
 
+  @Column({
+    type: 'boolean',
+    default: false,
+  })
+  canComment: boolean;
+
   @ManyToOne(() => User, (user) => user.clientAppointments)
   @JoinColumn({ name: 'client_id' })
   client: User;
@@ -61,8 +67,10 @@ export class Appointment {
 
   @OneToOne(() => Chat, (chat) => chat.appointment)
   chat: Chat;
+  
 
   @OneToMany(() => Image, (image) => image.appointment)
   @JoinColumn({ name: 'image_id' })
   image: Image[];
+  
 }

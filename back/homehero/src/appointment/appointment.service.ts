@@ -86,6 +86,10 @@ export class AppointmentService {
         }
       }
       
+if (status === AppointmentStatus.COMPLETED) {
+  appointment.canComment = true;
+}
+      
       return updatedAppointment;
     });
   }

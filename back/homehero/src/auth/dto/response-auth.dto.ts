@@ -14,6 +14,8 @@ export class ResponseLoginDTO{
 
         id: string,
 
-        name: string
+        name: string,
+
+        isMembresyActive?: boolean
     }
 }
