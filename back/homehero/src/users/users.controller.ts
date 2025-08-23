@@ -21,8 +21,8 @@ export class UsersController {
   @ApiBearerAuth()
   @UseInterceptors(ExcludePasswordInterceptor)
   @UseGuards(LogginGuard)
-  @Get('profesionals')  
-  getProfesional (@Query('page') page: string, @Query('limit') limit:string){
+  @Get('professionals')  
+  getProfesionals (@Query('page') page: string, @Query('limit') limit:string){
 
     return this.usersService.getAllProfesional(+page, +limit);
 
@@ -30,8 +30,9 @@ export class UsersController {
 
   @ApiBearerAuth()
   @UseInterceptors(ExcludePasswordInterceptor)
-  @UseGuards(LogginGuard)
-  @Get('filter')
+  @Roles(Role.ADMIN)
+  @UseGuards(LogginGuard,RolesGuard)
+  @Get('search')
   getAllUserVerifi(
     @Query('role') role?: Role | undefined,
     @Query('email') email?: string,
@@ -64,35 +65,25 @@ export class UsersController {
   @UseInterceptors(ExcludePasswordInterceptor)
   @Delete(':id')
   deleteUser(@Param('id', new ParseUUIDPipe) id:string) {
-    return this.usersService.DeleteUser(id);
+    return this.usersService.deleteUser(id);
   }
 
   @ApiBearerAuth()
   @UseGuards(LogginGuard)
   @UseInterceptors(ExcludePasswordInterceptor)
-  @Put('changeRole/:id')
-  postRole(@Param('id', new ParseUUIDPipe()) id: string, @Body('role') newRole: Role){
+  @Put(':id/role')
+  putRole(@Param('id', new ParseUUIDPipe()) id: string, @Body('role') newRole: Role){
   
     return this.usersService.changeRole(id, newRole);
   
   }
-}
-
-@Controller('user/admin')
-export class adminController{
-  
-  constructor( private readonly userService: UsersService){}
-
-
 
   @ApiBearerAuth()
   @Roles(Role.ADMIN)
   @UseGuards(LogginGuard,RolesGuard)
-  @UseInterceptors(ExcludePasswordInterceptor)
-  @Get(':id')
-  GetUserById(@Param('id', new ParseUUIDPipe()) id: string) {
-
-    return this.userService.getUserById(id);
-
+  @Put(':id/ban')
+  banUser (@Param('id', new ParseUUIDPipe()) id:string){
+    return this.usersService.banUser(id);
   }
 }
+

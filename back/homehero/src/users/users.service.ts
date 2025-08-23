@@ -9,6 +9,7 @@ import { Role } from './assets/roles';
 import { EmailService } from 'src/email/email.service';
 import { JwtService } from '@nestjs/jwt';
 import { writeHeapSnapshot } from 'v8';
+import { UpdateResult } from 'typeorm/browser';
 // import { UpdateUserDto } from './dto/update-user.dto';
 
 @Injectable()
@@ -33,7 +34,7 @@ export class UsersService {
   }
 
 
-  async DeleteUser(id:string){
+  async deleteUser(id:string){
 
     try {
       const foundUser: User | null = await this.userRepository.findOne({where: {id: id}});
@@ -154,6 +155,27 @@ export class UsersService {
 
     }
 
+  }
+
+
+  async banUser(id: string){
+    try {
+      
+      const userUpdate: UpdateResult = await this.userRepository.update(id, {isActive: false});
+
+      if(userUpdate.affected===0){
+        throw new NotFoundException(`No se ha podido encontrar el usuario con id: ${id}`);
+      }
+
+      const findUser: User | null = await this.userRepository.findOne({where:{id}});
+
+      return findUser;
+
+    } catch (error) {
+      console.log(error);
+      throw new InternalServerErrorException('Error al eliminar el user')
+
+    }
   }
   
 }
