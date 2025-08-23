@@ -12,6 +12,7 @@ import { ApiBearerAuth } from '@nestjs/swagger';
 import type { Request } from 'express';
 import { Email } from 'src/email/entities/email.entity';
 import { filter } from 'rxjs';
+import { ratingUserDto } from './dto/rating-user.dto';
 // import { UpdateUserDto } from './dto/update-user.dto';
 
 @Controller('users')
@@ -19,18 +20,10 @@ export class UsersController {
   constructor(private readonly usersService: UsersService) {}
 
   @ApiBearerAuth()
-  @UseInterceptors(ChangeRoleInterceptor,ExcludePasswordInterceptor)
-  @UseGuards(VerifyRoleGuard)
-  @Post()
-  create(@Body() createUserDto:CreateUserDto ) {
-    return this.usersService.create(createUserDto);
-  }
-
-  @ApiBearerAuth()
   @UseInterceptors(ExcludePasswordInterceptor)
-  @Get()
   @UseGuards(LogginGuard)
-  getProfesional (@Query('page') page: string, @Query('limit') limit:string){
+  @Get('professionals')  
+  getProfesionals (@Query('page') page: string, @Query('limit') limit:string){
 
     return this.usersService.getAllProfesional(+page, +limit);
 
@@ -38,31 +31,25 @@ export class UsersController {
 
   @ApiBearerAuth()
   @UseInterceptors(ExcludePasswordInterceptor)
-  @Get()
-  @UseGuards(LogginGuard)
-  @Get()
+  @Roles(Role.ADMIN)
+  @UseGuards(LogginGuard,RolesGuard)
+  @Get('search')
   getAllUserVerifi(
     @Query('role') role?: Role | undefined,
-    @Query('emial') email?: string,
-    @Query('id', new ParseUUIDPipe()) id?: string,
+    @Query('email') email?: string,
+    @Query('id', new ParseUUIDPipe({optional: true})) id?: string,
     @Query('name') name? : string
   ){
     return this.usersService.getUserFilter({role, email, id, name})
   }
 
-   @ApiBearerAuth()
+  @ApiBearerAuth()
   @UseGuards(LogginGuard)
   @UseInterceptors(ExcludePasswordInterceptor)
   @Get(':id')
   GetUserById(@Param('id', new ParseUUIDPipe()) id: string) {
     return this.usersService.getUserById(id);
   }
-}
-
-@Controller('user/admin')
-export class adminController{
-  
-  constructor( private readonly userService: UsersService){}
 
   @ApiBearerAuth()
   @Roles(Role.ADMIN)
@@ -70,9 +57,8 @@ export class adminController{
   @UseInterceptors(ExcludePasswordInterceptor)
   @Get()
   getAllUser(){
-    return this.userService.getAllUser()
+    return this.usersService.getAllUser()
   }
-
 
   @ApiBearerAuth()
   @Roles(Role.ADMIN)
@@ -80,45 +66,34 @@ export class adminController{
   @UseInterceptors(ExcludePasswordInterceptor)
   @Delete(':id')
   deleteUser(@Param('id', new ParseUUIDPipe) id:string) {
-    return this.userService.DeleteUser(id);
+    return this.usersService.deleteUser(id);
   }
 
-
   @ApiBearerAuth()
-  @Roles(Role.ADMIN)
-  @UseGuards(LogginGuard,RolesGuard)
+  @UseGuards(LogginGuard)
   @UseInterceptors(ExcludePasswordInterceptor)
-  @Get(':id')
-  GetUserById(@Param('id', new ParseUUIDPipe()) id: string) {
-
-    return this.userService.getUserById(id);
-
-  }
-
-
-  @ApiBearerAuth()
-  @Roles(Role.ADMIN)
-  @UseGuards(LogginGuard,RolesGuard)
-  @UseInterceptors(ExcludePasswordInterceptor)
-  @Put('changeRole/:id')
-  postRole(@Param('id', new ParseUUIDPipe()) id: string, @Body('role') newRole: Role){
-
-    return this.userService.changeRole(id, newRole);
-
+  @Put(':id/role')
+  putRole(@Param('id', new ParseUUIDPipe()) id: string, @Body('role') newRole: Role){
+  
+    return this.usersService.changeRole(id, newRole);
+  
   }
 
   @ApiBearerAuth()
   @Roles(Role.ADMIN)
   @UseGuards(LogginGuard,RolesGuard)
-  @UseInterceptors(ExcludePasswordInterceptor)
-  @Get()
-
-  verProfesionalesClientes(
-  @Query('role') role: Role, 
-  @Query('name') name?: string, 
-  @Query('email') email?: string,
-  @Query('id', new ParseUUIDPipe()) id?:string){
-
+  @Put(':id/ban')
+  banUser (@Param('id', new ParseUUIDPipe()) id:string){
+    return this.usersService.banUser(id);
   }
+
+
+    @ApiBearerAuth()
+    @UseGuards(LogginGuard)
+    @Get('rating/professionals')
+    getByRating(@Query() query: ratingUserDto){
+      return this.usersService.ratingProfessionals(query)
+    }
 
 }
+

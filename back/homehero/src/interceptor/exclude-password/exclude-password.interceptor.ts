@@ -10,7 +10,7 @@ export class ExcludePasswordInterceptor implements NestInterceptor {
   excludePassword(user){
 
     if(Array.isArray(user)){
-      user.map(({password, ...rest})=> rest)
+       return user.map(({password, ...rest})=> rest)
     }
 
     const {password, ...rest}= user;
