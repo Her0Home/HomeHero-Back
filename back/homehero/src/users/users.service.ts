@@ -10,6 +10,7 @@ import { EmailService } from 'src/email/email.service';
 import { JwtService } from '@nestjs/jwt';
 import { writeHeapSnapshot } from 'v8';
 import { UpdateResult } from 'typeorm/browser';
+import { ratingUserDto } from './dto/rating-user.dto';
 // import { UpdateUserDto } from './dto/update-user.dto';
 
 @Injectable()
@@ -176,6 +177,32 @@ export class UsersService {
       throw new InternalServerErrorException('Error al eliminar el user')
 
     }
+  }
+
+
+  async ratingProfessionals(query: ratingUserDto){
+    try {
+      const {sort = 'avaregeRating', order = 'DESC'} = query;
+
+      const validSort = ['avaregeRating','name'];  
+      const sortColumn = validSort.includes(sort)? sort : 'avaregeRating';
+
+      const sortOrder: 'ASC' | 'DESC' = order === 'ASC' ? 'ASC' : 'DESC';
+
+      
+      const [professionals, total] = await this.userRepository.findAndCount({
+        where: { role: Role.PROFESSIONAL },
+        order: { [sortColumn]: sortOrder },
+      });
+
+      return professionals;
+    } catch (error) {
+      console.log(error);
+      
+    }
+    
+
+
   }
   
 }

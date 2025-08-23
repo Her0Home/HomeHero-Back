@@ -12,6 +12,7 @@ import { ApiBearerAuth } from '@nestjs/swagger';
 import type { Request } from 'express';
 import { Email } from 'src/email/entities/email.entity';
 import { filter } from 'rxjs';
+import { ratingUserDto } from './dto/rating-user.dto';
 // import { UpdateUserDto } from './dto/update-user.dto';
 
 @Controller('users')
@@ -85,5 +86,14 @@ export class UsersController {
   banUser (@Param('id', new ParseUUIDPipe()) id:string){
     return this.usersService.banUser(id);
   }
+
+
+    @ApiBearerAuth()
+    @UseGuards(LogginGuard)
+    @Get('rating/professionals')
+    getByRating(@Query() query: ratingUserDto){
+      return this.usersService.ratingProfessionals(query)
+    }
+
 }
 
