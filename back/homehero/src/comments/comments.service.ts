@@ -60,7 +60,6 @@ export class CommentsService {
       throw new BadRequestException('Ya has comentado en esta cita');
     }
 
-    // Verificar si el comentario contiene palabras inapropiadas
     if (content && this.profanityFilterService.hasProfanity(content)) {
       const badWords = this.profanityFilterService.findProfanityWords(content);
       throw new BadRequestException(
@@ -115,7 +114,6 @@ export class CommentsService {
     }
   }
 
-  // Los demás métodos permanecen iguales
   async findAll(): Promise<Comment[]> {
     return this.commentsRepository.find({
       relations: ['sender', 'receiver', 'appointment'],
