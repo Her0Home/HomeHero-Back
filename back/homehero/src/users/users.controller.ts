@@ -43,7 +43,7 @@ export class UsersController {
   @Get()
   getAllUserVerifi(
     @Query('role') role?: Role | undefined,
-    @Query('emial') email?: string,
+    @Query('email') email?: string,
     @Query('id', new ParseUUIDPipe()) id?: string,
     @Query('name') name? : string
   ){
@@ -57,6 +57,17 @@ export class UsersController {
   GetUserById(@Param('id', new ParseUUIDPipe()) id: string) {
     return this.usersService.getUserById(id);
   }
+
+  @Get('search/professionals')
+  @UseInterceptors(ExcludePasswordInterceptor)
+  searchProfessionals(
+    @Query('categoryId', ) categoryId?: string,
+    @Query('page') page?: number,
+    @Query('limit') limit?: number,
+  ) {
+    
+    return this.usersService.searchActiveProfessionals(categoryId, page, limit);
+}
 }
 
 @Controller('user/admin')

@@ -189,5 +189,30 @@ export class UsersService {
     }
 
   }
-  
+  async searchActiveProfessionals(categoryId?: string, page: number = 1, limit: number = 10): Promise<User[]> {
+    try {
+      const query = this.userRepository.createQueryBuilder('user');
+      
+      query.leftJoinAndSelect('user.categories', 'category');
+      
+      query.where('user.isActive = :isActive', { isActive: true });
+      query.andWhere('user.isMembresyActive = :isMembresyActive', { isMembresyActive: true });
+      query.andWhere('user.role = :role', { role: Role.PROFESSIONAL });
+
+      if (categoryId) {
+        query.andWhere('category.id = :categoryId', { categoryId });
+      }
+
+      query.skip((page - 1) * limit);
+      query.take(limit);
+
+      const professionals = await query.getMany();
+      
+      return professionals;
+
+    } catch (error) {
+      throw new InternalServerErrorException('Error al buscar los profesionales', error);
+    }
+  }
 }
+  
