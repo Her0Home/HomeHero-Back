@@ -6,6 +6,7 @@ import { AuthGuard } from '@nestjs/passport';
 import { Role } from 'src/users/assets/roles';
 import { RolesGuard } from 'src/guards/roles.guard';
 import { Roles } from 'src/decorators/role.decorator';
+import { ApiBearerAuth } from '@nestjs/swagger';
 
 @Controller('stripe')
 export class StripeController {
@@ -75,6 +76,8 @@ export class StripeController {
   //   };
   // }
 
+  
+  @ApiBearerAuth()
   @Post('create-checkout-session')
   @UseGuards(AuthGuard('jwt'), RolesGuard)
   @Roles(Role.PROFESSIONAL)
@@ -111,6 +114,7 @@ export class StripeController {
     return { sessionId: session.id, url: session.url };
   }
 
+  @ApiBearerAuth()
   @Post('create-portal-session')
   @UseGuards(AuthGuard('jwt'), RolesGuard)
   @Roles(Role.PROFESSIONAL)
@@ -133,6 +137,7 @@ export class StripeController {
     return { url: session.url };
   }
 
+  @ApiBearerAuth()
   @Get('subscription/:id')
   @UseGuards(AuthGuard('jwt'), RolesGuard)
   @Roles(Role.PROFESSIONAL)
@@ -140,6 +145,7 @@ export class StripeController {
     return this.stripeService.getSubscription(id);
   }
 
+  @ApiBearerAuth()
   @Post('cancel-subscription/:id')
   @UseGuards(AuthGuard('jwt'), RolesGuard)
   @Roles(Role.PROFESSIONAL)
@@ -147,6 +153,7 @@ export class StripeController {
     return this.stripeService.cancelSubscription(id);
   }
 
+  @ApiBearerAuth()
   @Get('user-payments/:userId')
   @UseGuards(AuthGuard('jwt'), RolesGuard)
   @Roles(Role.PROFESSIONAL)
