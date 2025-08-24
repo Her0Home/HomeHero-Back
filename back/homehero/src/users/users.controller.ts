@@ -8,7 +8,7 @@ import { LogginGuard } from 'src/guards/loggin.guard';
 import { Roles } from 'src/decorators/role.decorator';
 import { RolesGuard } from 'src/guards/roles.guard';
 import { VerifyRoleGuard } from 'src/guards/verify-role.guard';
-import { ApiBearerAuth } from '@nestjs/swagger';
+import { ApiBearerAuth, ApiQuery } from '@nestjs/swagger';
 import type { Request } from 'express';
 import { Email } from 'src/email/entities/email.entity';
 import { filter } from 'rxjs';
@@ -22,6 +22,8 @@ export class UsersController {
   @ApiBearerAuth()
   @UseInterceptors(ExcludePasswordInterceptor)
   @UseGuards(LogginGuard)
+  @ApiQuery({ name: 'page', required: false, type: Number, example: 1 })
+  @ApiQuery({ name: 'limit', required: false, type: Number, example: 3 })
   @Get('professionals')  
   getProfesionals (@Query('page') page: string = '1', @Query('limit') limit:string = '3'){
 
@@ -33,6 +35,8 @@ export class UsersController {
   @UseInterceptors(ExcludePasswordInterceptor)
   @Roles(Role.ADMIN)
   @UseGuards(LogginGuard,RolesGuard)
+  @ApiQuery({ name: 'page', required: false, type: Number, example: 1 })
+  @ApiQuery({ name: 'limit', required: false, type: Number, example: 3 })
   @Get('search')
   getAllUserVerifi(
     @Query('role') role?: Role | undefined,
