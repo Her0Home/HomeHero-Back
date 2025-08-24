@@ -6,6 +6,7 @@ import { AuthGuard } from '@nestjs/passport';
 import { Role } from 'src/users/assets/roles';
 import { RolesGuard } from 'src/guards/roles.guard';
 import { Roles } from 'src/decorators/role.decorator';
+import { ApiBearerAuth } from '@nestjs/swagger';
 
 @Controller('stripe')
 export class StripeController {
@@ -75,7 +76,9 @@ export class StripeController {
   //   };
   // }
 
+  
   @Post('create-checkout-session')
+  @ApiBearerAuth()
   @UseGuards(AuthGuard('jwt'), RolesGuard)
   @Roles(Role.PROFESSIONAL)
   async createCheckoutSession(@Body() checkoutSessionDto: CheckoutSessionDto) {
@@ -112,6 +115,7 @@ export class StripeController {
   }
 
   @Post('create-portal-session')
+  @ApiBearerAuth()
   @UseGuards(AuthGuard('jwt'), RolesGuard)
   @Roles(Role.PROFESSIONAL)
   async createPortalSession(
@@ -134,6 +138,7 @@ export class StripeController {
   }
 
   @Get('subscription/:id')
+  @ApiBearerAuth()
   @UseGuards(AuthGuard('jwt'), RolesGuard)
   @Roles(Role.PROFESSIONAL)
   async getSubscription(@Param('id') id: string) {
@@ -141,6 +146,7 @@ export class StripeController {
   }
 
   @Post('cancel-subscription/:id')
+  @ApiBearerAuth()
   @UseGuards(AuthGuard('jwt'), RolesGuard)
   @Roles(Role.PROFESSIONAL)
   async cancelSubscription(@Param('id') id: string) {
@@ -148,6 +154,7 @@ export class StripeController {
   }
 
   @Get('user-payments/:userId')
+  @ApiBearerAuth()
   @UseGuards(AuthGuard('jwt'), RolesGuard)
   @Roles(Role.PROFESSIONAL)
   async getUserPayments(@Param('userId') userId: string) {
