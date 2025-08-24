@@ -23,7 +23,7 @@ export class UsersController {
   @UseInterceptors(ExcludePasswordInterceptor)
   @UseGuards(LogginGuard)
   @Get('professionals')  
-getProfesionals (@Query('page') page: string = "1", @Query('limit') limit:string = '3'){
+  getProfesionals (@Query('page') page: string = '1', @Query('limit') limit:string = '3'){
 
     return this.usersService.getAllProfesional(+page, +limit);
 
@@ -70,7 +70,6 @@ getProfesionals (@Query('page') page: string = "1", @Query('limit') limit:string
   }
 
   @ApiBearerAuth()
-  @UseGuards(LogginGuard)
   @UseInterceptors(ExcludePasswordInterceptor)
   @Put(':id/role')
   putRole(@Param('id', new ParseUUIDPipe()) id: string, @Body('role') newRole: Role){

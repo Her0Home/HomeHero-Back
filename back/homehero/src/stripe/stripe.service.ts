@@ -11,7 +11,13 @@ export class StripeService {
   attachPaymentMethod(id: any, id1: string) {
     throw new Error('Method not implemented.');
   }
-  private stripe: Stripe;
+
+  private stripeInstance: Stripe;
+
+
+  get stripe(): Stripe {
+    return this.stripeInstance;
+  }
 
   constructor(
     private configService: ConfigService,
@@ -24,10 +30,9 @@ export class StripeService {
     if (!stripeSecretKey) {
       throw new Error('Stripe secret key is not defined in environment variables');
     }
-    this.stripe = new Stripe(stripeSecretKey, {
-      apiVersion: '2025-07-30.basil',
-    });
-  }
+
+    this.stripeInstance = new Stripe(stripeSecretKey);
+  };
 
 
   async createCustomer(name: string, email: string): Promise<Stripe.Customer> {
@@ -76,25 +81,26 @@ export class StripeService {
 
 
   async createCheckoutSession(
-    customerId: string, 
-    priceId: string,
-    successUrl: string,
-    cancelUrl: string,
-  ): Promise<Stripe.Checkout.Session> {
-    return this.stripe.checkout.sessions.create({
-      customer: customerId,
-      payment_method_types: ['card'],
-      line_items: [
-        {
-          price: priceId,
-          quantity: 1,
-        },
-      ],
-      mode: 'subscription',
-      success_url: successUrl,
-      cancel_url: cancelUrl,
-    });
-  }
+  customerId: string, 
+  priceId: string,
+  successUrl: string,
+  cancelUrl: string,
+): Promise<Stripe.Checkout.Session> {
+  return this.stripe.checkout.sessions.create({
+    customer: customerId,
+    payment_method_types: ['card'],
+    line_items: [
+      {
+        price: priceId,
+        quantity: 1,
+      },
+    ],
+    mode: 'subscription',
+    success_url: successUrl,
+    cancel_url: cancelUrl,
+    expand: ['payment_intent'],
+  });
+}
 
 
   async createBillingPortalSession(
@@ -119,6 +125,60 @@ export class StripeService {
       webhookSecret,
     );
   }
+
+async getPaymentIntentFromSubscription(subscriptionId: string): Promise<string | null> {
+  try {
+    // Obtener la suscripción con la última factura expandida
+    const subscription = await this.stripe.subscriptions.retrieve(subscriptionId, {
+      expand: ['latest_invoice', 'latest_invoice.payment_intent'],
+    });
+
+    // Usamos "as any" para evitar problemas de tipado
+    const subscriptionData = subscription as any;
+
+    // Comprobar la estructura de los datos
+    if (!subscriptionData.latest_invoice) {
+      console.warn(`Subscription ${subscriptionId} has no latest_invoice`);
+      return null;
+    }
+
+    // La factura puede ser un string (ID) o un objeto completo
+    let invoiceData: any;
+    if (typeof subscriptionData.latest_invoice === 'string') {
+      invoiceData = await this.stripe.invoices.retrieve(subscriptionData.latest_invoice, { 
+        expand: ['payment_intent'] 
+      });
+    } else {
+      invoiceData = subscriptionData.latest_invoice;
+    }
+
+    // El payment_intent puede estar en diferentes ubicaciones
+    if (invoiceData.payment_intent) {
+      return typeof invoiceData.payment_intent === 'string' 
+        ? invoiceData.payment_intent 
+        : invoiceData.payment_intent.id;
+    }
+
+    if (invoiceData.charge) {
+      const charge = await this.stripe.charges.retrieve(
+        typeof invoiceData.charge === 'string' ? invoiceData.charge : invoiceData.charge.id,
+        { expand: ['payment_intent'] }
+      );
+      
+      if (charge.payment_intent) {
+        return typeof charge.payment_intent === 'string' 
+          ? charge.payment_intent 
+          : charge.payment_intent.id;
+      }
+    }
+
+    console.warn(`No payment intent found for invoice ${invoiceData.id}`);
+    return null;
+  } catch (error) {
+    console.error(`Error fetching payment intent for subscription ${subscriptionId}:`, error);
+    return null;
+  }
+}
 
 
   async findUserById(userId: string): Promise<User> {

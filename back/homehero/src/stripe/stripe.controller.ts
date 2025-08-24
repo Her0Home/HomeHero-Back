@@ -6,6 +6,7 @@ import { AuthGuard } from '@nestjs/passport';
 import { Role } from 'src/users/assets/roles';
 import { RolesGuard } from 'src/guards/roles.guard';
 import { Roles } from 'src/decorators/role.decorator';
+import { ApiBearerAuth } from '@nestjs/swagger';
 
 @Controller('stripe')
 export class StripeController {
@@ -13,70 +14,73 @@ export class StripeController {
     private readonly stripeService: StripeService,
   ) {}
 
-  @Post('create-subscription')
-  @Roles(Role.PROFESSIONAL)
-  @UseGuards(AuthGuard('jwt'), RolesGuard)
-  async createSubscription(@Body() createPaymentDto: CreatePaymentDto) {
-    const { userId, priceId, paymentMethodId, amount } = createPaymentDto;
+  // @Post('create-subscription')
+  // @Roles(Role.PROFESSIONAL)
+  // @UseGuards(AuthGuard('jwt'), RolesGuard)
+  // async createSubscription(@Body() createPaymentDto: CreatePaymentDto) {
+  //   const { userId, priceId, paymentMethodId, amount } = createPaymentDto;
     
  
-    const user = await this.stripeService.findUserById(userId);
+  //   const user = await this.stripeService.findUserById(userId);
     
    
-    if (user.role !== Role.PROFESSIONAL) {
-      throw new ForbiddenException('Solo los usuarios profesionales pueden crear suscripciones');
-    }
+  //   if (user.role !== Role.PROFESSIONAL) {
+  //     throw new ForbiddenException('Solo los usuarios profesionales pueden crear suscripciones');
+  //   }
     
 
-    let customerId = user.stripeCustomerId;
+  //   let customerId = user.stripeCustomerId;
     
-    if (!customerId) {
+  //   if (!customerId) {
 
-      const customer = await this.stripeService.createCustomer(user.name, user.email);
-      customerId = customer.id;
+  //     const customer = await this.stripeService.createCustomer(user.name, user.email);
+  //     customerId = customer.id;
       
     
-      await this.stripeService.updateUserStripeCustomerId(userId, customerId);
-    }
+  //     await this.stripeService.updateUserStripeCustomerId(userId, customerId);
+  //   }
     
 
-    const subscription = await this.stripeService.createSubscription(
-      customerId,
-      priceId,
-      paymentMethodId || undefined,
-    );
+  //   const subscription = await this.stripeService.createSubscription(
+  //     customerId,
+  //     priceId,
+  //     paymentMethodId || undefined,
+  //   );
 
 
-    const paymentAmount = amount || 
-      (subscription['latest_invoice'] && subscription['latest_invoice']['amount_paid'] 
-        ? subscription['latest_invoice']['amount_paid'] / 100 
-        : 0); 
+  //   const paymentAmount = amount || 
+  //     (subscription['latest_invoice'] && subscription['latest_invoice']['amount_paid'] 
+  //       ? subscription['latest_invoice']['amount_paid'] / 100 
+  //       : 0); 
     
   
-    const paymentIntentId =
-      subscription['latest_invoice'] && subscription['latest_invoice']['payment_intent']
-        ? subscription['latest_invoice']['payment_intent'].id
-        : null;
+  //   const paymentIntentId =
+  //     subscription['latest_invoice'] && subscription['latest_invoice']['payment_intent']
+  //       ? subscription['latest_invoice']['payment_intent'].id
+  //       : null;
 
-    const payment = await this.stripeService.registerPayment(
-      userId,
-      paymentAmount,
-      paymentIntentId,
-      subscription.id,
-    );
-    if (subscription.status === 'active') {
-    await this.stripeService.updateUserMembershipStatus(userId, true);
-  }
+  //   const payment = await this.stripeService.registerPayment(
+  //     userId,
+  //     paymentAmount,
+  //     paymentIntentId,
+  //     subscription.id,
+  //   );
+  //   if (subscription.status === 'active') {
+  //   await this.stripeService.updateUserMembershipStatus(userId, true);
+  // }
     
-    return {
-      subscriptionId: subscription.id,
-      paymentId: payment.UniqueID,
-      PaymentStatus: subscription.status,
-    };
-  }
+  //   return {
+  //     subscriptionId: subscription.id,
+  //     paymentId: payment.UniqueID,
+  //     PaymentStatus: subscription.status,
+  //   };
+  // }
 
+  
+  @ApiBearerAuth()
   @Post('create-checkout-session')
-  @UseGuards(AuthGuard('jwt'))
+  @UseGuards(AuthGuard('jwt'), RolesGuard)
+  @Roles(Role.PROFESSIONAL)
   async createCheckoutSession(@Body() checkoutSessionDto: CheckoutSessionDto) {
     const { userId, priceId, successUrl, cancelUrl } = checkoutSessionDto;
     
@@ -110,8 +114,10 @@ export class StripeController {
     return { sessionId: session.id, url: session.url };
   }
 
+  @ApiBearerAuth()
   @Post('create-portal-session')
-  @UseGuards(AuthGuard('jwt'))
+  @UseGuards(AuthGuard('jwt'), RolesGuard)
+  @Roles(Role.PROFESSIONAL)
   async createPortalSession(
     @Body('userId') userId: string,
     @Body('returnUrl') returnUrl: string,
@@ -131,28 +137,36 @@ export class StripeController {
     return { url: session.url };
   }
 
+  @ApiBearerAuth()
   @Get('subscription/:id')
-  @UseGuards(AuthGuard('jwt'))
+  @UseGuards(AuthGuard('jwt'), RolesGuard)
+  @Roles(Role.PROFESSIONAL)
   async getSubscription(@Param('id') id: string) {
     return this.stripeService.getSubscription(id);
   }
 
+  @ApiBearerAuth()
   @Post('cancel-subscription/:id')
-  @UseGuards(AuthGuard('jwt'))
+  @UseGuards(AuthGuard('jwt'), RolesGuard)
+  @Roles(Role.PROFESSIONAL)
   async cancelSubscription(@Param('id') id: string) {
     return this.stripeService.cancelSubscription(id);
   }
 
+  @ApiBearerAuth()
   @Get('user-payments/:userId')
-  @UseGuards(AuthGuard('jwt'))
+  @UseGuards(AuthGuard('jwt'), RolesGuard)
+  @Roles(Role.PROFESSIONAL)
   async getUserPayments(@Param('userId') userId: string) {
     return this.stripeService.getUserPayments(userId);
   }
 
+  
+
   /////pruebas de id de metodo de pago
-   @Get('test-payment-method')
-  async getTestPaymentMethod() {
-    const paymentMethodId = await this.stripeService.createTestPaymentMethod();
-    return { paymentMethodId: paymentMethodId };
-  }
+//    @Get('test-payment-method')
+//   async getTestPaymentMethod() {
+//     const paymentMethodId = await this.stripeService.createTestPaymentMethod();
+//     return { paymentMethodId: paymentMethodId };
+//   }
 }

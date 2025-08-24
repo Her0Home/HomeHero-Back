@@ -12,6 +12,8 @@ import { Auth0Service } from './auth0/auth0.service';
 async function bootstrap() {
   const app = await NestFactory.create(AppModule);
 
+    app.use('/stripe/webhooks', express.raw({ type: 'application/json' }));
+
    app.enableCors({
     origin: [
       'http://localhost:3000', 
@@ -35,7 +37,7 @@ async function bootstrap() {
 
 
   
-  app.use('/stripe/webhooks', express.raw({ type: 'application/json' }));
+
   
   const auth0Service = app.get(Auth0Service);
   const auth0Config = getAuth0Config(auth0Service);

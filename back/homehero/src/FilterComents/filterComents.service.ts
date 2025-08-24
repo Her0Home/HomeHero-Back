@@ -2,7 +2,6 @@ import { Injectable } from '@nestjs/common';
 
 @Injectable()
 export class ProfanityFilterService {
-  // Lista de palabras prohibidas en español e inglés (puedes expandirla)
   private bannedWords: string[] = [
     // Español
     'gonorrea',
