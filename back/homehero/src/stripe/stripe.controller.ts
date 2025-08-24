@@ -77,8 +77,8 @@ export class StripeController {
   // }
 
   
-  @Post('create-checkout-session')
   @ApiBearerAuth()
+  @Post('create-checkout-session')
   @UseGuards(AuthGuard('jwt'), RolesGuard)
   @Roles(Role.PROFESSIONAL)
   async createCheckoutSession(@Body() checkoutSessionDto: CheckoutSessionDto) {
@@ -114,8 +114,8 @@ export class StripeController {
     return { sessionId: session.id, url: session.url };
   }
 
-  @Post('create-portal-session')
   @ApiBearerAuth()
+  @Post('create-portal-session')
   @UseGuards(AuthGuard('jwt'), RolesGuard)
   @Roles(Role.PROFESSIONAL)
   async createPortalSession(
@@ -137,24 +137,24 @@ export class StripeController {
     return { url: session.url };
   }
 
-  @Get('subscription/:id')
   @ApiBearerAuth()
+  @Get('subscription/:id')
   @UseGuards(AuthGuard('jwt'), RolesGuard)
   @Roles(Role.PROFESSIONAL)
   async getSubscription(@Param('id') id: string) {
     return this.stripeService.getSubscription(id);
   }
 
-  @Post('cancel-subscription/:id')
   @ApiBearerAuth()
+  @Post('cancel-subscription/:id')
   @UseGuards(AuthGuard('jwt'), RolesGuard)
   @Roles(Role.PROFESSIONAL)
   async cancelSubscription(@Param('id') id: string) {
     return this.stripeService.cancelSubscription(id);
   }
 
-  @Get('user-payments/:userId')
   @ApiBearerAuth()
+  @Get('user-payments/:userId')
   @UseGuards(AuthGuard('jwt'), RolesGuard)
   @Roles(Role.PROFESSIONAL)
   async getUserPayments(@Param('userId') userId: string) {
