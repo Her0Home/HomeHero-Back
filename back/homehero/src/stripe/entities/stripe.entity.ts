@@ -1,5 +1,5 @@
 import { Entity, Column, PrimaryGeneratedColumn, ManyToOne, JoinColumn } from 'typeorm';
-import { User } from '../../users/entities/user.entity'; // Ajusta la ruta según tu estructura
+import { User } from '../../users/entities/user.entity';
 
 @Entity('PAYMENTS')
 export class Payment {
@@ -9,7 +9,7 @@ export class Payment {
   @Column('decimal', { precision: 10, scale: 2 })
   amount: number;
 
-  @Column('date')
+  @Column('timestamp')
   date: Date;
 
   @Column('boolean')
@@ -24,7 +24,6 @@ export class Payment {
 
   @Column({ nullable: true })
   stripeSubscriptionId: string;
-
 
   @ManyToOne(() => User)
   @JoinColumn({ name: 'user_id' })
