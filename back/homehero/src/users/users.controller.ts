@@ -23,7 +23,7 @@ export class UsersController {
   @UseInterceptors(ExcludePasswordInterceptor)
   @UseGuards(LogginGuard)
   @Get('professionals')  
-  getProfesionals (@Query('page') page: string, @Query('limit') limit:string){
+getProfesionals (@Query('page') page: string = "1", @Query('limit') limit:string = '3'){
 
     return this.usersService.getAllProfesional(+page, +limit);
 
