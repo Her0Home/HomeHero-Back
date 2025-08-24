@@ -20,15 +20,17 @@ export class Appointment {
   @PrimaryGeneratedColumn('uuid')
   id: string;
 
-  @Column({
-    type: 'date',
+ @Column({
+    type: 'timestamp',
+    name: 'start_time'
   })
-  date: Date;
+  startTime: Date;
 
   @Column({
-    type: 'time',
+    type: 'timestamp',
+    name: 'end_time'
   })
-  time: string;
+  endTime: Date;
 
   @Column({
     type: 'text',
@@ -48,8 +50,9 @@ export class Appointment {
 
   @Column({
     type: 'text',
+    nullable: true,
   })
-  imageService: string;
+  imageService:  string | null;
 
   @Column({
     type: 'boolean',

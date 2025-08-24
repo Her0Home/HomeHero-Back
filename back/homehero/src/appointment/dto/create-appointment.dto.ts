@@ -15,11 +15,7 @@ export class CreateAppointmentDto {
   @IsNotEmpty()
   @Type(() => Date)
   @IsDate()
-  date: Date;
-
-  @IsNotEmpty()
-  @Matches(/^([0-1]?[0-9]|2[0-3]):[0-5][0-9]$/, { message: 'Time must be in HH:mm format' })
-  time: string;
+  startTime: Date;
 
   @IsNotEmpty()
   @IsString()
