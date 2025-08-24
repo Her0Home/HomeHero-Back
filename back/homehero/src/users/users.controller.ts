@@ -69,7 +69,7 @@ export class UsersController {
     return this.usersService.deleteUser(id);
   }
 
-  @ApiBearerAuth()
+  
   @UseInterceptors(ExcludePasswordInterceptor)
   @Put(':id/role')
   putRole(@Param('id', new ParseUUIDPipe()) id: string, @Body('role') newRole: Role){
