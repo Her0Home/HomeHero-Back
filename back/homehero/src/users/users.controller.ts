@@ -73,7 +73,7 @@ export class UsersController {
     return this.usersService.deleteUser(id);
   }
 
-  
+  @ApiBearerAuth()
   @UseInterceptors(ExcludePasswordInterceptor)
   @Put(':id/role')
   putRole(@Param('id', new ParseUUIDPipe()) id: string, @Body('role') newRole: Role){
@@ -91,8 +91,6 @@ export class UsersController {
   }
 
 
-    @ApiBearerAuth()
-    @UseGuards(LogginGuard)
     @Get('rating/professionals')
     getByRating(@Query() query: ratingUserDto){
       return this.usersService.ratingProfessionals(query)
