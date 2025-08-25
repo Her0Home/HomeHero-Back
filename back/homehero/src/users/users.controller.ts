@@ -90,7 +90,7 @@ export class adminController{
     return this.userService.deleteUser(id);
   }
 
-  
+  @ApiBearerAuth()
   @UseInterceptors(ExcludePasswordInterceptor)
   @Put(':id/role')
   putRole(@Param('id', new ParseUUIDPipe()) id: string, @Body('role') newRole: Role){
@@ -108,8 +108,6 @@ export class adminController{
   }
 
 
-    @ApiBearerAuth()
-    @UseGuards(LogginGuard)
     @Get('rating/professionals')
     getByRating(@Query() query: ratingUserDto){
       return this.userService.ratingProfessionals(query)
