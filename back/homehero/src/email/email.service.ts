@@ -2,6 +2,7 @@ import { Injectable, InternalServerErrorException } from '@nestjs/common';
 import { CreateEmailDto } from './dto/create-email.dto';
 import { UpdateEmailDto } from './dto/update-email.dto';
 import { MailerService } from '@nestjs-modules/mailer';
+import { User } from 'src/users/entities/user.entity';
 
 @Injectable()
 export class EmailService {
@@ -31,5 +32,19 @@ export class EmailService {
     }
 
   
+  }
+
+  async sendPaymentSuccessEmail(user: User, amount: number, paymentIntentId: string) {
+
+    try {
+      await this.mailerService.sendMail({
+      from: '"Tu Empresa" no-reply@tuempresa.com',
+      to: user.email,
+      subject: '✅ Confirmación de tu pago'
+    });
+      console.log(`Correo de pago exitoso enviado a ${user.email}`);
+    } catch (error) {
+      console.error(`Error al enviar correo a ${user.email}:`, error);
+    }
   }
 }

@@ -5,6 +5,7 @@ import { Repository } from 'typeorm';
 import Stripe from 'stripe';
 import { Payment } from './entities/stripe.entity';
 import { User } from '../users/entities/user.entity';
+import { EmailService } from 'src/email/email.service';
 
 @Injectable()
 export class StripeService {
@@ -61,7 +62,7 @@ export class StripeService {
       });
     }
 
-
+    //fUNCION DE ENVIO DE EMAIL
     return this.stripe.subscriptions.create({
       customer: customerId,
       items: [{ price: priceId }],

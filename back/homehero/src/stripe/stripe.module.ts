@@ -6,11 +6,13 @@ import { StripeController } from './stripe.controller';
 import { StripeWebhookController } from './Webhook.stripe.controller';
 import { Payment } from './entities/stripe.entity';
 import { User } from '../users/entities/user.entity';
+import { EmailModule } from 'src/email/email.module';
 
 @Module({
   imports: [
     ConfigModule,
     TypeOrmModule.forFeature([Payment, User]),
+    EmailModule
   ],
   controllers: [StripeController, StripeWebhookController],
   providers: [StripeService],
