@@ -114,28 +114,28 @@ export class StripeController {
     return { sessionId: session.id, url: session.url };
   }
 
-  @ApiBearerAuth()
-  @Post('create-portal-session')
-  @UseGuards(AuthGuard('jwt'), RolesGuard)
-  @Roles(Role.PROFESSIONAL)
-  async createPortalSession(
-    @Body('userId') userId: string,
-    @Body('returnUrl') returnUrl: string,
-  ) {
+  // @ApiBearerAuth()
+  // @Post('create-portal-session')
+  // @UseGuards(AuthGuard('jwt'), RolesGuard)
+  // @Roles(Role.PROFESSIONAL)
+  // async createPortalSession(
+  //   @Body('userId') userId: string,
+  //   @Body('returnUrl') returnUrl: string,
+  // ) {
 
-    const customerId = await this.stripeService.getUserStripeCustomerId(userId);
-    if (!customerId) {
-      throw new NotFoundException('El usuario no tiene una cuenta de Stripe');
-    }
+  //   const customerId = await this.stripeService.getUserStripeCustomerId(userId);
+  //   if (!customerId) {
+  //     throw new NotFoundException('El usuario no tiene una cuenta de Stripe');
+  //   }
     
 
-    const session = await this.stripeService.createBillingPortalSession(
-      customerId,
-      returnUrl,
-    );
+  //   const session = await this.stripeService.createBillingPortalSession(
+  //     customerId,
+  //     returnUrl,
+  //   );
     
-    return { url: session.url };
-  }
+  //   return { url: session.url };
+  // }
 
   @ApiBearerAuth()
   @Get('subscription/:id')

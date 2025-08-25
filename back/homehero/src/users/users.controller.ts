@@ -55,13 +55,30 @@ export class UsersController {
     return this.usersService.getUserById(id);
   }
 
+  @Get('search/professionals')
+  @UseInterceptors(ExcludePasswordInterceptor)
+  searchProfessionals(
+    @Query('categoryId', ) categoryId?: string,
+    @Query('page') page?: number,
+    @Query('limit') limit?: number,
+  ) {
+    
+    return this.usersService.searchActiveProfessionals(categoryId, page, limit);
+}
+}
+
+@Controller('user/admin')
+export class adminController{
+  
+  constructor( private readonly userService: UsersService){}
+
   @ApiBearerAuth()
   @Roles(Role.ADMIN)
   @UseGuards(LogginGuard,RolesGuard)
   @UseInterceptors(ExcludePasswordInterceptor)
   @Get()
   getAllUser(){
-    return this.usersService.getAllUser()
+    return this.userService.getAllUser()
   }
 
   @ApiBearerAuth()
@@ -70,15 +87,15 @@ export class UsersController {
   @UseInterceptors(ExcludePasswordInterceptor)
   @Delete(':id')
   deleteUser(@Param('id', new ParseUUIDPipe) id:string) {
-    return this.usersService.deleteUser(id);
+    return this.userService.deleteUser(id);
   }
 
-  
+  @ApiBearerAuth()
   @UseInterceptors(ExcludePasswordInterceptor)
   @Put(':id/role')
   putRole(@Param('id', new ParseUUIDPipe()) id: string, @Body('role') newRole: Role){
   
-    return this.usersService.changeRole(id, newRole);
+    return this.userService.changeRole(id, newRole);
   
   }
 
@@ -87,15 +104,13 @@ export class UsersController {
   @UseGuards(LogginGuard,RolesGuard)
   @Put(':id/ban')
   banUser (@Param('id', new ParseUUIDPipe()) id:string){
-    return this.usersService.banUser(id);
+    return this.userService.banUser(id);
   }
 
 
-    @ApiBearerAuth()
-    @UseGuards(LogginGuard)
     @Get('rating/professionals')
     getByRating(@Query() query: ratingUserDto){
-      return this.usersService.ratingProfessionals(query)
+      return this.userService.ratingProfessionals(query)
     }
 
 }
