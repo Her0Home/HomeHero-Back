@@ -7,6 +7,7 @@ import Stripe from 'stripe';
 import { StripeService } from './stripe.service';
 import { Payment } from './entities/stripe.entity';
 import { User } from '../users/entities/user.entity';
+import { EmailService } from '../email/email.service';
 
 @Controller('stripe/webhooks')
 @Injectable()
@@ -24,7 +25,8 @@ export class StripeWebhookController {
     private paymentRepository: Repository<Payment>,
     @InjectRepository(User)
     private userRepository: Repository<User>,
-    private dataSource: DataSource
+    private dataSource: DataSource,
+    private readonly emailService: EmailService,
   ) {
     setInterval(() => {
       if (this.processingPayments.length > 0) {
@@ -186,6 +188,12 @@ export class StripeWebhookController {
     if (!user) {
       return;
     }
+    try {
+      const amount = paymentIntent.amount / 100;
+      await this.emailService.sendPaymentSuccessEmail(user, amount, paymentIntent.id);
+    } catch(error) {
+      this.logger.error(`Fallo al enviar el correo de confirmación de pago: ${error.message}`);
+    }
 
 
     let subscriptionId = this.subscriptionsMap.get(paymentIntent.id) || 
@@ -294,6 +302,14 @@ export class StripeWebhookController {
     
     if (!user) {
       return;
+    }
+    try {
+      const amount = invoice.amount_paid / 100;
+      // El paymentIntentId podría estar en invoice.payment_intent
+      const paymentIntentId = invoice.payment_intent?.id || `invoice_${invoice.id}`;
+      await this.emailService.sendPaymentSuccessEmail(user, amount, paymentIntentId);
+    } catch(error) {
+      this.logger.error(`Fallo al enviar el correo de confirmación de factura: ${error.message}`);
     }
 
   
