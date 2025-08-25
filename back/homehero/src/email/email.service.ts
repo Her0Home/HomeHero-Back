@@ -36,11 +36,19 @@ export class EmailService {
 
   async sendPaymentSuccessEmail(user: User, amount: number, paymentIntentId: string) {
 
+    const url: string = "https://docs.stripe.com/testing?locale=es-419"
+
     try {
       await this.mailerService.sendMail({
       from: '"Tu Empresa" no-reply@tuempresa.com',
       to: user.email,
-      subject: '✅ Confirmación de tu pago'
+      subject: '✅ Confirmación de tu pago',
+       template:'welcome',
+        context:{
+          name: user.name,
+          appName: 'Home Hero',
+          loginUrl: url
+        }
     });
       console.log(`Correo de pago exitoso enviado a ${user.email}`);
     } catch (error) {
