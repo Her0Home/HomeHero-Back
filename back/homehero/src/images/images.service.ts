@@ -21,9 +21,9 @@ export class ImagesService {
     try {
       const result = await this.imageUploadRepository.uploadImage(file);
       
-      // Guardar la información de la imagen en la base de datos
+ 
       const imageData = {
-        image: result.secure_url, // Usar el campo 'image' que existe en la entidad
+        image: result.secure_url,
       };
       
       const savedImage = await this.imageRepository.save(imageData);
