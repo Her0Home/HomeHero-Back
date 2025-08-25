@@ -64,13 +64,7 @@ export class UsersController {
   ) {
     
     return this.usersService.searchActiveProfessionals(categoryId, page, limit);
-}
-}
-
-@Controller('user/admin')
-export class adminController{
-  
-  constructor( private readonly userService: UsersService){}
+  }
 
   @ApiBearerAuth()
   @Roles(Role.ADMIN)
@@ -78,7 +72,7 @@ export class adminController{
   @UseInterceptors(ExcludePasswordInterceptor)
   @Get()
   getAllUser(){
-    return this.userService.getAllUser()
+    return this.usersService.getAllUser()
   }
 
   @ApiBearerAuth()
@@ -87,7 +81,7 @@ export class adminController{
   @UseInterceptors(ExcludePasswordInterceptor)
   @Delete(':id')
   deleteUser(@Param('id', new ParseUUIDPipe) id:string) {
-    return this.userService.deleteUser(id);
+    return this.usersService.deleteUser(id);
   }
 
   @ApiBearerAuth()
@@ -95,7 +89,7 @@ export class adminController{
   @Put(':id/role')
   putRole(@Param('id', new ParseUUIDPipe()) id: string, @Body('role') newRole: Role){
   
-    return this.userService.changeRole(id, newRole);
+    return this.usersService.changeRole(id, newRole);
   
   }
 
@@ -104,14 +98,13 @@ export class adminController{
   @UseGuards(LogginGuard,RolesGuard)
   @Put(':id/ban')
   banUser (@Param('id', new ParseUUIDPipe()) id:string){
-    return this.userService.banUser(id);
+    return this.usersService.banUser(id);
   }
 
 
     @Get('rating/professionals')
     getByRating(@Query() query: ratingUserDto){
-      return this.userService.ratingProfessionals(query)
+      return this.usersService.ratingProfessionals(query)
     }
-
 }
 
