@@ -12,7 +12,7 @@ import { EmailModule } from 'src/email/email.module';
   imports: [
     ConfigModule,
     TypeOrmModule.forFeature([Payment, User]),
-    EmailModule
+    EmailModule,
   ],
   controllers: [StripeController, StripeWebhookController],
   providers: [StripeService],
