@@ -6,6 +6,7 @@
   "birthdate": "1985-06-18T00:00:00.000Z",
   "dni": 1020304050,
   "password": "Password123!",
+  "imageProfile" : "https://ik.imagekit.io/ankxi835d/Home%20Hero/plomeroPerfil.jpg?updatedAt=1754778343505",
   "role": "profesional",
   "description": "Plomero con 15 años de experiencia en reparaciones e instalaciones sanitarias.",
   "categoryIds": ["3fc07b61-27fb-4cc5-b426-6b017f9ce75f"],
@@ -18,11 +19,24 @@
   "birthdate": "1988-11-23T00:00:00.000Z",
   "dni": 2030405060,
   "password": "Password456@",
-  "imageProfile": "https://example.com/images/ricardo.jpg",
+  "imageProfile": "https://ik.imagekit.io/ankxi835d/Home%20Hero/electricistaProfile.jpg?updatedAt=1754778578455",
   "role": "profesional",
   "description": "Electricista certificado para instalaciones, mantenimiento y reparación de sistemas eléctricos.",
   "categoryIds": ["718cf40e-b751-47ea-8572-6e0c9dc05d85"],
   "subCategoryIds": ["3d78d3fd-f6a1-4c45-b092-4698fca6ae20"]
+},
+{
+  "id": "25fbd9d8-6256-4978-a46a-96a553e67e00",
+  "name": "Andrea Castro",
+  "email": "andrea.castro@example.com",
+  "birthdate": "1982-08-08T00:00:00.000Z",
+  "dni": 8070605040,
+  "password": "PasswordABC!",
+  "imageProfile": "https://ik.imagekit.io/ankxi835d/Home%20Hero/aseoProfile.jpg?updatedAt=1754778577652",
+  "role": "profesional",
+  "description": "Aseo y limpieza profesional dejando limpio interiores",
+  "categoryIds": ["a3e99857-e8b3-43f5-8635-d453044893f6"],
+  "subCategoryIds": [""]
 },
 {
   "id": "0b8ddd96-6e4d-44d4-9f90-2ae0cdb68617",
@@ -37,19 +51,6 @@
   "subCategoryIds": ["a7688bb8-6c7c-4221-85ac-44ca6efb2f2c"]
 },
 {
-  "id": "25fbd9d8-6256-4978-a46a-96a553e67e00",
-  "name": "Andrea Castro",
-  "email": "andrea.castro@example.com",
-  "birthdate": "1982-08-08T00:00:00.000Z",
-  "dni": 8070605040,
-  "password": "PasswordABC!",
-  "imageProfile": "https://example.com/images/andrea.png",
-  "role": "profesional",
-  "description": "pintor profesional, responsable y cariñosa. Con experiencia en el pintado de exteriores de 10 años de experiencia.",
-  "categoryIds": ["5258fb1a-4997-4335-a915-7194f2839748"],
-  "subCategoryIds": ["g1h2i3j4-k5l6-m7n8-o9p0-q1r2s3t4u5v6"]
-},
-{
   "id": "3b9e073b-3aac-443c-8c6e-493d2bab8397",
   "name": "Javier Lopez",
   "email": "javier.lopez@example.com",
@@ -57,9 +58,9 @@
   "dni": 9070504030,
   "password": "PasswordXYZ#",
   "role": "profesional",
-  "description": "Cerrajero de emergencia 24/7. Instalación y reparación de cerraduras, apertura de puertas y vehículos.",
-  "categoryIds": ["8e118ec6-e280-4989-b360-d3d79f43d339"],
-  "subCategoryIds": ["d40adfb1-14fd-4673-8d52-166eeea62396"]
+  "description": "pintor profesional, responsable y cariñoso. Con experiencia en el pintado de exteriores de 10 años de experiencia.",
+  "categoryIds": ["5258fb1a-4997-4335-a915-7194f2839748"],
+  "subCategoryIds": ["g1h2i3j4-k5l6-m7n8-o9p0-q1r2s3t4u5v6"]
 },
 {
   "id": "f1e2d3c4-b5a6-7890-abcd-ef1234567890",
