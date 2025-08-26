@@ -4,7 +4,7 @@ import { Role } from "../assets/roles";
 export class updateCategoryDTO{
     @IsArray()
     @ArrayNotEmpty()
-    @IsUUID('all')
+    @IsUUID('all', {each: true})
     categoriesId: string[]
 }
 

@@ -112,8 +112,9 @@ export class UsersController {
     return this.usersService.ratingProfessionals(query)
   }
 
-  @UseGuards(LogginGuard,RolesGuard)
-  @Put(':id/category')
+  @ApiBearerAuth()
+  @UseGuards(LogginGuard)
+  @Put('category/profesional')
   addCategory(@Body() categoryId: updateCategoryDTO, @Req() req){
 
     const userId: string = req.user.id;

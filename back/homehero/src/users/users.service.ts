@@ -223,6 +223,7 @@ export class UsersService {
       const [professionals, total] = await this.userRepository.findAndCount({
         where: { role: Role.PROFESSIONAL },
         order: { [sortColumn]: sortOrder },
+        relations:['categories']
       });
 
       return professionals;
@@ -254,6 +255,8 @@ export class UsersService {
       findUser.categories= newCategories;
 
       await this.userRepository.save(findUser)
+
+      return findUser;
 
 
     } catch (error) {
