@@ -97,7 +97,9 @@ export class CommentsService {
 
       const createdComment = await this.commentsRepository.findOne({
         where: { id: comment.id },
-        relations: ['sender', 'receiver'],
+        relations: ['sender', 'receiver','appointment', 'appointment.client',
+          'appointment.professional',
+          'appointment.professional.subcategories'],
       });
 
       if (!createdComment) {
@@ -123,7 +125,7 @@ export class CommentsService {
   async findByAppointment(appointmentId: string): Promise<Comment> {
     const comment = await this.commentsRepository.findOne({
       where: { appointmentId },
-      relations: ['sender', 'receiver', 'appointment'],
+      relations: ['sender', 'receiver', 'appointment',],
     });
 
     if (!comment) {
@@ -152,4 +154,5 @@ export class CommentsService {
 
     return comment;
   }
+  
 }
