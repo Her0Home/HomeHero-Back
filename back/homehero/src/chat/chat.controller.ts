@@ -4,6 +4,7 @@ import { AuthGuard } from '@nestjs/passport';
 import type { Request } from 'express';
 import { User } from 'src/users/entities/user.entity';
 import { LogginGuard } from 'src/guards/loggin.guard';
+import { ApiBearerAuth } from '@nestjs/swagger';
 
 @Controller('chats')
 export class ChatController {
