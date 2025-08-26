@@ -1,4 +1,14 @@
-import { PartialType } from '@nestjs/mapped-types';
-// import { CreateUserDto } from './create-user.dto';
+import { ArrayNotEmpty, IsArray, IsNotEmpty, IsString, IsUUID } from "class-validator";
+import { Role } from "../assets/roles";
 
-// export class UpdateUserDto extends PartialType(CreateUserDto) {}
+export class updateCategoryDTO{
+    @IsArray()
+    @ArrayNotEmpty()
+    @IsUUID('all')
+    categoriesId: string[]
+}
+
+export class updateRole{
+    @IsNotEmpty()
+    role: Role;
+}
