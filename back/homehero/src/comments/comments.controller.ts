@@ -56,43 +56,5 @@ export class CommentsController {
       plainToClass(ResponseCommentDto, comment, { excludeExtraneousValues: true })
     );
   }
-  @Get('professional/:id/latest')
-@ApiOperation({ summary: 'Get paginated comments for a professional' })
-@ApiResponse({ status: 200, description: 'Return paginated and formatted comments' })
-async findLatestForProfessional(
-  @Param('id') id: string,
-  @Query('page', new DefaultValuePipe(1), ParseIntPipe) page: number,
-  @Query('limit', new DefaultValuePipe(5), ParseIntPipe) limit: number,
-) {
-  limit = limit > 100 ? 100 : limit;
-
-  const skip = (page - 1) * limit;
-
-  const [comments, totalItems] = await this.commentsService.findForProfessionalPaginated(
-    id,
-    limit,
-    skip,
-  );
-
-  const formattedData = comments.map(comment => {
-    const subcategory = comment.appointment?.professional?.subcategories?.[0]?.name || 'No especificada';
-    return {
-      userName: comment.sender.name,
-      date: comment.createdAt,
-      rating: comment.rating,
-      subcategory: subcategory,
-    };
-  });
-  
-  return {
-    data: formattedData,
-    meta: {
-      totalItems,
-      itemCount: formattedData.length,
-      itemsPerPage: limit,
-      totalPages: Math.ceil(totalItems / limit),
-      currentPage: page,
-    },
-  };
-}
+ 
 }
