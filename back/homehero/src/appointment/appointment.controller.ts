@@ -23,6 +23,7 @@ import { RolesGuard } from 'src/guards/roles.guard';
 import { FileInterceptor } from '@nestjs/platform-express';
 import { FinishAppointmentDto } from './dto/finish-appointment.dto';
 import { ApiBearerAuth } from '@nestjs/swagger';
+import { ConfirmAppointmentDto } from './dto/confirm-appointment.dto';
 
 @Controller('appointment')
 export class AppointmentController {
@@ -40,6 +41,7 @@ export class AppointmentController {
 
   @Post()
   @UseGuards(LogginGuard)
+  @ApiBearerAuth()
   @UseInterceptors(FileInterceptor('imageFile')) 
   create(
     @Body() createAppointmentDto: CreateAppointmentDto,
@@ -64,25 +66,32 @@ export class AppointmentController {
 
   @Get()
   @Roles(Role.ADMIN)
+  @ApiBearerAuth()
   @UseGuards(LogginGuard,RolesGuard)
   findAll() {
     return this.appointmentService.findAll();
   }
 
   @Get(':id')
+  @ApiBearerAuth()
+  @UseGuards(LogginGuard)
   findOne(@Param('id', new ParseUUIDPipe()) id: string) {
     return this.appointmentService.findOne(id);
   }
   @Put('confirm/:id')
+  @ApiBearerAuth()
   @UseGuards(LogginGuard)
   confirm(
     @Param('id', new ParseUUIDPipe()) id: string,
-    @Body('professionalId', new ParseUUIDPipe()) professionalId: string,
+    @Body() ConfirmAppointmentDto: ConfirmAppointmentDto
   ) {
+    const { professionalId } = ConfirmAppointmentDto;
     return this.appointmentService.confirmAppointment(id, professionalId);
   }
 
+
  @Put('reschedule/:id')
+ @ApiBearerAuth()
   @UseGuards(LogginGuard)
   reschedule(
     @Param('id', new ParseUUIDPipe()) id: string,
@@ -92,6 +101,7 @@ export class AppointmentController {
   }
   
   @Put('cancel/:id')
+  @ApiBearerAuth()
   @UseGuards(LogginGuard)
   cancel(
     @Param('id', new ParseUUIDPipe()) id: string,
@@ -100,11 +110,20 @@ export class AppointmentController {
     return this.appointmentService.cancelAppointment(id, userId);
   }
   @Post('finish/:id')
+  @ApiBearerAuth()
   @UseGuards(LogginGuard) 
   finish(
     @Param('id', new ParseUUIDPipe()) id: string,
     @Body() finishDto: FinishAppointmentDto,
   ) {
     return this.appointmentService.finishAppointment(id, finishDto);
+  }
+   @Get('professional/:professionalId')
+  @ApiBearerAuth()
+  @UseGuards(LogginGuard)
+  findAllByProfessional(
+    @Param('professionalId', new ParseUUIDPipe()) professionalId: string,
+  ) {
+    return this.appointmentService.findAllByProfessional(professionalId);
   }
 }

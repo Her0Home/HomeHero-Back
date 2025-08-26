@@ -374,4 +374,23 @@ async rescheduleAppointment(appointmentId: string, dto: UpdateAppointmentDto) {
       }
     };
   }
+  async findAllByProfessional(professionalId: string): Promise<Appointment[]> {
+    const professional = await this.userRepository.findOne({
+      where: { id: professionalId, role: Role.PROFESSIONAL },
+    });
+
+    if (!professional) {
+      throw new NotFoundException(
+        `Profesional con ID ${professionalId} no encontrado`,
+      );
+    }
+
+    return this.appointmentRepository.find({
+      where: { professional: { id: professionalId } },
+      relations: ['client', 'professional'],
+      order: {
+        startTime: 'DESC', 
+      },
+    });
+  }
   }

@@ -11,9 +11,11 @@ import { JwtService } from '@nestjs/jwt';
 import { writeHeapSnapshot } from 'v8';
 import { UpdateResult } from 'typeorm/browser';
 import { ratingUserDto } from './dto/rating-user.dto';
-import { updateCategoryDTO, updateRole } from './dto/update-user.dto';
+import { updateRole, UpdateUser } from './dto/update-user.dto';
 import { CategoryService } from 'src/category/category.service';
 import { Category } from 'src/category/entities/category.entity';
+import { AddresService } from 'src/addres/addres.service';
+import { Addre } from 'src/addres/entities/addre.entity';
 // import { UpdateUserDto } from './dto/update-user.dto';
 
 @Injectable()
@@ -21,7 +23,8 @@ export class UsersService {
 
   constructor(
     @InjectRepository(User) private userRepository: Repository<User>,
-    private categoryService: CategoryService
+    private categoryService: CategoryService,
+    private addreService: AddresService
   ) {}
 
   async getAllUser () {
@@ -223,6 +226,7 @@ export class UsersService {
       const [professionals, total] = await this.userRepository.findAndCount({
         where: { role: Role.PROFESSIONAL },
         order: { [sortColumn]: sortOrder },
+        relations:['categories','subcategories']
       });
 
       return professionals;
@@ -234,8 +238,10 @@ export class UsersService {
   }
 
 
-  async selectCategory(userId: string, categoryId: updateCategoryDTO ){
+  async putUser (userId: string, body: UpdateUser ){
 
+    const {categoriesId, birthdate, city, aptoNumber, streetNumber, imageProfile} = body
+    
     try {
       
       const findUser: User| null = await this.userRepository.findOne({where:{ id: userId}});
@@ -244,23 +250,37 @@ export class UsersService {
       } 
 
       const newCategories: Category[] = await Promise.all (
-        categoryId.categoriesId.map(async (catId)=> {
+        categoriesId!.map(async (catId)=> {
           const category: Category | null = await this.categoryService.findOne(catId);
           if(!category) throw new NotFoundException(`Categoria con id: ${catId}, no encontrada`);
           return category;
         })
       );
 
-      findUser.categories= newCategories;
+      const addre: Addre | null = await this.addreService.create({city, aptoNumber,streetNumber}, findUser.id)
+      if(!addre) throw new InternalServerErrorException('Error al crear la direccion');
 
-      await this.userRepository.save(findUser)
+
+      findUser.categories= newCategories;
+      findUser.birthdate= birthdate;
+      findUser.imageProfile= imageProfile;
+      findUser.addres= [addre];
+
+      const saveUser= await this.userRepository.save(findUser)
+
+      return saveUser;
 
 
     } catch (error) {
+      console.log(error);
       
     }
 
   }
   
+
+
+
+
 }
   
