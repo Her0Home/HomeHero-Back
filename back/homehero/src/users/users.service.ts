@@ -89,28 +89,30 @@ export class UsersService {
   
   
 
-  async getProfesionalById(id: string): Promise<Profesional> {
-    try {
-     const profesional = await this.userRepository.findOne({
-        where: { id },
-        relations: ['categories', 'subcategories'],
-      });
+  async getProfessionalById(id: string) {
+  const professional = await this.professionalRepository.findOne({
+    where: { id },
+    relations: ['categories', 'subcategories'], 
+  });
 
-      if (!profesional) {
-        throw new NotFoundException(`Profesional con el ID '${id}' no encontrado.`);
-      }
-
-      return profesional;
-
-    } catch (error) {
-      if (error instanceof NotFoundException) {
-        throw error;
-      }
-      
-      throw new InternalServerErrorException('Ocurrió un error inesperado en el servidor.');
-    }
+  if (!professional) {
+    throw new NotFoundException('Profesional no encontrado.');
   }
 
+  return {
+    id: professional.id,
+    name: professional.name,
+    city: professional.city,
+    imageProfile: professional.imageProfile,
+    description: professional.description,
+    averageRating: professional.averageRating,
+    totalAppointments: professional.totalAppointments,
+    isVerified: professional.isVerified,
+    isMembresyActive: professional.isMembresyActive,
+    categories: professional.categories,
+    subcategories: professional.subcategories,
+  };
+}
 
   async changeRole (id: string, body: updateRole){
 
