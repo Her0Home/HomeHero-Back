@@ -30,6 +30,7 @@ export class SubcategoriesServiceSeeder implements OnApplicationBootstrap {
         const categories = await this.categoriesRepository.find();
         
         if (categories.length === 0) {
+          console.log(categories.length);
           this.logger.warn('Aún no hay categorías en la base de datos después de esperar. Revisa el seeder de categorías.');
           return;
         }

@@ -14,25 +14,26 @@ export class CategoryController {
 
   @Get(':id')
   async findOne(@Param('id', new ParseUUIDPipe()) id: string) {
-    return this.categoryService.findOne(+id);
+    return this.categoryService.findOne(id);
   }
 
-  @Put(':id')
-  async update(@Param('id', new ParseUUIDPipe()) id: string, @Body() updateCategoryDto: UpdateCategoryDto) {
-    return this.categoryService.update(+id, updateCategoryDto);
-  }
+  // @Put(':id')
+  // async update(@Param('id', new ParseUUIDPipe()) id: string, @Body() updateCategoryDto: UpdateCategoryDto) {
+  //   return this.categoryService.update(+id, updateCategoryDto);
+  // }
 
-  @Post()
-  async create(@Body() createCategoryDto: CreateCategoryDto) {
-    console.log('BODY:', createCategoryDto);
-    return this.categoryService.create(createCategoryDto);
-  }
+  // @Post()
+  // async create(@Body() createCategoryDto: CreateCategoryDto) {
+  //   console.log('BODY:', createCategoryDto);
+  //   return this.categoryService.create(createCategoryDto);
+  // }
 
-  @Delete(':id')
-  async remove(@Param('id', new ParseUUIDPipe()) id: string) {
-    return this.categoryService.remove(+id);
-  }
+  // @Delete(':id')
+  // async remove(@Param('id', new ParseUUIDPipe()) id: string) {
+  //   return this.categoryService.remove(+id);
+  // }
 
+  
   @Patch('choose-category')
   async chooseCatehory(@Body('categoryId') categoryId: string, @Req() req) {
     const userId = req.user.id;

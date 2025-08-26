@@ -5,22 +5,15 @@ import { Column, Entity, ManyToMany, OneToMany, PrimaryGeneratedColumn } from 't
 @Entity('categorias')
 export class Category {
   @PrimaryGeneratedColumn('uuid')
-  id: number;
+  id: string;
 
   @Column({ type: 'varchar', length: 50 })
   name: string;
-
-  @Column("simple-array")
-  subCategoryArray: string[];
-
-  @Column({nullable: true})// Para la precarga de categorias luego se le asigna un usuario a esa categoria//
-  users_id: number;
 
   @OneToMany(() => SubCategory, (subcategory) => subcategory.category)
   subcategories: SubCategory[];
 
   @ManyToMany(()=>User, user=>user.categories)
   professional: User[];
-  category: Category;
 }
 

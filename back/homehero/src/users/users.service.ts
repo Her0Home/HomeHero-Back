@@ -11,6 +11,9 @@ import { JwtService } from '@nestjs/jwt';
 import { writeHeapSnapshot } from 'v8';
 import { UpdateResult } from 'typeorm/browser';
 import { ratingUserDto } from './dto/rating-user.dto';
+import { updateCategoryDTO, updateRole } from './dto/update-user.dto';
+import { CategoryService } from 'src/category/category.service';
+import { Category } from 'src/category/entities/category.entity';
 // import { UpdateUserDto } from './dto/update-user.dto';
 
 @Injectable()
@@ -18,8 +21,8 @@ export class UsersService {
 
   constructor(
     @InjectRepository(User) private userRepository: Repository<User>,
-    private emailService: EmailService
-) {}
+    private categoryService: CategoryService
+  ) {}
 
   async getAllUser () {
 
@@ -82,13 +85,15 @@ export class UsersService {
   }
 
 
-  async changeRole (id: string, newRole: Role){
+  async changeRole (id: string, body: updateRole){
 
-    if(!Object.values(Role).includes(newRole)){
-      throw new BadRequestException(`El rol ${newRole} no es valido`);
+    const {role} = body
+
+    if(!Object.values(Role).includes(role)){
+      throw new BadRequestException(`El rol ${role} no es valido`);
     }
 
-    const result = await this.userRepository.update(id, {role: newRole});
+    const result = await this.userRepository.update(id, {role: role});
 
     if(result.affected===0){
       throw new NotFoundException(`El usuario con el id: ${id}, no fue encontrado`);
@@ -226,7 +231,34 @@ export class UsersService {
       
     }
     
+  }
 
+
+  async selectCategory(userId: string, categoryId: updateCategoryDTO ){
+
+    try {
+      
+      const findUser: User| null = await this.userRepository.findOne({where:{ id: userId}});
+      if(!findUser){
+        throw new NotFoundException(`No se encontro usuario con el id: ${userId}`)
+      } 
+
+      const newCategories: Category[] = await Promise.all (
+        categoryId.categoriesId.map(async (catId)=> {
+          const category: Category | null = await this.categoryService.findOne(catId);
+          if(!category) throw new NotFoundException(`Categoria con id: ${catId}, no encontrada`);
+          return category;
+        })
+      );
+
+      findUser.categories= newCategories;
+
+      await this.userRepository.save(findUser)
+
+
+    } catch (error) {
+      
+    }
 
   }
   
