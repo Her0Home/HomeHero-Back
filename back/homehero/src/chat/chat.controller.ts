@@ -10,16 +10,12 @@ export class ChatController {
   constructor(private readonly chatService: ChatService) {}
 
   @Get()
-  @AuthGuard(LogginGuard)
-  @ApiBearerAuth()
   findAll(@Req() req: Request) {
     const currentUser = req.user as User;
     return this.chatService.findUserChats(currentUser.id);
   }
 
   @Get(':id')
-  @ApiBearerAuth()
-  @AuthGuard(LogginGuard)
   findOne(@Param('id') id: string, @Req() req: Request) {
     const currentUser = req.user as User;
     return this.chatService.getChatByIdWithMessages(id, currentUser);
