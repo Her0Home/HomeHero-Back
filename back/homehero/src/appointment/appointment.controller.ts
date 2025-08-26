@@ -40,6 +40,7 @@ export class AppointmentController {
 
   @Post()
   @UseGuards(LogginGuard)
+  @ApiBearerAuth()
   @UseInterceptors(FileInterceptor('imageFile')) 
   create(
     @Body() createAppointmentDto: CreateAppointmentDto,
@@ -74,6 +75,7 @@ export class AppointmentController {
     return this.appointmentService.findOne(id);
   }
   @Put('confirm/:id')
+  @ApiBearerAuth()
   @UseGuards(LogginGuard)
   confirm(
     @Param('id', new ParseUUIDPipe()) id: string,
@@ -83,6 +85,7 @@ export class AppointmentController {
   }
 
  @Put('reschedule/:id')
+  @ApiBearerAuth()
   @UseGuards(LogginGuard)
   reschedule(
     @Param('id', new ParseUUIDPipe()) id: string,
@@ -92,6 +95,7 @@ export class AppointmentController {
   }
   
   @Put('cancel/:id')
+  @ApiBearerAuth()
   @UseGuards(LogginGuard)
   cancel(
     @Param('id', new ParseUUIDPipe()) id: string,
@@ -100,6 +104,7 @@ export class AppointmentController {
     return this.appointmentService.cancelAppointment(id, userId);
   }
   @Post('finish/:id')
+  @ApiBearerAuth()
   @UseGuards(LogginGuard) 
   finish(
     @Param('id', new ParseUUIDPipe()) id: string,
