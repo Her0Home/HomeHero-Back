@@ -10,6 +10,7 @@ export class ChatController {
   constructor(private readonly chatService: ChatService) {}
 
   @Get()
+  //le quite por ahora el guardian
   findAll(@Req() req: Request) {
     const currentUser = req.user as User;
     return this.chatService.findUserChats(currentUser.id);
