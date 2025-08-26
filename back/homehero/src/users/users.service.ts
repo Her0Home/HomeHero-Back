@@ -102,10 +102,10 @@ export class UsersService {
   return {
     id: professional.id,
     name: professional.name,
-    city: professional.city,
+    city: professional.addres,
     imageProfile: professional.imageProfile,
     description: professional.description,
-    averageRating: professional.averageRating,
+    averageRating: professional.avaregeRating,
     totalAppointments: professional.totalAppointments,
     isVerified: professional.isVerified,
     isMembresyActive: professional.isMembresyActive,
