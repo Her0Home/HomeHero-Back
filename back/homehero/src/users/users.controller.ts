@@ -15,7 +15,8 @@ import { filter } from 'rxjs';
 import { ratingUserDto } from './dto/rating-user.dto';
 import { UpdateAddreDto } from 'src/addres/dto/update-addre.dto';
 import { UpdateCategoryDto } from 'src/category/dto/update-category.dto';
-import { updateCategoryDTO, updateRole } from './dto/update-user.dto';
+import { updateRole, UpdateUser } from './dto/update-user.dto';
+import { ResponseProfesionalInterceptor } from 'src/interceptor/response-profesional/response-profesional.interceptor';
 // import { UpdateUserDto } from './dto/update-user.dto';
 
 @Controller('users')
@@ -106,7 +107,7 @@ export class UsersController {
     return this.usersService.banUser(id);
   }
 
-
+  @UseInterceptors(ExcludePasswordInterceptor,ResponseProfesionalInterceptor)
   @Get('rating/professionals')
   getByRating(@Query() query: ratingUserDto){
     return this.usersService.ratingProfessionals(query)
@@ -114,11 +115,13 @@ export class UsersController {
 
   @ApiBearerAuth()
   @UseGuards(LogginGuard)
-  @Put('category/profesional')
-  addCategory(@Body() categoryId: updateCategoryDTO, @Req() req){
+  @Put()
+  putUser(@Body() body: UpdateUser, @Req() req){
 
     const userId: string = req.user.id;
-    return this.usersService.selectCategory(userId, categoryId);
+    return this.usersService.putUser(userId, body);
   }
+
+
 }
 

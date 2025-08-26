@@ -8,9 +8,6 @@ export class Addre {
     id:string;
 
     @Column()
-    addres: string;
-
-    @Column()
     streetNumber:number ; 
 
     @Column()

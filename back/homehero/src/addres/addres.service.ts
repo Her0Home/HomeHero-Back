@@ -16,7 +16,7 @@ export class AddresService {
     @InjectRepository(User) private userRepository: Repository<User>
   ){}
 
-  async create(createAddre: CreateAddreDto[], userId:string): Promise<Addre[]> {
+  async create(createAddre: CreateAddreDto, userId:string): Promise<Addre| null> {
 
     try {
 
@@ -25,16 +25,16 @@ export class AddresService {
         throw new NotFoundException(`User con ID: ${userId} no fue encontrado`);
       }
 
-      const addres: Addre[] = createAddre.map(addre => 
-        this.addresRepository.create({addres: addre.addres, user: foundUser})
-      );
+      const addre: Addre =  this.addresRepository.create({...createAddre, user: foundUser})
 
-      const newsAddres: Addre[] | null = await this.addresRepository.save(addres);
+      const saveAddre: Addre = await this.addresRepository.save(addre);
 
-      return newsAddres;
+      const addreDb: Addre | null = await this.addresRepository.findOne({where:{id: saveAddre.id}});
 
+      return addreDb;
       
     } catch (error) {
+      console.log(error);
       throw new ExceptionsHandler(error.message);
     }
 

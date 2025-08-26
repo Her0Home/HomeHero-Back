@@ -13,7 +13,7 @@ export class AddresController {
 
   @UseGuards(LogginGuard)
   @Post(':id')
-  create(@Body() createAddreDto: CreateAddreDto[], @Param('id') userId: string ) {
+  create(@Body() createAddreDto: CreateAddreDto, @Param('id') userId: string ) {
     return this.addresService.create(createAddreDto,userId);
   }
 
