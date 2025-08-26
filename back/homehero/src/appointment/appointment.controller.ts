@@ -82,10 +82,12 @@ export class AppointmentController {
   @UseGuards(LogginGuard)
   confirm(
     @Param('id', new ParseUUIDPipe()) id: string,
-    @Body('professionalId', new ParseUUIDPipe()) professionalId: string,
+    @Body() confirmAppointmentDto: ConfirmAppointmentDto
   ) {
+    const { professionalId } = confirmAppointmentDto;
     return this.appointmentService.confirmAppointment(id, professionalId);
   }
+
 
  @Put('reschedule/:id')
  @ApiBearerAuth()
