@@ -102,7 +102,8 @@ export class UsersService {
       throw new NotFoundException(`El usuario con el id: ${id}, no fue encontrado`);
     }
 
-    return `El user con el id: ${id}, se modifico correctamente`
+    const findUser: User | null = await this.userRepository.findOne({where:{id: id}});
+    return findUser;
 
   }
 

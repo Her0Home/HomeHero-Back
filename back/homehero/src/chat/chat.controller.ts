@@ -4,14 +4,15 @@ import { AuthGuard } from '@nestjs/passport';
 import type { Request } from 'express';
 import { User } from 'src/users/entities/user.entity';
 import { LogginGuard } from 'src/guards/loggin.guard';
+import { ApiBearerAuth } from '@nestjs/swagger';
 
 @Controller('chats')
 export class ChatController {
   constructor(private readonly chatService: ChatService) {}
 
-  @Get()
-  @AuthGuard(LogginGuard)
   @ApiBearerAuth()
+  @Get()
+  @UseGuards(LogginGuard)
   findAll(@Req() req: Request) {
     const currentUser = req.user as User;
     return this.chatService.findUserChats(currentUser.id);
@@ -19,7 +20,7 @@ export class ChatController {
 
   @Get(':id')
   @ApiBearerAuth()
-  @AuthGuard(LogginGuard)
+  @UseGuards(LogginGuard)
   findOne(@Param('id') id: string, @Req() req: Request) {
     const currentUser = req.user as User;
     return this.chatService.getChatByIdWithMessages(id, currentUser);
