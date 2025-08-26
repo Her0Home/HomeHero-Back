@@ -126,6 +126,6 @@ export class UsersController {
 @UseInterceptors(ExcludePasswordInterceptor)
   @Get('profile/:id')
   GetUserProfileById(@Param('id', new ParseUUIDPipe()) id: string) {
-    return this.usersService.getUserById(id);
+    return this.usersService.getProfessionalById(id);
 }
 }

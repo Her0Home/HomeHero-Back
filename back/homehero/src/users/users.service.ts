@@ -92,7 +92,7 @@ export class UsersService {
   async getProfessionalById(id: string) {
   const professional = await this.userRepository.findOne({
     where: { id },
-    relations: ['categories', 'subcategories'], 
+    relations: ['categories', 'subcategories', 'addres'], 
   });
 
   if (!professional) {
@@ -102,7 +102,7 @@ export class UsersService {
   return {
     id: professional.id,
     name: professional.name,
-    city: professional.addres,
+    city: professional.addres && professional.addres.length > 0 ? professional.addres[0].city : null,
     imageProfile: professional.imageProfile,
     description: professional.description,
     averageRating: professional.avaregeRating,
