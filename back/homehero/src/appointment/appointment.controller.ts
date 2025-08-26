@@ -22,12 +22,14 @@ import { Role } from 'src/users/assets/roles';
 import { RolesGuard } from 'src/guards/roles.guard';
 import { FileInterceptor } from '@nestjs/platform-express';
 import { FinishAppointmentDto } from './dto/finish-appointment.dto';
+import { ApiBearerAuth } from '@nestjs/swagger';
 
 @Controller('appointment')
 export class AppointmentController {
   constructor(private readonly appointmentService: AppointmentService) {}
 
   @Get('availability/:professionalId/:date')
+  @ApiBearerAuth()
   @UseGuards(LogginGuard) 
   getAvailability(
     @Param('professionalId', new ParseUUIDPipe()) professionalId: string,
