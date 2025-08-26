@@ -154,6 +154,29 @@ export class CommentsService {
 
     return comment;
   }
-  
+  async findForProfessionalPaginated(
+  professionalId: string,
+  limit: number,
+  skip: number,
+): Promise<[Comment[], number]> { // Devuelve los comentarios y el conteo total
+  const [comments, total] = await this.commentsRepository.findAndCount({
+    where: { receiverId: professionalId },
+    relations: [
+      'sender',
+      'appointment',
+      'appointment.professional',
+      'appointment.professional.subcategories',
+    ],
+    order: { createdAt: 'DESC' },
+    take: limit, // Límite de items a tomar
+    skip: skip,  // Número de items a saltar
+  });
+
+  if (total === 0) {
+    throw new NotFoundException('No se encontraron comentarios para este profesional.');
+  }
+
+  return [comments, total];
+}
   
 }
