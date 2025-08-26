@@ -86,7 +86,32 @@ export class UsersService {
 
 
   }
+  
+  
+async getProfessionalById(id: string): Promise<IProfessionalSearch> {
+  const professional = await this.professionalRepository.findOne({
+    where: { id },
+    relations: ['categories', 'subcategories'], 
+  });
 
+  
+  if (!professional) {
+    throw new NotFoundException('Profesional no encontrado.');
+  }
+  return {
+    id: professional.id,
+    name: professional.name,
+    city: professional.city,
+    imageProfile: professional.imageProfile,
+    description: professional.description,
+    averageRating: professional.averageRating,
+    totalAppointments: professional.totalAppointments,
+    isVerified: professional.isVerified,
+    isMembresyActive: professional.isMembresyActive,
+    categories: professional.categories,
+    subcategories: professional.subcategories,
+  };
+}
 
   async changeRole (id: string, body: updateRole){
 
