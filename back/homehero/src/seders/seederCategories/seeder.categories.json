@@ -18,15 +18,6 @@
     ]
   },
   {
-    "name": "Cerrajería",
-    "subCategoryArray": [
-      "Apertura de urgencia 24/7",
-      "Instalación de cerraduras de alta seguridad",
-      "Duplicado de llaves con chip",
-      "Mantenimiento de cerraduras"
-    ]
-  },
-  {
     "name": "Paseo de Perros",
     "subCategoryArray": [
       "Paseos individuales personalizados",
@@ -54,30 +45,12 @@
     ]
   },
   {
-    "name": "Carpintería",
-    "subCategoryArray": [
-      "Fabricación de muebles a medida",
-      "Reparación de puertas y ventanas",
-      "Instalación de pisos de madera",
-      "Restauración de muebles antiguos"
-    ]
-  },
-  {
     "name": "Aseo y Limpieza",
     "subCategoryArray": [
       "Aseo doméstico por días",
       "Limpieza profunda de espacios",
       "Limpieza de tapetes y muebles",
       "Desinfección de ambientes"
-    ]
-  },
-  {
-    "name": "Técnico de Electrodomésticos",
-    "subCategoryArray": [
-      "Reparación de neveras y nevecones",
-      "Reparación de lavadoras y secadoras",
-      "Mantenimiento de aires acondicionados",
-      "Instalación y reparación de estufas"
     ]
   }
 ]
