@@ -23,6 +23,7 @@ import { RolesGuard } from 'src/guards/roles.guard';
 import { FileInterceptor } from '@nestjs/platform-express';
 import { FinishAppointmentDto } from './dto/finish-appointment.dto';
 import { ApiBearerAuth } from '@nestjs/swagger';
+import { ConfirmAppointmentDto } from './dto/confirm-appointment.dto';
 
 @Controller('appointment')
 export class AppointmentController {
@@ -82,9 +83,9 @@ export class AppointmentController {
   @UseGuards(LogginGuard)
   confirm(
     @Param('id', new ParseUUIDPipe()) id: string,
-    @Body() confirmAppointmentDto: ConfirmAppointmentDto
+    @Body() ConfirmAppointmentDto: ConfirmAppointmentDto
   ) {
-    const { professionalId } = confirmAppointmentDto;
+    const { professionalId } = ConfirmAppointmentDto;
     return this.appointmentService.confirmAppointment(id, professionalId);
   }
 
