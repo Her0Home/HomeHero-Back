@@ -17,6 +17,7 @@ import { UpdateAddreDto } from 'src/addres/dto/update-addre.dto';
 import { UpdateCategoryDto } from 'src/category/dto/update-category.dto';
 import { updateRole, UpdateUser } from './dto/update-user.dto';
 import { ResponseProfesionalInterceptor } from 'src/interceptor/response-profesional/response-profesional.interceptor';
+import { ResponseUserInterceptor } from 'src/interceptor/response-user/response-user.interceptor';
 // import { UpdateUserDto } from './dto/update-user.dto';
 
 @Controller('users')
@@ -89,7 +90,7 @@ export class UsersController {
   }
 
   @ApiBearerAuth()
-  @UseInterceptors(ExcludePasswordInterceptor)
+  @UseInterceptors(ExcludePasswordInterceptor,ResponseUserInterceptor)
   @UseGuards(LogginGuard)
   @Put('role')
   putRole(@Req() req, @Body() body: updateRole){
