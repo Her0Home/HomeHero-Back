@@ -8,11 +8,14 @@ import { LogginGuard } from 'src/guards/loggin.guard';
 import { Roles } from 'src/decorators/role.decorator';
 import { RolesGuard } from 'src/guards/roles.guard';
 import { VerifyRoleGuard } from 'src/guards/verify-role.guard';
-import { ApiBearerAuth, ApiQuery } from '@nestjs/swagger';
+import { ApiBearerAuth, ApiBody, ApiQuery } from '@nestjs/swagger';
 import type { Request } from 'express';
 import { Email } from 'src/email/entities/email.entity';
 import { filter } from 'rxjs';
 import { ratingUserDto } from './dto/rating-user.dto';
+import { UpdateAddreDto } from 'src/addres/dto/update-addre.dto';
+import { UpdateCategoryDto } from 'src/category/dto/update-category.dto';
+import { updateCategoryDTO, updateRole } from './dto/update-user.dto';
 // import { UpdateUserDto } from './dto/update-user.dto';
 
 @Controller('users')
@@ -86,10 +89,12 @@ export class UsersController {
 
   @ApiBearerAuth()
   @UseInterceptors(ExcludePasswordInterceptor)
-  @Put(':id/role')
-  putRole(@Param('id', new ParseUUIDPipe()) id: string, @Body('role') newRole: Role){
-  
-    return this.usersService.changeRole(id, newRole);
+  @UseGuards(LogginGuard)
+  @Put('role')
+  putRole(@Req() req, @Body() body: updateRole){
+    const id: string = req.user.id;
+    
+    return this.usersService.changeRole(id, body);
   
   }
 
@@ -102,9 +107,17 @@ export class UsersController {
   }
 
 
-    @Get('rating/professionals')
-    getByRating(@Query() query: ratingUserDto){
-      return this.usersService.ratingProfessionals(query)
-    }
+  @Get('rating/professionals')
+  getByRating(@Query() query: ratingUserDto){
+    return this.usersService.ratingProfessionals(query)
+  }
+
+  @UseGuards(LogginGuard,RolesGuard)
+  @Put(':id/category')
+  addCategory(@Body() categoryId: updateCategoryDTO, @Req() req){
+
+    const userId: string = req.user.id;
+    return this.usersService.selectCategory(userId, categoryId);
+  }
 }
 

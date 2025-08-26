@@ -1,14 +1,16 @@
 import { IsArray, IsNotEmpty } from "class-validator";
+import { SubCategory } from "src/subcategory/entities/subcategory.entity";
+import { User } from "src/users/entities/user.entity";
 
 export class CreateCategoryDto {
-    id: number;
+    
     @IsNotEmpty()
     name: string;
 
     @IsNotEmpty()
     @IsArray()
-    subCategoryArray: number[];
+    subCategoryArray: string[];
 
     @IsNotEmpty()
-    users_id: number;
+    users_id: string;
 }
