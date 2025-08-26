@@ -11,6 +11,11 @@ import { JwtService } from '@nestjs/jwt';
 import { writeHeapSnapshot } from 'v8';
 import { UpdateResult } from 'typeorm/browser';
 import { ratingUserDto } from './dto/rating-user.dto';
+import { updateRole, UpdateUser } from './dto/update-user.dto';
+import { CategoryService } from 'src/category/category.service';
+import { Category } from 'src/category/entities/category.entity';
+import { AddresService } from 'src/addres/addres.service';
+import { Addre } from 'src/addres/entities/addre.entity';
 // import { UpdateUserDto } from './dto/update-user.dto';
 
 @Injectable()
@@ -18,8 +23,9 @@ export class UsersService {
 
   constructor(
     @InjectRepository(User) private userRepository: Repository<User>,
-    private emailService: EmailService
-) {}
+    private categoryService: CategoryService,
+    private addreService: AddresService
+  ) {}
 
   async getAllUser () {
 
@@ -80,21 +86,50 @@ export class UsersService {
 
 
   }
+  
+  
 
+  async getProfessionalById(id: string) {
+  const professional = await this.userRepository.findOne({
+    where: { id },
+    relations: ['categories', 'subcategories'], 
+  });
 
-  async changeRole (id: string, newRole: Role){
+  if (!professional) {
+    throw new NotFoundException('Profesional no encontrado.');
+  }
 
-    if(!Object.values(Role).includes(newRole)){
-      throw new BadRequestException(`El rol ${newRole} no es valido`);
+  return {
+    id: professional.id,
+    name: professional.name,
+    city: professional.city,
+    imageProfile: professional.imageProfile,
+    description: professional.description,
+    averageRating: professional.averageRating,
+    totalAppointments: professional.totalAppointments,
+    isVerified: professional.isVerified,
+    isMembresyActive: professional.isMembresyActive,
+    categories: professional.categories,
+    subcategories: professional.subcategories,
+  };
+}
+
+  async changeRole (id: string, body: updateRole){
+
+    const {role} = body
+
+    if(!Object.values(Role).includes(role)){
+      throw new BadRequestException(`El rol ${role} no es valido`);
     }
 
-    const result = await this.userRepository.update(id, {role: newRole});
+    const result = await this.userRepository.update(id, {role: role});
 
     if(result.affected===0){
       throw new NotFoundException(`El usuario con el id: ${id}, no fue encontrado`);
     }
 
-    return `El user con el id: ${id}, se modifico correctamente`
+    const findUser: User | null = await this.userRepository.findOne({where:{id: id}});
+    return findUser;
 
   }
 
@@ -218,6 +253,7 @@ export class UsersService {
       const [professionals, total] = await this.userRepository.findAndCount({
         where: { role: Role.PROFESSIONAL },
         order: { [sortColumn]: sortOrder },
+        relations:['categories','subcategories']
       });
 
       return professionals;
@@ -226,9 +262,52 @@ export class UsersService {
       
     }
     
+  }
 
+
+  async putUser (userId: string, body: UpdateUser ){
+
+    const {categoriesId, birthdate, city, aptoNumber, streetNumber, imageProfile} = body
+    
+    try {
+      
+      const findUser: User| null = await this.userRepository.findOne({where:{ id: userId}});
+      if(!findUser){
+        throw new NotFoundException(`No se encontro usuario con el id: ${userId}`)
+      } 
+
+      const newCategories: Category[] = await Promise.all (
+        categoriesId!.map(async (catId)=> {
+          const category: Category | null = await this.categoryService.findOne(catId);
+          if(!category) throw new NotFoundException(`Categoria con id: ${catId}, no encontrada`);
+          return category;
+        })
+      );
+
+      const addre: Addre | null = await this.addreService.create({city, aptoNumber,streetNumber}, findUser.id)
+      if(!addre) throw new InternalServerErrorException('Error al crear la direccion');
+
+
+      findUser.categories= newCategories;
+      findUser.birthdate= birthdate;
+      findUser.imageProfile= imageProfile;
+      findUser.addres= [addre];
+
+      const saveUser= await this.userRepository.save(findUser)
+
+      return saveUser;
+
+
+    } catch (error) {
+      console.log(error);
+      
+    }
 
   }
   
+
+
+
+
 }
   

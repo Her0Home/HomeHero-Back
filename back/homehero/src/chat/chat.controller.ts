@@ -3,13 +3,15 @@ import { ChatService } from './chat.service';
 import { AuthGuard } from '@nestjs/passport';
 import type { Request } from 'express';
 import { User } from 'src/users/entities/user.entity';
+import { LogginGuard } from 'src/guards/loggin.guard';
+import { ApiBearerAuth } from '@nestjs/swagger';
 
 @Controller('chats')
-@UseGuards(AuthGuard('jwt')) 
 export class ChatController {
   constructor(private readonly chatService: ChatService) {}
 
   @Get()
+  //le quite por ahora el guardian
   findAll(@Req() req: Request) {
     const currentUser = req.user as User;
     return this.chatService.findUserChats(currentUser.id);

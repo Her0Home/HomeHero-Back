@@ -19,7 +19,7 @@ export class SubcategoriesServiceSeeder implements OnApplicationBootstrap {
   async onApplicationBootstrap() {
    
     this.logger.log('Esperando 1.5 segundos para dar tiempo al seeder de categorías...');
-    await new Promise(res => setTimeout(res, 1500)); 
+    await new Promise(res => setTimeout(res, 3000)); 
   
 
     this.logger.log('Ejecutando seeder automático de subcategorías');
@@ -30,6 +30,7 @@ export class SubcategoriesServiceSeeder implements OnApplicationBootstrap {
         const categories = await this.categoriesRepository.find();
         
         if (categories.length === 0) {
+          console.log(categories.length);
           this.logger.warn('Aún no hay categorías en la base de datos después de esperar. Revisa el seeder de categorías.');
           return;
         }

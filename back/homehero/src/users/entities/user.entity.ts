@@ -86,8 +86,8 @@ export class User {
     
     
 
-     @OneToMany(() => Payment, payment => payment.user)
-     payments?: Payment[];
+    @OneToMany(() => Payment, payment => payment.user)
+    payments?: Payment[];
 
     @ManyToMany(() => SubCategory, subcategory => subcategory.professionals,{cascade: true})
     @JoinTable({name: 'professional_subcategories'})
