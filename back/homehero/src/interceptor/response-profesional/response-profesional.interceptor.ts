@@ -11,10 +11,10 @@ export class ResponseProfesionalInterceptor implements NestInterceptor {
 
   
     if(Array.isArray(user)){
-      return user.map(({id, auth0Id,email,birthdate,dni,...rest})=> rest);
+      return user.map(({ auth0Id,email,birthdate,dni,...rest})=> rest);
     }
 
-    const {id, auth0Id,email,birthdate,dni,...rest} = user;
+    const { auth0Id,email,birthdate,dni,...rest} = user;
     return rest;
 
   }
