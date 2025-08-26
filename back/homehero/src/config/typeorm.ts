@@ -8,7 +8,7 @@ const config = {
   url: process.env.DB_URL,
   autoLoadEntities: true,
   synchronize: true,
-  dropSchema: true,
+  dropSchema: false,
   // logging: true,
   ssl: {
     rejectUnauthorized: false,
