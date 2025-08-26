@@ -6,9 +6,10 @@ import { User } from './entities/user.entity';
 import { EmailModule } from 'src/email/email.module';
 import { requiresAuth } from 'express-openid-connect';
 import { CategoryModule } from 'src/category/category.module';
+import { AddresModule } from 'src/addres/addres.module';
 
 @Module({
-  imports: [TypeOrmModule.forFeature([User]), EmailModule, CategoryModule],
+  imports: [TypeOrmModule.forFeature([User]), EmailModule, CategoryModule, AddresModule],
   controllers: [UsersController],
   providers: [UsersService],
 })
