@@ -90,7 +90,7 @@ export class UsersService {
   
 
   async getProfessionalById(id: string) {
-  const professional = await this.professionalRepository.findOne({
+  const professional = await this.userRepository.findOne({
     where: { id },
     relations: ['categories', 'subcategories'], 
   });
