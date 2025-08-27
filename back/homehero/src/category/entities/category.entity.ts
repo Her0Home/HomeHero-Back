@@ -13,7 +13,7 @@ export class Category {
   @OneToMany(() => SubCategory, (subcategory) => subcategory.category)
   subcategories: SubCategory[];
 
-  @ManyToMany(()=>User, user=>user.categories)
+  @OneToMany(()=>User, user=>user.category)
   professional: User[];
 }
 

@@ -12,7 +12,7 @@ export class UpdateUser{
     @IsOptional()
     @IsArray()
     @IsUUID('all', {each: true})
-    categoriesId?: string[]
+    categoriesId?: string;
 
 
     @IsDate()
