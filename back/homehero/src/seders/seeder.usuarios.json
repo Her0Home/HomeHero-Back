@@ -9,8 +9,8 @@
   "imageProfile" : "https://ik.imagekit.io/ankxi835d/Home%20Hero/plomeroPerfil.jpg?updatedAt=1754778343505",
   "role": "profesional",
   "description": "Plomero con 15 años de experiencia en reparaciones e instalaciones sanitarias.",
-  "categoryName": "plomero",
-  "subCategoryName": ["Plomero experto en destape de cañerías"],
+  "categoryIds": "07917bce-15f3-461d-a7b3-d45809da6dd6",
+  "subCategoryIds": ["a550bac5-0f70-40d3-9a47-47c4a4070429","a550bac5-0f70-40d3-9a47-47c4a4070429","a550bac5-0f70-40d3-9a47-47c4a4070429"],
    "addres": [
       {
         "streetNumber": 45,
@@ -28,8 +28,8 @@
   "imageProfile": "https://ik.imagekit.io/ankxi835d/Home%20Hero/electricistaProfile.jpg?updatedAt=1754778578455",
   "role": "profesional",
   "description": "Electricista certificado para instalaciones, mantenimiento y reparación de sistemas eléctricos.",
-  "categoryName": ["Electricista"],
-  "subCategoryIds": ["Instalación de paneles solares"],
+  "categoryIds": "d16cf338-af25-45a6-a5c3-da3d371645df",
+  "subCategoryIds": ["131a8194-777a-46e1-8d22-1a99a4f2a98c"],
    "addres": [
       {
         "streetNumber": 789,
@@ -48,8 +48,8 @@
   "imageProfile":"https://ik.imagekit.io/ankxi835d/Home%20Hero/aseoProfile.jpg?updatedAt=1754778577652",
   "role": "profesional",
   "description": "Aseo y limpieza profesional dejando limpio interiores",
-  "categoryIds": ["Aseo y Limpieza"],
-  "subCategoryIds": ["Aseo doméstico por días"],
+  "categoryIds": "c066beed-a172-445f-b183-af1abc4bcaf6",
+  "subCategoryIds": ["fb5d0c4e-1d25-4f6d-a8ea-afed3c8a0683"],
   "addres": [
       {
         "streetNumber": 101,
@@ -66,8 +66,8 @@
   "password": "Password789#",
   "role": "profesional",
   "description": "Paseadora de perros con experiencia en adiestramiento básico y primeros auxilios.",
-  "categoryIds": ["2a2dbf5b-11b5-4bfe-aed6-4952565070f8"],
-  "subCategoryIds": ["a7688bb8-6c7c-4221-85ac-44ca6efb2f2c"]
+  "categoryIds": "ed17826c-1f2a-47a2-bb56-b83ae948f2e7",
+  "subCategoryIds": ["5d1c18f2-8ca9-41e0-a10a-a3fce4b4f8d1"]
 },
 {
   "id": "3b9e073b-3aac-443c-8c6e-493d2bab8397",
@@ -78,8 +78,8 @@
   "password": "PasswordXYZ#",
   "role": "profesional",
   "description": "pintor profesional, responsable y cariñoso. Con experiencia en el pintado de exteriores de 10 años de experiencia.",
-  "categoryIds": ["5258fb1a-4997-4335-a915-7194f2839748"],
-  "subCategoryIds": ["g1h2i3j4-k5l6-m7n8-o9p0-q1r2s3t4u5v6"]
+  "categoryIds": "e40e456c-bf4e-446b-954e-b0124f8247db",
+  "subCategoryIds": []
 },
 {
   "id": "f1e2d3c4-b5a6-7890-abcd-ef1234567890",
