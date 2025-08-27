@@ -35,7 +35,7 @@ export class UsersServiceSeeder implements OnApplicationBootstrap {
             id: userData.id,
             name: userData.name,
             email: userData.email,
-            birthdate: new Date(userData.birthdate), // Convertir string a Date
+            birthdate: new Date(userData.birthdate), 
             dni: userData.dni,
             password: hashedPassword,
             role: userData.role as Role, // Cast explícito al enum Role

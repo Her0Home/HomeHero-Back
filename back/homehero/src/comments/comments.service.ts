@@ -82,15 +82,17 @@ export class CommentsService {
 
       await queryRunner.manager.save(comment);
   
-      const allComments = await this.commentsRepository.find({
+      const allComments = await queryRunner.manager.find(Comment, {
         where: { receiverId }
       });
 
-      const totalRating = allComments.reduce((sum, comment) => sum + parseFloat(comment.rating.toString()), 0);
+
+      const totalRating = allComments.reduce((sum, c) => sum + c.rating, 0);
       const averageRating = totalRating / allComments.length;
 
+
       await queryRunner.manager.update(User, receiverId, {
-        avaregeRating: averageRating
+        averageRating: averageRating
       });
 
       await queryRunner.commitTransaction();

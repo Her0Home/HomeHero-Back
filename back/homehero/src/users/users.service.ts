@@ -105,7 +105,7 @@ export class UsersService {
     city: professional.addres && professional.addres.length > 0 ? professional.addres[0].city : null,
     imageProfile: professional.imageProfile,
     description: professional.description,
-    averageRating: professional.avaregeRating,
+    averageRating: professional.averageRating,
     totalAppointments: professional.totalAppointments,
     isVerified: professional.isVerified,
     isMembresyActive: professional.isMembresyActive,
@@ -242,10 +242,10 @@ export class UsersService {
 
   async ratingProfessionals(query: ratingUserDto){
     try {
-      const {sort = 'avaregeRating', order = 'DESC'} = query;
+      const {sort = 'averageRating', order = 'DESC'} = query;
 
-      const validSort = ['avaregeRating','name'];  
-      const sortColumn = validSort.includes(sort)? sort : 'avaregeRating';
+      const validSort = ['averageRating','name'];  
+      const sortColumn = validSort.includes(sort)? sort : 'averageRating';
 
       const sortOrder: 'ASC' | 'DESC' = order === 'ASC' ? 'ASC' : 'DESC';
 
