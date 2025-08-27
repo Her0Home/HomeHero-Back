@@ -57,31 +57,19 @@ export class CommentsController {
     );
   }
 
- @Get('professional/:id/latest')
-  @ApiOperation({ summary: 'Get paginated reviews for a professional' })
-  @ApiResponse({ status: 200, description: 'Returns paginated reviews' })
+@Get('professional/:id/latest')
+  @ApiOperation({ summary: 'Get the 5 latest reviews for a professional' })
+  @ApiResponse({ status: 200, description: 'Returns the 5 most recent reviews' })
   async getLatestForProfessional(
     @Param('id', new ParseUUIDPipe()) id: string,
-    @Query('page', new DefaultValuePipe(1), ParseIntPipe) page: number,
-    @Query('limit', new DefaultValuePipe(5), ParseIntPipe) limit: number,
   ) {
-    const skip = (page - 1) * limit;
+    const comments = await this.commentsService.findLatestForProfessional(id);
 
-    const [comments, totalItems] = await this.commentsService.findForProfessionalPaginated(
-      id,
-      limit,
-      skip,
-    );
-      
-    if (totalItems === 0) {
-      return {
-          data: [],
-          meta: { totalItems: 0, itemCount: 0, itemsPerPage: limit, totalPages: 0, currentPage: page },
-      };
+    if (!comments || comments.length === 0) {
+      return [];
     }
-
     const formattedData = comments.map(comment => {
-      const subcategory = comment.appointment?.professional?.subcategories?.[0]?.name || 'Servicio General';
+      const subcategory = comment.appointment?.professional?.subcategories?.[0]?.name;
       return {
         userName: comment.sender.name,
         userImage: comment.sender.imageProfile,
@@ -92,15 +80,6 @@ export class CommentsController {
       };
     });
 
-    return {
-      data: formattedData,
-      meta: {
-        totalItems,
-        itemCount: formattedData.length,
-        itemsPerPage: limit,
-        totalPages: Math.ceil(totalItems / limit),
-        currentPage: page,
-      },
-    };
+    return formattedData;
   } 
 }

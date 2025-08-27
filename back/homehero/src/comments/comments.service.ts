@@ -147,12 +147,8 @@ export class CommentsService {
 
     return comment;
   }
-  async findForProfessionalPaginated(
-    professionalId: string,
-    limit: number,
-    skip: number,
-  ): Promise<[Comment[], number]> {
-    const [comments, total] = await this.commentsRepository.findAndCount({
+  async findLatestForProfessional(professionalId: string): Promise<Comment[]> {
+    const comments = await this.commentsRepository.find({
       where: { receiverId: professionalId },
       relations: [
         'sender',
@@ -161,10 +157,10 @@ export class CommentsService {
         'appointment.professional.subcategories',
       ],
       order: { createdAt: 'DESC' },
-      take: limit, 
-      skip: skip,  
+
+      take: 5,
     });
 
-    return [comments, total];
+    return comments;
   }
 }
