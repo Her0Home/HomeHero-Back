@@ -315,7 +315,7 @@ export class UsersService {
 
   async putUser (userId: string, body: UpdateUser ){
 
-    const {categoriesId, birthdate, city, aptoNumber, streetNumber, imageProfile, subcategories} = body
+    const {categoriesId, birthdate, city, aptoNumber, streetNumber, imageProfile, subcategories,dni} = body
     
     try {
       
@@ -333,20 +333,26 @@ export class UsersService {
 
       const addre: Addre | null = await this.addreService.create({city, aptoNumber,streetNumber}, findUser.id)
       if(!addre) throw new InternalServerErrorException('Error al crear la direccion');
-
-      const userSubCategoriesUnfiltred: SubCategory[] = await Promise.all(
-        subcategories.map(async (idSubCat)=>{
+      
+      if(subcategories){
+         const userSubCategoriesUnfiltred: SubCategory[] = await Promise.all(
+          subcategories.map(async (idSubCat)=>{
           const subCategory: SubCategory | undefined = await this.subcategoriService.getSubCategorieById(idSubCat);
           if(!subCategory) throw new BadRequestException(`Error al asignar la subcategoria ${idSubCat}`);
           return subCategory;
-        })
-      )
+          })
+        )
+        
+        const userSubCategories = userSubCategoriesUnfiltred.filter((subCat): subCat is SubCategory=> !!subCat)
 
-      const userSubCategories = userSubCategoriesUnfiltred.filter((subCat): subCat is SubCategory=> !!subCat)
+        findUser.subcategories= userSubCategories;
+      }
 
-      findUser.subcategories= userSubCategories;
+     
+
       findUser.birthdate= birthdate;
       findUser.imageProfile= imageProfile;
+      findUser.dni= +dni;
       findUser.addres= [addre];
 
       const saveUser= await this.userRepository.save(findUser)

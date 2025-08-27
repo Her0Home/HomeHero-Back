@@ -18,7 +18,7 @@ export class AddresController {
   }
 
   @UseGuards(LogginGuard)
-  @Get('/myaddres/:id')
+  @Get(':id/myaddres')
   getMyAdrres(@Param('id', new ParseUUIDPipe()) id: string){
 
     return this.addresService.getMyAddres(id)
@@ -26,7 +26,7 @@ export class AddresController {
   }
 
   @UseGuards(LogginGuard)
-  @Delete('/delete/addre/:id')
+  @Delete(':id')
   delete(@Param('id', new ParseUUIDPipe()) id: string){
     return this.addresService.deleteAddre(id);
   }
