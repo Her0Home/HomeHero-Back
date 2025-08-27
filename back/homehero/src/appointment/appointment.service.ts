@@ -2,7 +2,7 @@ import { BadRequestException, ConflictException, Injectable, NotFoundException, 
 import { CreateAppointmentDto } from './dto/create-appointment.dto';
 import { UpdateAppointmentDto } from './dto/update-appointment.dto';
 import { InjectRepository } from '@nestjs/typeorm';
-import { Between, DataSource, EntityManager, Repository } from 'typeorm';
+import { Between, DataSource, EntityManager, In, Not, Repository } from 'typeorm';
 import { Appointment } from './entities/appointment.entity';
 import { User } from 'src/users/entities/user.entity';
 import { AppointmentStatus } from 'src/appointment/Enum/appointmentStatus.enum';
@@ -10,6 +10,13 @@ import { Role } from 'src/users/assets/roles';
 import { ChatService } from 'src/chat/chat.service';
 import { ImagesService } from '../images/images.service';
 import { FinishAppointmentDto } from './dto/finish-appointment.dto';
+
+export interface TimeSlot {
+  id: string;
+  startTime: Date;
+  endTime: Date;
+  available: boolean;
+}
 
 @Injectable()
 export class AppointmentService {
@@ -34,54 +41,53 @@ export class AppointmentService {
     return appointment;
   }
 
-   async getAvailability(professionalId: string, date: string): Promise<string[]> {
-    const selectedDate = new Date(date);
+   async getDailySchedule(professionalId: string, date: string): Promise<TimeSlot[]> {
 
-     selectedDate.setUTCHours(0, 0, 0, 0);
-    const today = new Date();
-    today.setUTCHours(0, 0, 0, 0);
+    const potentialHours = [8, 11, 14];
+    
 
-    if (selectedDate.getUTCDay() === 0) {
-      return [];
-    }
+    const startOfDay = new Date(date);
+    startOfDay.setUTCHours(0, 0, 0, 0);
 
-    if (selectedDate <= today) {
-      return [];
-    }
-
-
-     const startOfDay = new Date(date);
-     startOfDay.setUTCHours(0, 0, 0, 0);
     const endOfDay = new Date(date);
     endOfDay.setUTCHours(23, 59, 59, 999);
 
-    const todaysAppointments = await this.appointmentRepository.find({
+
+    const bookedAppointments = await this.appointmentRepository.find({
       where: {
         professional: { id: professionalId },
         startTime: Between(startOfDay, endOfDay),
+        status: Not(In([AppointmentStatus.CANCELED])), 
       },
     });
 
-    if (todaysAppointments.length >= 3) {
-      return []; 
-    }
+   
+    const bookedHours = new Set(
+      bookedAppointments.map(app => app.startTime.getUTCHours())
+    );
 
 
-    const timeSlots = [
-      { label: "08:00 - 11:00", startHour: 8 },
-      { label: "11:00 - 14:00", startHour: 11 },
-      { label: "14:00 - 17:00", startHour: 14 },
-    ];
+    const schedule: TimeSlot[] = potentialHours.map(hour => {
+      const startTime = new Date(date);
+      startTime.setUTCHours(hour, 0, 0, 0);
 
+      const endTime = new Date(startTime);
+      endTime.setUTCHours(startTime.getUTCHours() + 3);
 
-    const availableSlots = timeSlots.filter(slot => {
-      return !todaysAppointments.some(appointment => {
-        return appointment.startTime.getHours() === slot.startHour;
-      });
+      const isAvailable = !bookedHours.has(hour);
+
+      return {
+        id: `${professionalId}-${startTime.toISOString()}`, 
+        startTime: startTime,
+        endTime: endTime,
+        available: isAvailable,
+      };
     });
 
-    return availableSlots.map(slot => slot.label);
+    return schedule;
   }
+  
+
 
   async createAppointment(createAppointmentDto: CreateAppointmentDto,  imageFile?: Express.Multer.File) {
     const { professionalId, clientId, startTime } = createAppointmentDto;

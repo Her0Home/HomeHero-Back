@@ -49,7 +49,7 @@ export class Auth0Service {
             imageProfile: auth0UserData.picture,
             metadata: auth0UserData,
             isActive: true,
-            isVerified:  false,
+            isVerified: false,
             role: Role.UNKNOWN,
           });
           user = await this.userRepository.save(newUser);

@@ -38,6 +38,15 @@ export class AppointmentController {
   ) {
     return this.appointmentService.getAvailability(professionalId, date);
   }
+  @Get('schedule/:professionalId/:date')
+  @ApiBearerAuth()
+  @UseGuards(LogginGuard) 
+  getDailySchedule(
+    @Param('professionalId', new ParseUUIDPipe()) professionalId: string,
+    @Param('date') date: string,
+  ) {
+    return this.appointmentService.getDailySchedule(professionalId, date);
+  }
 
   @Post()
   @UseGuards(LogginGuard)
