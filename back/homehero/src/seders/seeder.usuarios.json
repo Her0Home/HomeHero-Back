@@ -67,7 +67,7 @@
   "role": "profesional",
   "description": "Paseadora de perros con experiencia en adiestramiento básico y primeros auxilios.",
   "categoryIds": "ed17826c-1f2a-47a2-bb56-b83ae948f2e7",
-  "subCategoryIds": ["5d1c18f2-8ca9-41e0-a10a-a3fce4b4f8d1"]
+  "subCategoryIds": ["749fe1bc-3dc8-4447-b45e-c0bc252fe379"]
 },
 {
   "id": "3b9e073b-3aac-443c-8c6e-493d2bab8397",
@@ -79,7 +79,7 @@
   "role": "profesional",
   "description": "pintor profesional, responsable y cariñoso. Con experiencia en el pintado de exteriores de 10 años de experiencia.",
   "categoryIds": "e40e456c-bf4e-446b-954e-b0124f8247db",
-  "subCategoryIds": []
+  "subCategoryIds": ["e40e456c-bf4e-446b-954e-b0124f8247db"]
 },
 {
   "id": "f1e2d3c4-b5a6-7890-abcd-ef1234567890",
