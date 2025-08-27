@@ -123,9 +123,10 @@ export class UsersController {
     const userId: string = req.user.id;
     return this.usersService.putUser(userId, body);
   }
-@UseInterceptors(ExcludePasswordInterceptor)
+  
+  @UseInterceptors(ExcludePasswordInterceptor)
   @Get('profile/:id')
   GetUserProfileById(@Param('id', new ParseUUIDPipe()) id: string) {
     return this.usersService.getProfessionalById(id);
-}
+  }
 }

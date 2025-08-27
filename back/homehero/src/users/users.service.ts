@@ -1,4 +1,4 @@
-import { BadRequestException, Injectable, InternalServerErrorException, NotFoundException, ParseUUIDPipe } from '@nestjs/common';
+import { BadRequestException, HttpException, Injectable, InternalServerErrorException, NotFoundException, ParseUUIDPipe } from '@nestjs/common';
 import { CreateUserDto } from './dto/create-user.dto';
 import { InjectRepository } from '@nestjs/typeorm';
 import { User } from './entities/user.entity';
@@ -19,6 +19,8 @@ import { Addre } from 'src/addres/entities/addre.entity';
 import { Comment } from 'src/comments/entities/comment.entity';
 import { Appointment } from 'src/appointment/entities/appointment.entity';
 import { AppointmentStatus } from 'src/appointment/Enum/appointmentStatus.enum';
+import { SubcategoryService } from 'src/subcategory/subcategory.service';
+import { SubCategory } from 'src/subcategory/entities/subcategory.entity';
 
 // import { UpdateUserDto } from './dto/update-user.dto';
 
@@ -30,7 +32,8 @@ export class UsersService {
     @InjectRepository(Comment) private commentRepository: Repository<Comment>,
     @InjectRepository(Appointment) private appointmentRepository: Repository<Appointment>,
     private categoryService: CategoryService,
-    private addreService: AddresService
+    private addreService: AddresService,
+    private subcategoriService: SubcategoryService
   ) {}
 
   async updateProfessionalStats(userId: string) {
@@ -286,11 +289,20 @@ export class UsersService {
       const sortOrder: 'ASC' | 'DESC' = order === 'ASC' ? 'ASC' : 'DESC';
 
       
-      const [professionals, total] = await this.userRepository.findAndCount({
-        where: { role: Role.PROFESSIONAL },
-        order: { [sortColumn]: sortOrder },
-        relations:['category','subcategories']
-      });
+      const [professionals, total] = await this.userRepository
+      .createQueryBuilder('user')
+      .leftJoinAndSelect('user.category', 'category')
+      .leftJoinAndSelect('user.subcategories', 'subcategories')
+      .leftJoinAndSelect('user.addres', 'addres')
+      .select([
+        'user',                  
+        'category',              
+        'subcategories',         
+        'addres.city'            
+      ])
+      .where('user.role = :role', { role: Role.PROFESSIONAL })
+      .orderBy(`user.${sortColumn}`, sortOrder as 'ASC' | 'DESC')
+      .getManyAndCount();
 
       return professionals;
     } catch (error) {
@@ -303,7 +315,7 @@ export class UsersService {
 
   async putUser (userId: string, body: UpdateUser ){
 
-    const {categoriesId, birthdate, city, aptoNumber, streetNumber, imageProfile} = body
+    const {categoriesId, birthdate, city, aptoNumber, streetNumber, imageProfile, subcategories} = body
     
     try {
       
@@ -322,7 +334,17 @@ export class UsersService {
       const addre: Addre | null = await this.addreService.create({city, aptoNumber,streetNumber}, findUser.id)
       if(!addre) throw new InternalServerErrorException('Error al crear la direccion');
 
+      const userSubCategoriesUnfiltred: SubCategory[] = await Promise.all(
+        subcategories.map(async (idSubCat)=>{
+          const subCategory: SubCategory | undefined = await this.subcategoriService.getSubCategorieById(idSubCat);
+          if(!subCategory) throw new BadRequestException(`Error al asignar la subcategoria ${idSubCat}`);
+          return subCategory;
+        })
+      )
 
+      const userSubCategories = userSubCategoriesUnfiltred.filter((subCat): subCat is SubCategory=> !!subCat)
+
+      findUser.subcategories= userSubCategories;
       findUser.birthdate= birthdate;
       findUser.imageProfile= imageProfile;
       findUser.addres= [addre];
@@ -333,13 +355,16 @@ export class UsersService {
 
 
     } catch (error) {
+      
       console.log(error);
+      if(error instanceof HttpException) throw error;
+      throw new InternalServerErrorException('Error al actualizar el usuario')
       
     }
 
   }
   
-
+  
 
 
 

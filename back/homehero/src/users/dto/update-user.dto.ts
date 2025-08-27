@@ -10,8 +10,7 @@ export class updateRole{
 export class UpdateUser{
 
     @IsOptional()
-    @IsArray()
-    @IsUUID('all', {each: true})
+    @IsString()
     categoriesId?: string;
 
 
@@ -35,5 +34,8 @@ export class UpdateUser{
     @IsOptional()
     @IsString()
     imageProfile?: string;
+
+    @IsOptional()
+    subcategories: string[];
 
 }
