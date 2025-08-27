@@ -57,44 +57,50 @@ export class CommentsController {
     );
   }
 
-@Get('professional/:id/latest')
-async findLatestForProfessional(
-  @Param('id') id: string,
-  @Query('page', new DefaultValuePipe(1), ParseIntPipe) page: number,
-  @Query('limit', new DefaultValuePipe(5), ParseIntPipe) limit: number,
-) {
-  limit = limit > 100 ? 100 : limit;
+ @Get('professional/:id/latest')
+  @ApiOperation({ summary: 'Get paginated reviews for a professional' })
+  @ApiResponse({ status: 200, description: 'Returns paginated reviews' })
+  async getLatestForProfessional(
+    @Param('id', new ParseUUIDPipe()) id: string,
+    @Query('page', new DefaultValuePipe(1), ParseIntPipe) page: number,
+    @Query('limit', new DefaultValuePipe(5), ParseIntPipe) limit: number,
+  ) {
+    const skip = (page - 1) * limit;
 
-  
-  const skip = (page - 1) * limit;
+    const [comments, totalItems] = await this.commentsService.findForProfessionalPaginated(
+      id,
+      limit,
+      skip,
+    );
+      
+    if (totalItems === 0) {
+      return {
+          data: [],
+          meta: { totalItems: 0, itemCount: 0, itemsPerPage: limit, totalPages: 0, currentPage: page },
+      };
+    }
 
-  const [comments, totalItems] = await this.commentsService.findForProfessionalPaginated(
-    id,
-    limit,
-    skip,
-  );
+    const formattedData = comments.map(comment => {
+      const subcategory = comment.appointment?.professional?.subcategories?.[0]?.name || 'Servicio General';
+      return {
+        userName: comment.sender.name,
+        userImage: comment.sender.imageProfile,
+        date: comment.createdAt,
+        rating: comment.rating,
+        subcategory: subcategory,
+        content: comment.content,
+      };
+    });
 
-
-  const formattedData = comments.map(comment => {
-    const subcategory = comment.appointment?.professional?.subcategories?.[0]?.name || 'No especificada';
     return {
-      userName: comment.sender.name,
-      date: comment.createdAt,
-      rating: comment.rating,
-      subcategory: subcategory,
+      data: formattedData,
+      meta: {
+        totalItems,
+        itemCount: formattedData.length,
+        itemsPerPage: limit,
+        totalPages: Math.ceil(totalItems / limit),
+        currentPage: page,
+      },
     };
-  });
-
-  return {
-    data: formattedData,
-    meta: {
-      totalItems,
-      itemCount: formattedData.length,
-      itemsPerPage: limit,
-      totalPages: Math.ceil(totalItems / limit),
-      currentPage: page,
-    },
-  };
-}
- 
+  } 
 }
