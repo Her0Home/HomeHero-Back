@@ -7,10 +7,10 @@ import { UpdateSubcategoryDto } from './dto/update-subcategory.dto';
 export class SubcategoryController {
   constructor(private readonly subcategoryService: SubcategoryService) {}
 
-  @Post()
-  create(@Body() createSubcategoryDto: CreateSubcategoryDto) {
-    return this.subcategoryService.create(createSubcategoryDto);
-  }
+  // @Post()
+  // create(@Body() createSubcategoryDto: CreateSubcategoryDto) {
+  //   return this.subcategoryService.create(createSubcategoryDto);
+  // }
 
   @Get()
   findAll() {

@@ -4,7 +4,10 @@ import { UpdateSubcategoryDto } from './dto/update-subcategory.dto';
 
 @Injectable()
 export class SubcategoryService {
-  create(createSubcategoryDto: CreateSubcategoryDto) {
+
+  // constructor (@Injectable(SubcategoryService)){}
+
+  getAll(createSubcategoryDto: CreateSubcategoryDto) {
     return 'This action adds a new subcategory';
   }
 
