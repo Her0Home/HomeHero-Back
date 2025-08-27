@@ -2,8 +2,9 @@ import { Injectable, InternalServerErrorException, NotFoundException } from '@ne
 import { CreateCategoryDto } from './dto/create-category.dto';
 import { UpdateCategoryDto } from './dto/update-category.dto';
 import { InjectRepository } from '@nestjs/typeorm';
-import { Repository } from 'typeorm';
+import { ILike, Repository } from 'typeorm';
 import { Category } from './entities/category.entity';
+import { Exception } from 'handlebars';
 
 @Injectable()
 export class CategoryService {
@@ -40,6 +41,21 @@ export class CategoryService {
       
       throw new InternalServerErrorException("Error al buscar la categoria");
     }
+  }
+
+  async findCategoryName(name: string){
+
+    try {
+      const category: Category [] = await this.categoryRepository.find({where:{name: ILike(`%${name}%`)}, relations:['subcategories']})
+      if(category.length===0) throw new NotFoundException(`no existe ninguna categoria con el nombre '${name}'`);
+
+      return category;
+    } catch (error) {
+      console.log(error);
+      if(error instanceof Exception) throw error;
+      throw new InternalServerErrorException('Error interno al buscar la category');
+    }
+
   }
 
   // async update(id: string, updateCategoryDto: UpdateCategoryDto) {

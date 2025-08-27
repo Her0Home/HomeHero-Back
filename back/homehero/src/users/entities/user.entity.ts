@@ -82,7 +82,7 @@ export class User {
 
     @ManyToMany(()=>Category, category=>category.professional,{cascade: true})
     @JoinTable({name:'professional_category'})
-    categories?: Category[];
+    categories?: Category;
     
     
 

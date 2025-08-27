@@ -312,19 +312,17 @@ export class UsersService {
         throw new NotFoundException(`No se encontro usuario con el id: ${userId}`)
       } 
 
-      const newCategories: Category[] = await Promise.all (
-        categoriesId!.map(async (catId)=> {
-          const category: Category | null = await this.categoryService.findOne(catId);
-          if(!category) throw new NotFoundException(`Categoria con id: ${catId}, no encontrada`);
-          return category;
-        })
-      );
+      if(categoriesId) {
+        const newCategory: Category | null =await this.categoryService.findOne(categoriesId);
+        if(!newCategory) throw new NotFoundException(`Categoria con id: ${categoriesId}, no encontrada`);
+        findUser.categories= newCategory;
+      }
 
       const addre: Addre | null = await this.addreService.create({city, aptoNumber,streetNumber}, findUser.id)
       if(!addre) throw new InternalServerErrorException('Error al crear la direccion');
 
 
-      findUser.categories= newCategories;
+      
       findUser.birthdate= birthdate;
       findUser.imageProfile= imageProfile;
       findUser.addres= [addre];
