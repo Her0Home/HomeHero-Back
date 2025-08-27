@@ -5,7 +5,7 @@ import { User } from 'src/users/entities/user.entity';
 @Entity('subcategories')
 export class SubCategory {
   @PrimaryGeneratedColumn('uuid')
-  id: number;
+  id: string;
 
   @Column({ type: 'varchar', length: 50 })
   name: string;
