@@ -45,11 +45,13 @@ export class AppointmentService {
 
     const potentialHours = [8, 11, 14];
     
+     const startOfDay = new Date(`${date}T00:00:00.000Z`);
+    const endOfDay = new Date(`${date}T23:59:59.999Z`);
 
-    const startOfDay = new Date(date);
+    // const startOfDay = new Date(date);
     startOfDay.setUTCHours(0, 0, 0, 0);
 
-    const endOfDay = new Date(date);
+    // const endOfDay = new Date(date);
     endOfDay.setUTCHours(23, 59, 59, 999);
 
 
