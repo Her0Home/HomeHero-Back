@@ -1,4 +1,4 @@
-import { Controller, Post, Body, Get, Param, UseGuards, NotFoundException, ForbiddenException } from '@nestjs/common';
+import { Controller, Post, Body, Get, Param, UseGuards, NotFoundException, ForbiddenException, Req } from '@nestjs/common';
 import { StripeService } from './stripe.service';
 import { CreatePaymentDto } from './dto/createPayment.dto';
 import { CheckoutSessionDto } from './dto/checkoutPayment.dto';
@@ -14,68 +14,7 @@ export class StripeController {
     private readonly stripeService: StripeService,
   ) {}
 
-  // @Post('create-subscription')
-  // @Roles(Role.PROFESSIONAL)
-  // @UseGuards(AuthGuard('jwt'), RolesGuard)
-  // async createSubscription(@Body() createPaymentDto: CreatePaymentDto) {
-  //   const { userId, priceId, paymentMethodId, amount } = createPaymentDto;
-    
- 
-  //   const user = await this.stripeService.findUserById(userId);
-    
-   
-  //   if (user.role !== Role.PROFESSIONAL) {
-  //     throw new ForbiddenException('Solo los usuarios profesionales pueden crear suscripciones');
-  //   }
-    
-
-  //   let customerId = user.stripeCustomerId;
-    
-  //   if (!customerId) {
-
-  //     const customer = await this.stripeService.createCustomer(user.name, user.email);
-  //     customerId = customer.id;
-      
-    
-  //     await this.stripeService.updateUserStripeCustomerId(userId, customerId);
-  //   }
-    
-
-  //   const subscription = await this.stripeService.createSubscription(
-  //     customerId,
-  //     priceId,
-  //     paymentMethodId || undefined,
-  //   );
-
-
-  //   const paymentAmount = amount || 
-  //     (subscription['latest_invoice'] && subscription['latest_invoice']['amount_paid'] 
-  //       ? subscription['latest_invoice']['amount_paid'] / 100 
-  //       : 0); 
-    
   
-  //   const paymentIntentId =
-  //     subscription['latest_invoice'] && subscription['latest_invoice']['payment_intent']
-  //       ? subscription['latest_invoice']['payment_intent'].id
-  //       : null;
-
-  //   const payment = await this.stripeService.registerPayment(
-  //     userId,
-  //     paymentAmount,
-  //     paymentIntentId,
-  //     subscription.id,
-  //   );
-  //   if (subscription.status === 'active') {
-  //   await this.stripeService.updateUserMembershipStatus(userId, true);
-  // }
-    
-  //   return {
-  //     subscriptionId: subscription.id,
-  //     paymentId: payment.UniqueID,
-  //     PaymentStatus: subscription.status,
-  //   };
-  // }
-
   
   @ApiBearerAuth()
   @Post('create-checkout-session')
@@ -114,28 +53,7 @@ export class StripeController {
     return { url: session.url };
   }
 
-  // @ApiBearerAuth()
-  // @Post('create-portal-session')
-  // @UseGuards(AuthGuard('jwt'), RolesGuard)
-  // @Roles(Role.PROFESSIONAL)
-  // async createPortalSession(
-  //   @Body('userId') userId: string,
-  //   @Body('returnUrl') returnUrl: string,
-  // ) {
-
-  //   const customerId = await this.stripeService.getUserStripeCustomerId(userId);
-  //   if (!customerId) {
-  //     throw new NotFoundException('El usuario no tiene una cuenta de Stripe');
-  //   }
-    
-
-  //   const session = await this.stripeService.createBillingPortalSession(
-  //     customerId,
-  //     returnUrl,
-  //   );
-    
-  //   return { url: session.url };
-  // }
+  
 
   @ApiBearerAuth()
   @Get('subscription/:id')
@@ -162,11 +80,19 @@ export class StripeController {
   }
 
   
-
-  /////pruebas de id de metodo de pago
-//    @Get('test-payment-method')
-//   async getTestPaymentMethod() {
-//     const paymentMethodId = await this.stripeService.createTestPaymentMethod();
-//     return { paymentMethodId: paymentMethodId };
-//   }
+@ApiBearerAuth()
+@Get('membership-info')
+@UseGuards(AuthGuard('jwt'), RolesGuard)
+@Roles(Role.PROFESSIONAL)
+async getMembershipInfo(@Req() req) {
+  const userId = req.user.id;
+  return this.stripeService.getMembershipInfo(userId);
+}
+@ApiBearerAuth()
+  @Get('user-subscription/:userId')
+  @UseGuards(AuthGuard('jwt'), RolesGuard)
+  @Roles(Role.PROFESSIONAL)
+  async getUserSubscription(@Param('userId') userId: string) {
+    return this.stripeService.getActiveSubscriptionByUserId(userId);
+  }
 }

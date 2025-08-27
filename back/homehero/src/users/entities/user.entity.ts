@@ -1,7 +1,6 @@
 import { Appointment } from "src/appointment/entities/appointment.entity";
 import { Column, Entity, JoinColumn, JoinTable, ManyToMany, ManyToOne, OneToMany, OneToOne, PrimaryGeneratedColumn } from "typeorm";
 import { Role } from "../assets/roles";
-import { Membership } from "src/membership/entities/membership.entity";
 import { Addre } from "src/addres/entities/addre.entity";
 import { SubCategory } from "src/subcategory/entities/subcategory.entity";
 import { Category } from "src/category/entities/category.entity";
@@ -53,6 +52,13 @@ export class User {
     @Column({type:'boolean', default: false,})
     isMembresyActive?: boolean;
 
+    @Column({ nullable: true })
+    membershipEndDate: Date;
+
+
+    @Column({ nullable: true, default: false })
+    membershipCancelled: boolean;
+
     @Column({type:'boolean', default: true})
     isActive?: boolean;
     
@@ -77,8 +83,6 @@ export class User {
     @OneToMany(() => Comment, comment => comment.receiver)
     receivedComments: Comment[];
     
-    @OneToOne(()=> Membership, membership => membership.user,{cascade: true, onDelete: 'CASCADE'})
-    membership?: Membership;
 
     @ManyToOne(() => Category, (category) => category.professional)
     category?: Category;

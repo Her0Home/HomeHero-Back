@@ -1,11 +1,10 @@
 import { BadRequestException, Injectable, NotFoundException } from '@nestjs/common';
 import { ConfigService } from '@nestjs/config';
 import { InjectRepository } from '@nestjs/typeorm';
-import { Repository } from 'typeorm';
+import { IsNull, Not, Repository } from 'typeorm';
 import Stripe from 'stripe';
 import { Payment } from './entities/stripe.entity';
 import { User } from '../users/entities/user.entity';
-import { EmailService } from 'src/email/email.service';
 
 @Injectable()
 export class StripeService {
@@ -62,7 +61,6 @@ export class StripeService {
       });
     }
 
-    //fUNCION DE ENVIO DE EMAIL
     return this.stripe.subscriptions.create({
       customer: customerId,
       items: [{ price: priceId }],
@@ -72,8 +70,34 @@ export class StripeService {
 
 
   async cancelSubscription(subscriptionId: string): Promise<Stripe.Subscription> {
-    return this.stripe.subscriptions.cancel(subscriptionId);
+
+  const subscription = await this.stripe.subscriptions.retrieve(subscriptionId);
+  
+
+  const payment = await this.paymentRepository.findOne({
+    where: { stripeSubscriptionId: subscriptionId },
+    order: { date: 'DESC' }
+  });
+  
+  if (payment) {
+    const user = await this.findUserById(payment.user_id);
+    
+  
+    const canceledSubscription = await this.stripe.subscriptions.update(subscriptionId, {
+      cancel_at_period_end: true
+    });
+    
+    await this.userRepository.update(
+      { id: user.id },
+      { membershipCancelled: true }
+    );
+    
+    return canceledSubscription;
   }
+  
+
+  return this.stripe.subscriptions.cancel(subscriptionId);
+}
 
  
   async getSubscription(subscriptionId: string): Promise<Stripe.Subscription> {
@@ -129,21 +153,21 @@ export class StripeService {
 
 async getPaymentIntentFromSubscription(subscriptionId: string): Promise<string | null> {
   try {
-    // Obtener la suscripción con la última factura expandida
+   
     const subscription = await this.stripe.subscriptions.retrieve(subscriptionId, {
       expand: ['latest_invoice', 'latest_invoice.payment_intent'],
     });
 
-    // Usamos "as any" para evitar problemas de tipado
+   
     const subscriptionData = subscription as any;
 
-    // Comprobar la estructura de los datos
+   
     if (!subscriptionData.latest_invoice) {
       console.warn(`Subscription ${subscriptionId} has no latest_invoice`);
       return null;
     }
 
-    // La factura puede ser un string (ID) o un objeto completo
+
     let invoiceData: any;
     if (typeof subscriptionData.latest_invoice === 'string') {
       invoiceData = await this.stripe.invoices.retrieve(subscriptionData.latest_invoice, { 
@@ -153,7 +177,7 @@ async getPaymentIntentFromSubscription(subscriptionId: string): Promise<string |
       invoiceData = subscriptionData.latest_invoice;
     }
 
-    // El payment_intent puede estar en diferentes ubicaciones
+
     if (invoiceData.payment_intent) {
       return typeof invoiceData.payment_intent === 'string' 
         ? invoiceData.payment_intent 
@@ -254,20 +278,69 @@ async getPaymentIntentFromSubscription(subscriptionId: string): Promise<string |
     return user.stripeCustomerId;
   }
 
-  // Crear un PaymentMethod de prueba esto se borrara luego
-  async createTestPaymentMethod(cardNumber: string = '4242424242424242'): Promise<string> {
-  try {
-   
-    const paymentMethod = await this.stripe.paymentMethods.create({
-      type: 'card',
-      card: {
-        token: 'tok_visa', 
+  
+async getMembershipInfo(userId: string): Promise<any> {
+  const user = await this.findUserById(userId);
+  
+
+  if (!user.membershipEndDate) {
+    return {
+      active: user.isMembresyActive || false,
+      remaining: 0,
+      endDate: null,
+      isCancelled: false,
+      subscriptionId: null
+    };
+  }
+  
+
+  const today = new Date();
+  const endDate = new Date(user.membershipEndDate);
+  const diffTime = endDate.getTime() - today.getTime();
+  const diffDays = Math.ceil(diffTime / (1000 * 60 * 60 * 24));
+  
+
+  const lastPayment = await this.paymentRepository.findOne({
+    where: { 
+      user_id: userId,
+      stripeSubscriptionId: Not(IsNull()) 
+    },
+    order: { date: 'DESC' }
+  });
+  
+  return {
+    active: diffDays > 0 && user.isMembresyActive,
+    remaining: diffDays > 0 ? diffDays : 0,
+    endDate: user.membershipEndDate,
+    isCancelled: user.membershipCancelled || false,
+    subscriptionId: lastPayment?.stripeSubscriptionId || null
+  };
+}
+
+async getActiveSubscriptionByUserId(userId: string): Promise<{ subscriptionId: string }> {
+
+    const user = await this.findUserById(userId);
+    if (!user.isMembresyActive) {
+      throw new NotFoundException(`El usuario con ID ${userId} no tiene una membresía activa.`);
+    }
+
+  
+    const lastPaymentWithSubscription = await this.paymentRepository.findOne({
+      where: {
+        user_id: userId,
+        stripeSubscriptionId: Not(IsNull()), // Nos aseguramos que el campo no sea nulo
+      },
+      order: {
+        date: 'DESC', 
       },
     });
-    
-    return paymentMethod.id;
-  } catch (error) {
-    throw new error (`Error al crear PaymentMethod: ${error.message}`);
+
+
+    if (!lastPaymentWithSubscription || !lastPaymentWithSubscription.stripeSubscriptionId) {
+      throw new NotFoundException(`No se encontró un ID de suscripción para el usuario ${userId}.`);
+    }
+
+ 
+    return { subscriptionId: lastPaymentWithSubscription.stripeSubscriptionId };
   }
-}
 }

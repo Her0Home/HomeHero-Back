@@ -122,13 +122,25 @@ export class StripeWebhookController {
       
       const user = await this.userRepository.findOne({ where: { stripeCustomerId: customerId } });
       
-      if (user) {
-        await this.updateUserMembershipStatus(user, true);
-      }
-    } catch (error) {
-      this.logger.error(`Error procesando subscription.created: ${error.message}`);
+     if (user) {
+
+      const subscriptionData = subscription as any;
+      const endDate = new Date(subscriptionData.current_period_end * 1000);
+      
+
+      await this.userRepository.update(
+        { id: user.id },
+        { 
+          isMembresyActive: true,
+          membershipEndDate: endDate,
+          membershipCancelled: false
+        }
+      );
     }
+  } catch (error) {
+    this.logger.error(`Error procesando subscription.created: ${error.message}`);
   }
+}
 
   private async handleCheckoutSessionCompleted(session: Stripe.Checkout.Session): Promise<void> {
     if (!session.customer || !session.subscription) {
@@ -342,11 +354,29 @@ export class StripeWebhookController {
     const user = await this.userRepository.findOne({ where: { stripeCustomerId: customerId } });
     
     if (user) {
-      await this.updateUserMembershipStatus(user, false);
+
+      const subscriptionData = subscription as any;
+    const endDate = new Date(subscriptionData.current_period_end * 1000);
+    const now = new Date();
+    
+    if (now >= endDate) {
+      await this.userRepository.update(
+        { id: user.id },
+        { 
+          isMembresyActive: false,
+          membershipCancelled: true
+        }
+      );
+    } else {
+      await this.userRepository.update(
+        { id: user.id },
+        { membershipCancelled: true }
+      );
     }
   }
+}
 
-  private async updatePaymentWithSubscriptionId(
+   private async updatePaymentWithSubscriptionId(
     paymentIntentId?: string,
     subscriptionId?: string,
     userId?: string
@@ -524,4 +554,5 @@ export class StripeWebhookController {
       this.logger.error(`Error actualizando estado de membresía: ${error.message}`, error.stack);
     }
   }
+  
 } 
