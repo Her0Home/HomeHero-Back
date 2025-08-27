@@ -148,27 +148,23 @@ export class CommentsService {
     return comment;
   }
   async findForProfessionalPaginated(
-  professionalId: string,
-  limit: number,
-  skip: number,
-): Promise<[Comment[], number]> { 
-  const [comments, total] = await this.commentsRepository.findAndCount({
-    where: { receiverId: professionalId },
-    relations: [
-      'sender',
-      'appointment',
-      'appointment.professional',
-      'appointment.professional.subcategories',
-    ],
-    order: { createdAt: 'DESC' },
-    take: limit, 
-    skip: skip,  
-  });
+    professionalId: string,
+    limit: number,
+    skip: number,
+  ): Promise<[Comment[], number]> {
+    const [comments, total] = await this.commentsRepository.findAndCount({
+      where: { receiverId: professionalId },
+      relations: [
+        'sender',
+        'appointment',
+        'appointment.professional',
+        'appointment.professional.subcategories',
+      ],
+      order: { createdAt: 'DESC' },
+      take: limit, 
+      skip: skip,  
+    });
 
-  if (total === 0) {
-    throw new NotFoundException('No se encontraron comentarios para este profesional.');
+    return [comments, total];
   }
-
-  return [comments, total];
-}
 }
