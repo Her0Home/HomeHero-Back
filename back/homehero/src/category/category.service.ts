@@ -30,7 +30,7 @@ export class CategoryService {
 
   async findOne(id: string): Promise<Category> {
     try {
-      const category: Category | null = await this.categoryRepository.findOne({ where: { id:id}, relations:['subcategories'] });
+      const category: Category | null = await this.categoryRepository.findOne({ where: { id:id}});
       if (!category) {
         throw new Error('La categoria no existe');
       }
