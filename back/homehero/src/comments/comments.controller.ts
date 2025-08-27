@@ -1,4 +1,4 @@
-import { Controller, Get, Post, Body, Param, UseGuards, Request,Query, ParseIntPipe, DefaultValuePipe } from '@nestjs/common';
+import { Controller, Get, Post, Body, Param, UseGuards, Request,Query, ParseIntPipe, DefaultValuePipe ,ParseUUIDPipe } from '@nestjs/common';
 import { CommentsService } from './comments.service';
 import { CreateCommentDto } from './dto/create-comment.dto';
 import { ResponseCommentDto } from './dto/update-comment.dto';
