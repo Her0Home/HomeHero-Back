@@ -10,9 +10,6 @@ export class SubCategory {
   @Column({ type: 'varchar', length: 50 })
   name: string;
 
-  @Column({ type: 'text', nullable: true })
-  image: string;
-
   @ManyToOne(() => Category, (category) => category.subcategories, { onDelete: 'CASCADE' })
   category: Category;
 
