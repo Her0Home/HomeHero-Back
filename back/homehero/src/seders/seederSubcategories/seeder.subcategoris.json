@@ -1,12 +1,47 @@
 [
-    { "name": "Plomero experto en destape de cañerías", "categoryName": "Plomería" },
-    { "name": "Instalación de calentadores de agua", "categoryName": "Plomería" },
-    { "name": "Reparación de fugas de agua y gas", "categoryName": "Plomería" },
-    { "name": "Cerrajero de urgencias 24 horas", "categoryName": "Cerrajería" },
-    { "name": "Instalación de cerraduras de alta seguridad", "categoryName": "Cerrajería" },
-    { "name": "Apertura de puertas y vehículos", "categoryName": "Cerrajería" },
-    { "name": "Instalación de paneles solares", "categoryName": "Electricidad" },
-    { "name": "Reparación de cortocircuitos", "categoryName": "Electricidad" },
-    { "name": "Paseador de perros de razas pequeñas", "categoryName": "Paseo de Perros" },
-    { "name": "Paseador de perros de razas grandes", "categoryName": "Paseo de Perros" }
+  {
+    "id": "43478d48-590c-4148-b0f4-68c99908d707",
+    "name": "Plomero experto en destape de cañerías",
+    "categoryId": "07917bce-15f3-461d-a7b3-d45809da6dd6"
+  },
+  {
+    "id": "f08190b4-4a9f-4859-8341-d6b0cd87fb9d",
+    "name": "Instalación de calentadores de agua",
+    "categoryId": "07917bce-15f3-461d-a7b3-d45809da6dd6"
+  },
+  {
+    "id": "6af9f77d-a61d-4c9b-bacc-fd153c1454cd",
+    "name": "Reparación de fugas de agua y gas",
+    "categoryId": "07917bce-15f3-461d-a7b3-d45809da6dd6"
+  },
+  {
+    "id": "131a8194-777a-46e1-8d22-1a99a4f2a98c",
+    "name": "Instalación de paneles solares",
+    "categoryId": "d16cf338-af25-45a6-a5c3-da3d371645df"
+  },
+  {
+    "id": "5da087db-c0d1-46fd-9310-9d33daf2792e",
+    "name": "Reparación de cortocircuitos",
+    "categoryId": "d16cf338-af25-45a6-a5c3-da3d371645df"
+  },
+  {
+    "id": "749fe1bc-3dc8-4447-b45e-c0bc252fe379",
+    "name": "Paseador de perros de razas pequeñas",
+    "categoryId": "ed17826c-1f2a-47a2-bb56-b83ae948f2e7"
+  },
+  {
+    "id": "27a95fc2-1601-4562-8830-aa1c02fae514",
+    "name": "Paseador de perros de razas grandes",
+    "categoryId": "ed17826c-1f2a-47a2-bb56-b83ae948f2e7"
+  },
+  {
+    "id": "6904d3fd-d624-4050-b44d-5cb099337c10",
+    "name": "limpieza profunda de casas y muebles",
+    "categoryId": "c066beed-a172-445f-b183-af1abc4bcaf6"
+  },
+  {
+    "id": "d0203837-ff18-4709-acd5-2615fbf13246",
+    "name": "pintos de exteriores",
+    "categoryId": "e40e456c-bf4e-446b-954e-b0124f8247db"
+  }
 ]

@@ -6,10 +6,17 @@
   "birthdate": "1985-06-18T00:00:00.000Z",
   "dni": 1020304050,
   "password": "Password123!",
+  "imageProfile" : "https://ik.imagekit.io/ankxi835d/Home%20Hero/plomeroPerfil.jpg?updatedAt=1754778343505",
   "role": "profesional",
   "description": "Plomero con 15 años de experiencia en reparaciones e instalaciones sanitarias.",
-  "categoryIds": ["f12e7ffe-5059-41b6-ab51-734742fde8c9"],
-  "subCategoryIds": ["d9e8f7g6-h5i4-j3k2-l1m0-n9o8p7q6r5s4"]
+  "categoryIds": "07917bce-15f3-461d-a7b3-d45809da6dd6",
+  "subCategoryIds": ["a550bac5-0f70-40d3-9a47-47c4a4070429","a550bac5-0f70-40d3-9a47-47c4a4070429","a550bac5-0f70-40d3-9a47-47c4a4070429"],
+   "addres": [
+      {
+        "streetNumber": 45,
+        "city": "Almagro"
+      }
+    ]
 },
 {
   "id": "123e4567-e89b-12d3-a456-426614174000",
@@ -18,11 +25,37 @@
   "birthdate": "1988-11-23T00:00:00.000Z",
   "dni": 2030405060,
   "password": "Password456@",
-  "imageProfile": "https://example.com/images/ricardo.jpg",
+  "imageProfile": "https://ik.imagekit.io/ankxi835d/Home%20Hero/electricistaProfile.jpg?updatedAt=1754778578455",
   "role": "profesional",
   "description": "Electricista certificado para instalaciones, mantenimiento y reparación de sistemas eléctricos.",
-  "categoryIds": ["473cf1fc-7da5-4bfb-91de-ef8d18402187"],
-  "subCategoryIds": ["e0f1g2h3-i4j5-k6l7-m8n9-o0p1q2r3s4t5"]
+  "categoryIds": "d16cf338-af25-45a6-a5c3-da3d371645df",
+  "subCategoryIds": ["131a8194-777a-46e1-8d22-1a99a4f2a98c"],
+   "addres": [
+      {
+        "streetNumber": 789,
+        "city": "Barracas",
+        "aptoNumber": "101"
+      }
+    ]
+},
+{
+  "id": "25fbd9d8-6256-4978-a46a-96a553e67e00",
+  "name": "Andrea Castro",
+  "email": "andrea.castro@example.com",
+  "birthdate": "1982-08-08T00:00:00.000Z",
+  "dni": 8070605040,
+  "password": "PasswordABC!",
+  "imageProfile":"https://ik.imagekit.io/ankxi835d/Home%20Hero/aseoProfile.jpg?updatedAt=1754778577652",
+  "role": "profesional",
+  "description": "Aseo y limpieza profesional dejando limpio interiores",
+  "categoryIds": "c066beed-a172-445f-b183-af1abc4bcaf6",
+  "subCategoryIds": ["fb5d0c4e-1d25-4f6d-a8ea-afed3c8a0683"],
+  "addres": [
+      {
+        "streetNumber": 101,
+        "city": "Versalles"
+      }
+    ]
 },
 {
   "id": "0b8ddd96-6e4d-44d4-9f90-2ae0cdb68617",
@@ -33,21 +66,8 @@
   "password": "Password789#",
   "role": "profesional",
   "description": "Paseadora de perros con experiencia en adiestramiento básico y primeros auxilios.",
-  "categoryIds": ["77dec34e-dd9f-4786-994b-c9a8335ea296"],
-  "subCategoryIds": ["f1g2h3i4-j5k6-l7m8-n9o0-p1q2r3s4t5u6"]
-},
-{
-  "id": "25fbd9d8-6256-4978-a46a-96a553e67e00",
-  "name": "Andrea Castro",
-  "email": "andrea.castro@example.com",
-  "birthdate": "1982-08-08T00:00:00.000Z",
-  "dni": 8070605040,
-  "password": "PasswordABC!",
-  "imageProfile": "https://example.com/images/andrea.png",
-  "role": "profesional",
-  "description": "Niñera profesional, responsable y cariñosa. Con experiencia en el cuidado de niños de 1 a 10 años.",
-  "categoryIds": ["d28d20cc-f160-440e-8d7c-69f235d842f3"],
-  "subCategoryIds": ["g1h2i3j4-k5l6-m7n8-o9p0-q1r2s3t4u5v6"]
+  "categoryIds": "ed17826c-1f2a-47a2-bb56-b83ae948f2e7",
+  "subCategoryIds": ["5d1c18f2-8ca9-41e0-a10a-a3fce4b4f8d1"]
 },
 {
   "id": "3b9e073b-3aac-443c-8c6e-493d2bab8397",
@@ -57,9 +77,9 @@
   "dni": 9070504030,
   "password": "PasswordXYZ#",
   "role": "profesional",
-  "description": "Cerrajero de emergencia 24/7. Instalación y reparación de cerraduras, apertura de puertas y vehículos.",
-  "categoryIds": ["ebe6e167-ca47-465c-be1e-fbe5a1795f21"],
-  "subCategoryIds": ["h1i2j3k4-l5m6-n7o8-p9q0-r1s2t3u4v5w6"]
+  "description": "pintor profesional, responsable y cariñoso. Con experiencia en el pintado de exteriores de 10 años de experiencia.",
+  "categoryIds": "e40e456c-bf4e-446b-954e-b0124f8247db",
+  "subCategoryIds": []
 },
 {
   "id": "f1e2d3c4-b5a6-7890-abcd-ef1234567890",

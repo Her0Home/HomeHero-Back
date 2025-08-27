@@ -52,9 +52,10 @@ export class UsersController {
     return this.usersService.getUserFilter({role, email, id, name})
   }
 
+  
+  @UseInterceptors(ExcludePasswordInterceptor)
   @ApiBearerAuth()
   @UseGuards(LogginGuard)
-  @UseInterceptors(ExcludePasswordInterceptor)
   @Get(':id')
   GetUserById(@Param('id', new ParseUUIDPipe()) id: string) {
     return this.usersService.getUserById(id);
@@ -122,7 +123,10 @@ export class UsersController {
     const userId: string = req.user.id;
     return this.usersService.putUser(userId, body);
   }
-
-
+  
+  @UseInterceptors(ExcludePasswordInterceptor)
+  @Get('profile/:id')
+  GetUserProfileById(@Param('id', new ParseUUIDPipe()) id: string) {
+    return this.usersService.getProfessionalById(id);
+  }
 }
-

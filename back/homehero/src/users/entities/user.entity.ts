@@ -1,5 +1,5 @@
 import { Appointment } from "src/appointment/entities/appointment.entity";
-import { Column, Entity, JoinColumn, JoinTable, ManyToMany, OneToMany, OneToOne, PrimaryGeneratedColumn } from "typeorm";
+import { Column, Entity, JoinColumn, JoinTable, ManyToMany, ManyToOne, OneToMany, OneToOne, PrimaryGeneratedColumn } from "typeorm";
 import { Role } from "../assets/roles";
 import { Membership } from "src/membership/entities/membership.entity";
 import { Addre } from "src/addres/entities/addre.entity";
@@ -41,7 +41,7 @@ export class User {
     password?: string;
 
     @Column({type:'decimal', precision: 10, scale: 1, default: 0,nullable: true})
-    avaregeRating?: number;
+    averageRating?: number;
 
     @Column({type:'integer', default: 0,nullable: true})
     totalAppointments?: number;
@@ -80,10 +80,8 @@ export class User {
     @OneToOne(()=> Membership, membership => membership.user,{cascade: true, onDelete: 'CASCADE'})
     membership?: Membership;
 
-    @ManyToMany(()=>Category, category=>category.professional,{cascade: true})
-    @JoinTable({name:'professional_category'})
-    categories?: Category[];
-    
+    @ManyToOne(() => Category, (category) => category.professional)
+    category?: Category;
     
 
     @OneToMany(() => Payment, payment => payment.user)
@@ -96,11 +94,7 @@ export class User {
     @OneToMany(()=> Addre, addre=> addre.user,{cascade: true, onDelete: 'CASCADE'})
     @JoinColumn({name:'addres_id'})
     addres?: Addre[]
-    // @OneToMany(() => Addres, addres => addres.user)
-    // addresses: Addres[];
-
-    // @ManyToMany(() => Subcategories, subcategory => subcategory.users)
-    // subcategories?: Subcategories[];
+   
     @OneToMany(() => Image, image => image.user)
     @JoinColumn({ name: 'image_id' })
     image?: Image[];

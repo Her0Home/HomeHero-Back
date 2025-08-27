@@ -10,9 +10,14 @@ export class updateRole{
 export class UpdateUser{
 
     @IsOptional()
+<<<<<<< HEAD
+    @IsString()
+    categoriesId?: string | undefined;
+=======
     @IsArray()
     @IsUUID('all', {each: true})
-    categoriesId?: string[]
+    categoriesId?: string;
+>>>>>>> 482982463b1e7cc084be8e4e8208e60ae1c3ad23
 
 
     @IsDate()

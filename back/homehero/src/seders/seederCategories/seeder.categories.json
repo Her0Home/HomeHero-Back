@@ -1,83 +1,26 @@
 [
   {
-    "name": "Plomería",
-    "subCategoryArray": [
-      "Destape de cañerías",
-      "Instalación de grifería y sanitarios",
-      "Reparación de fugas",
-      "Mantenimiento de calentadores"
-    ]
+    "id": "07917bce-15f3-461d-a7b3-d45809da6dd6",
+    "name": "Plomería"
   },
   {
-    "name": "Electricidad",
-    "subCategoryArray": [
-      "Instalaciones eléctricas residenciales",
-      "Reparación de cortocircuitos",
-      "Instalación de paneles solares",
-      "Sistemas de iluminación y domótica"
-    ]
+    "id": "d16cf338-af25-45a6-a5c3-da3d371645df",
+    "name": "Electricidad"
   },
   {
-    "name": "Cerrajería",
-    "subCategoryArray": [
-      "Apertura de urgencia 24/7",
-      "Instalación de cerraduras de alta seguridad",
-      "Duplicado de llaves con chip",
-      "Mantenimiento de cerraduras"
-    ]
+    "id": "ed17826c-1f2a-47a2-bb56-b83ae948f2e7",
+    "name": "Paseo de Perros"
   },
   {
-    "name": "Paseo de Perros",
-    "subCategoryArray": [
-      "Paseos individuales personalizados",
-      "Paseos grupales para socialización",
-      "Cuidado a domicilio (Pet Sitting)",
-      "Adiestramiento básico en paseo"
-    ]
+    "id": "e40e456c-bf4e-446b-954e-b0124f8247db",
+    "name": "Pintura"
   },
   {
-    "name": "Pintura",
-    "subCategoryArray": [
-      "Pintura de interiores",
-      "Pintura de fachadas",
-      "Aplicación de estuco y texturizados",
-      "Impermeabilización de superficies"
-    ]
+    "id": "a87c16a6-4b25-4748-928b-ded36bd36b63",
+    "name": "Jardinería"
   },
   {
-    "name": "Jardinería",
-    "subCategoryArray": [
-      "Mantenimiento de césped y jardines",
-      "Poda de árboles y arbustos",
-      "Diseño de paisajes",
-      "Instalación de sistemas de riego"
-    ]
-  },
-  {
-    "name": "Carpintería",
-    "subCategoryArray": [
-      "Fabricación de muebles a medida",
-      "Reparación de puertas y ventanas",
-      "Instalación de pisos de madera",
-      "Restauración de muebles antiguos"
-    ]
-  },
-  {
-    "name": "Aseo y Limpieza",
-    "subCategoryArray": [
-      "Aseo doméstico por días",
-      "Limpieza profunda de espacios",
-      "Limpieza de tapetes y muebles",
-      "Desinfección de ambientes"
-    ]
-  },
-  {
-    "name": "Técnico de Electrodomésticos",
-    "subCategoryArray": [
-      "Reparación de neveras y nevecones",
-      "Reparación de lavadoras y secadoras",
-      "Mantenimiento de aires acondicionados",
-      "Instalación y reparación de estufas"
-    ]
+    "id": "c066beed-a172-445f-b183-af1abc4bcaf6",
+    "name": "Aseo y Limpieza"
   }
 ]

@@ -16,6 +16,10 @@ import { CategoryService } from 'src/category/category.service';
 import { Category } from 'src/category/entities/category.entity';
 import { AddresService } from 'src/addres/addres.service';
 import { Addre } from 'src/addres/entities/addre.entity';
+import { Comment } from 'src/comments/entities/comment.entity';
+import { Appointment } from 'src/appointment/entities/appointment.entity';
+import { AppointmentStatus } from 'src/appointment/Enum/appointmentStatus.enum';
+
 // import { UpdateUserDto } from './dto/update-user.dto';
 
 @Injectable()
@@ -23,9 +27,41 @@ export class UsersService {
 
   constructor(
     @InjectRepository(User) private userRepository: Repository<User>,
+    @InjectRepository(Comment) private commentRepository: Repository<Comment>,
+    @InjectRepository(Appointment) private appointmentRepository: Repository<Appointment>,
     private categoryService: CategoryService,
     private addreService: AddresService
   ) {}
+
+  async updateProfessionalStats(userId: string) {
+    try {
+     
+      const allComments = await this.commentRepository.find({
+        where: { receiverId: userId },
+      });
+      const totalRating = allComments.reduce((sum, comment) => sum + comment.rating, 0);
+      const averageRating = allComments.length > 0 ? totalRating / allComments.length : 0;
+
+      
+      const totalAppointments = await this.appointmentRepository.count({
+        where: {
+          professional: { id: userId },
+          status: AppointmentStatus.COMPLETED,
+        },
+      });
+
+
+      await this.userRepository.update(userId, {
+        averageRating: averageRating,
+        totalAppointments: totalAppointments,
+      });
+      
+      console.log(`Estadísticas actualizadas para el usuario: ${userId}`);
+
+    } catch (error) {
+      console.error(`Error al actualizar estadísticas para el usuario ${userId}:`, error);
+    }
+  }
 
   async getAllUser () {
 
@@ -86,7 +122,33 @@ export class UsersService {
 
 
   }
+  
+  
 
+  async getProfessionalById(id: string) {
+  const professional = await this.userRepository.findOne({
+    where: { id },
+    relations: ['category', 'subcategories', 'addres'], 
+  });
+
+  if (!professional) {
+    throw new NotFoundException('Profesional no encontrado.');
+  }
+
+  return {
+    id: professional.id,
+    name: professional.name,
+    city: professional.addres && professional.addres.length > 0 ? professional.addres[0].city : null,
+    imageProfile: professional.imageProfile,
+    description: professional.description,
+    averageRating: professional.averageRating,
+    totalAppointments: professional.totalAppointments,
+    isVerified: professional.isVerified,
+    isMembresyActive: professional.isMembresyActive,
+    category: professional.category,
+    subcategories: professional.subcategories,
+  };
+}
 
   async changeRole (id: string, body: updateRole){
 
@@ -170,7 +232,7 @@ export class UsersService {
     try {
       const query = this.userRepository.createQueryBuilder('user');
       
-      query.leftJoinAndSelect('user.categories', 'category');
+      query.leftJoinAndSelect('user.category', 'category');
       
       query.where('user.isActive = :isActive', { isActive: true });
       query.andWhere('user.isMembresyActive = :isMembresyActive', { isMembresyActive: true });
@@ -216,10 +278,10 @@ export class UsersService {
 
   async ratingProfessionals(query: ratingUserDto){
     try {
-      const {sort = 'avaregeRating', order = 'DESC'} = query;
+      const {sort = 'averageRating', order = 'DESC'} = query;
 
-      const validSort = ['avaregeRating','name'];  
-      const sortColumn = validSort.includes(sort)? sort : 'avaregeRating';
+      const validSort = ['averageRating','name'];  
+      const sortColumn = validSort.includes(sort)? sort : 'averageRating';
 
       const sortOrder: 'ASC' | 'DESC' = order === 'ASC' ? 'ASC' : 'DESC';
 
@@ -227,7 +289,7 @@ export class UsersService {
       const [professionals, total] = await this.userRepository.findAndCount({
         where: { role: Role.PROFESSIONAL },
         order: { [sortColumn]: sortOrder },
-        relations:['categories','subcategories']
+        relations:['category','subcategories']
       });
 
       return professionals;
@@ -250,19 +312,17 @@ export class UsersService {
         throw new NotFoundException(`No se encontro usuario con el id: ${userId}`)
       } 
 
-      const newCategories: Category[] = await Promise.all (
-        categoriesId!.map(async (catId)=> {
-          const category: Category | null = await this.categoryService.findOne(catId);
-          if(!category) throw new NotFoundException(`Categoria con id: ${catId}, no encontrada`);
-          return category;
-        })
-      );
+       if (categoriesId) {
+        const newCategory: Category | null = await this.categoryService.findOne(categoriesId);
+        if(!newCategory) throw new NotFoundException(`Categoria con id: ${categoriesId}, no encontrada`);
+        findUser.category = newCategory;
+      }
+
 
       const addre: Addre | null = await this.addreService.create({city, aptoNumber,streetNumber}, findUser.id)
       if(!addre) throw new InternalServerErrorException('Error al crear la direccion');
 
 
-      findUser.categories= newCategories;
       findUser.birthdate= birthdate;
       findUser.imageProfile= imageProfile;
       findUser.addres= [addre];

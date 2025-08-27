@@ -6,11 +6,12 @@ import { Comment } from './entities/comment.entity';
 import { User } from '../users/entities/user.entity';
 import { Appointment } from '../appointment/entities/appointment.entity';
 import { CommonModule } from '../FilterComents/Common.module';
+import { UsersModule } from 'src/users/users.module';
 
 @Module({
   imports: [
     TypeOrmModule.forFeature([Comment, User, Appointment]),
-    CommonModule
+    CommonModule, UsersModule
   ],
   controllers: [CommentsController],
   providers: [CommentsService],
