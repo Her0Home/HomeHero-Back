@@ -7,24 +7,19 @@ import { UpdateSubcategoryDto } from './dto/update-subcategory.dto';
 export class SubcategoryController {
   constructor(private readonly subcategoryService: SubcategoryService) {}
 
-  // @Post()
-  // create(@Body() createSubcategoryDto: CreateSubcategoryDto) {
-  //   return this.subcategoryService.create(createSubcategoryDto);
-  // }
-
-  @Get()
+  @Get('all')
   findAll() {
-    return this.subcategoryService.findAll();
+    return this.subcategoryService.getAll();
   }
 
-  @Get(':id')
+  @Get(':id/subcategory')
   findOne(@Param('id', new ParseUUIDPipe()) id: string) {
-    return this.subcategoryService.findOne(+id);
+    return this.subcategoryService.getSubCategorieById(id);
   }
 
-  @Patch(':id')
-  update(@Param('id', new ParseUUIDPipe()) id: string, @Body() updateSubcategoryDto: UpdateSubcategoryDto) {
-    return this.subcategoryService.update(+id, updateSubcategoryDto);
+  @Post()
+  update(@Body() body: CreateSubcategoryDto) {
+    return this.subcategoryService.create(body);
   }
 
   @Delete(':id')
