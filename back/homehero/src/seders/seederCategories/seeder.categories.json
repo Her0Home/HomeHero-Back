@@ -1,26 +1,27 @@
 [
   {
     "id": "07917bce-15f3-461d-a7b3-d45809da6dd6",
-    "name": "Plomería"
+    "name": "plomeria"
   },
   {
     "id": "d16cf338-af25-45a6-a5c3-da3d371645df",
-    "name": "Electricidad"
+    "name": "electricidad"
   },
   {
     "id": "ed17826c-1f2a-47a2-bb56-b83ae948f2e7",
-    "name": "Paseo de Perros"
+    "name": "mascotas"
   },
   {
     "id": "e40e456c-bf4e-446b-954e-b0124f8247db",
-    "name": "Pintura"
+    "name": "pintura"
   },
   {
     "id": "a87c16a6-4b25-4748-928b-ded36bd36b63",
-    "name": "Jardinería"
+    "name": "jardineria"
   },
   {
     "id": "c066beed-a172-445f-b183-af1abc4bcaf6",
-    "name": "Aseo y Limpieza"
+    "name": "limpieza"
   }
+  
 ]

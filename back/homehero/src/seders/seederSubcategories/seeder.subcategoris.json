@@ -1,47 +1,242 @@
 [
-  {
-    "id": "43478d48-590c-4148-b0f4-68c99908d707",
-    "name": "Plomero experto en destape de cañerías",
-    "categoryId": "07917bce-15f3-461d-a7b3-d45809da6dd6"
-  },
-  {
-    "id": "f08190b4-4a9f-4859-8341-d6b0cd87fb9d",
-    "name": "Instalación de calentadores de agua",
-    "categoryId": "07917bce-15f3-461d-a7b3-d45809da6dd6"
-  },
-  {
-    "id": "6af9f77d-a61d-4c9b-bacc-fd153c1454cd",
-    "name": "Reparación de fugas de agua y gas",
-    "categoryId": "07917bce-15f3-461d-a7b3-d45809da6dd6"
-  },
-  {
-    "id": "131a8194-777a-46e1-8d22-1a99a4f2a98c",
-    "name": "Instalación de paneles solares",
-    "categoryId": "d16cf338-af25-45a6-a5c3-da3d371645df"
-  },
-  {
-    "id": "5da087db-c0d1-46fd-9310-9d33daf2792e",
-    "name": "Reparación de cortocircuitos",
-    "categoryId": "d16cf338-af25-45a6-a5c3-da3d371645df"
-  },
-  {
-    "id": "749fe1bc-3dc8-4447-b45e-c0bc252fe379",
-    "name": "Paseador de perros de razas pequeñas",
-    "categoryId": "ed17826c-1f2a-47a2-bb56-b83ae948f2e7"
-  },
-  {
-    "id": "27a95fc2-1601-4562-8830-aa1c02fae514",
-    "name": "Paseador de perros de razas grandes",
-    "categoryId": "ed17826c-1f2a-47a2-bb56-b83ae948f2e7"
-  },
-  {
-    "id": "6904d3fd-d624-4050-b44d-5cb099337c10",
-    "name": "limpieza profunda de casas y muebles",
-    "categoryId": "c066beed-a172-445f-b183-af1abc4bcaf6"
-  },
-  {
-    "id": "d0203837-ff18-4709-acd5-2615fbf13246",
-    "name": "pintos de exteriores",
-    "categoryId": "e40e456c-bf4e-446b-954e-b0124f8247db"
-  }
+	{
+		"id": "28f94037-1b70-4e00-a261-9f253317890b",
+		"name": "Instalación de tomas y llaves",
+		"categoryId": "d16cf338-af25-45a6-a5c3-da3d371645df"
+	},
+	{
+		"id": "21dfb916-66ea-4a97-87ab-ff85243d8346",
+		"name": "Cableado estructurado",
+		"categoryId": "d16cf338-af25-45a6-a5c3-da3d371645df"
+	},
+	{
+		"id": "67dd6804-54fc-4c0b-9891-159c7301dec8",
+		"name": "Automatización de portones",
+		"categoryId": "d16cf338-af25-45a6-a5c3-da3d371645df"
+	},
+	{
+		"id": "d613c273-e57d-46a2-845d-76143ffddfcb",
+		"name": "Medición de consumo eléctrico",
+		"categoryId": "d16cf338-af25-45a6-a5c3-da3d371645df"
+	},
+	{
+		"id": "69c7b2c8-b47a-42d8-b0bd-ba44986e9219",
+		"name": "Certificados de seguridad",
+		"categoryId": "d16cf338-af25-45a6-a5c3-da3d371645df"
+	},
+	{
+		"id": "9da0f052-8056-4897-bcf5-15fc670ef5ce",
+		"name": "Tableros eléctricos",
+		"categoryId": "d16cf338-af25-45a6-a5c3-da3d371645df"
+	},
+	{
+		"id": "2a5169dc-0d1f-47e4-a089-573a57a337a2",
+		"name": "Instalación de luminarias",
+		"categoryId": "d16cf338-af25-45a6-a5c3-da3d371645df"
+	},
+	{
+		"id": "676d3f10-7d7e-4e46-ab81-8fa7c58193ff",
+		"name": "Reparación de cortocircuitos",
+		"categoryId": "d16cf338-af25-45a6-a5c3-da3d371645df"
+	},
+	{
+		"id": "710ba283-57a4-4af2-b962-0fb09dbec9a7",
+		"name": "Reparación de cañerías",
+		"categoryId": "07917bce-15f3-461d-a7b3-d45809da6dd6"
+	},
+	{
+		"id": "72db5680-1da1-4dc3-b363-819a3711f57d",
+		"name": "Instalación de sanitarios",
+		"categoryId": "07917bce-15f3-461d-a7b3-d45809da6dd6"
+	},
+	{
+		"id": "be46b902-7102-4539-8852-41a7f5fb686f",
+		"name": "Detección de fugas",
+		"categoryId": "07917bce-15f3-461d-a7b3-d45809da6dd6"
+	},
+	{
+		"id": "62ef5a8e-5bb0-4202-b2d6-021a7d8c63c1",
+		"name": "Desobstrucción de cloacas",
+		"categoryId": "07917bce-15f3-461d-a7b3-d45809da6dd6"
+	},
+	{
+		"id": "77ded2c2-2301-4238-b7e4-12422c91af05",
+		"name": "Instalación de calefones",
+		"categoryId": "07917bce-15f3-461d-a7b3-d45809da6dd6"
+	},
+	{
+		"id": "7536458d-13e1-40d3-a695-fc3032018df3",
+		"name": "Cambio de grifería",
+		"categoryId": "07917bce-15f3-461d-a7b3-d45809da6dd6"
+	},
+	{
+		"id": "d7117552-0ac9-490b-bddb-5f71288f9a02",
+		"name": "Reparación de pérdidas",
+		"categoryId": "07917bce-15f3-461d-a7b3-d45809da6dd6"
+	},
+	{
+		"id": "437db4d0-fcfa-413e-9f76-9ac71e35cf47",
+		"name": "Instalación de bombas de agua",
+		"categoryId": "07917bce-15f3-461d-a7b3-d45809da6dd6"
+	},
+	{
+		"id": "21f2d0b8-f609-4e3a-aa41-341d8075c02f",
+		"name": "Limpieza profunda de hogar",
+		"categoryId": "c066beed-a172-445f-b183-af1abc4bcaf6"
+	},
+	{
+		"id": "9d14fc71-a654-4bb6-aa62-f31e17ed3d6f",
+		"name": "Limpieza de oficinas",
+		"categoryId": "c066beed-a172-445f-b183-af1abc4bcaf6"
+	},
+	{
+		"id": "237267ba-f163-4f53-a2a3-d0c3d6a3e11c",
+		"name": "Limpieza post obra",
+		"categoryId": "c066beed-a172-445f-b183-af1abc4bcaf6"
+	},
+	{
+		"id": "6e585d8f-183f-4175-a67f-c07e9991f9d0",
+		"name": "Lavado de alfombras",
+		"categoryId": "c066beed-a172-445f-b183-af1abc4bcaf6"
+	},
+	{
+		"id": "f99b721e-fdcc-4530-84f3-e21ce055bb15",
+		"name": "Desinfección de ambientes",
+		"categoryId": "c066beed-a172-445f-b183-af1abc4bcaf6"
+	},
+	{
+		"id": "fe8519b0-0c5f-4c11-a926-3875e2ab9dde",
+		"name": "Limpieza de vidrios",
+		"categoryId": "c066beed-a172-445f-b183-af1abc4bcaf6"
+	},
+	{
+		"id": "486a987a-896d-40f1-a613-fcb6206ee01e",
+		"name": "Limpieza de cocinas industriales",
+		"categoryId": "c066beed-a172-445f-b183-af1abc4bcaf6"
+	},
+	{
+		"id": "75a88188-78d0-416d-880d-f8bea1ce4818",
+		"name": "Limpieza de tapizados",
+		"categoryId": "c066beed-a172-445f-b183-af1abc4bcaf6"
+	},
+	{
+		"id": "8d9c7463-f5db-4165-a3f6-46ce28437c20",
+		"name": "Paseos diarios",
+		"categoryId": "ed17826c-1f2a-47a2-bb56-b83ae948f2e7"
+	},
+	{
+		"id": "397700be-c08e-473d-8472-81bfe3aacadb",
+		"name": "Cuidado en domicilio",
+		"categoryId": "ed17826c-1f2a-47a2-bb56-b83ae948f2e7"
+	},
+	{
+		"id": "10166c0c-e72c-4122-9b2f-33526abcce04",
+		"name": "Transporte a veterinario",
+		"categoryId": "ed17826c-1f2a-47a2-bb56-b83ae948f2e7"
+	},
+	{
+		"id": "e72a09f5-e4e0-436d-ac4e-27243574ad09",
+		"name": "Entrenamiento básico",
+		"categoryId": "ed17826c-1f2a-47a2-bb56-b83ae948f2e7"
+	},
+	{
+		"id": "a3399ad2-a295-4260-8275-036566e62481",
+		"name": "Baño y cepillado",
+		"categoryId": "ed17826c-1f2a-47a2-bb56-b83ae948f2e7"
+	},
+	{
+		"id": "7d0815dc-c9dd-40fa-9b49-a4cbf44956fb",
+		"name": "Cuidado nocturno",
+		"categoryId": "ed17826c-1f2a-47a2-bb56-b83ae948f2e7"
+	},
+	{
+		"id": "e14307d1-dd44-463f-8dbb-4ff7b62308dd",
+		"name": "Socialización guiada",
+		"categoryId": "ed17826c-1f2a-47a2-bb56-b83ae948f2e7"
+	},
+	{
+		"id": "184f14fd-eb17-41a7-8588-b4b83aca97b8",
+		"name": "Entrega de reportes diarios",
+		"categoryId": "ed17826c-1f2a-47a2-bb56-b83ae948f2e7"
+	},
+	{
+		"id": "54b0c759-f5be-4d2e-ad26-d2eb32540589",
+		"name": "Pintura interior",
+		"categoryId": "ed17826c-1f2a-47a2-bb56-b83ae948f2e7"
+	},
+	{
+		"id": "ee0328ec-7e2a-4457-85b3-98ffdb5102ce",
+		"name": "Pintura exterior",
+		"categoryId": "ed17826c-1f2a-47a2-bb56-b83ae948f2e7"
+	},
+	{
+		"id": "bfedb7ce-e356-4c74-9cf8-0fc72bf5db08",
+		"name": "Impermeabilización",
+		"categoryId": "ed17826c-1f2a-47a2-bb56-b83ae948f2e7"
+	},
+	{
+		"id": "94ff929e-3211-478e-b882-0508d7af37d3",
+		"name": "Aplicación de texturas",
+		"categoryId": "ed17826c-1f2a-47a2-bb56-b83ae948f2e7"
+	},
+	{
+		"id": "72054377-d8c1-4a9a-a799-02f11a3af23e",
+		"name": "Pintura decorativa",
+		"categoryId": "ed17826c-1f2a-47a2-bb56-b83ae948f2e7"
+	},
+	{
+		"id": "5d1ea5d3-e302-4437-96fe-796152443633",
+		"name": "Reparación de grietas",
+		"categoryId": "ed17826c-1f2a-47a2-bb56-b83ae948f2e7"
+	},
+	{
+		"id": "650fd470-691e-4f35-a7a1-1692c6f6307f",
+		"name": "Lijado y preparación de superficies",
+		"categoryId": "ed17826c-1f2a-47a2-bb56-b83ae948f2e7"
+	},
+	{
+		"id": "79b4b312-f4f6-4b8e-a896-0b2bdf5e9865",
+		"name": "Pintura de muebles",
+		"categoryId": "ed17826c-1f2a-47a2-bb56-b83ae948f2e7"
+	},
+	{
+		"id": "53cbc321-badc-49b1-968c-9ef474d12102",
+		"name": "Corte de césped",
+		"categoryId": "a87c16a6-4b25-4748-928b-ded36bd36b63"
+	},
+	{
+		"id": "5b50af5a-da26-4e5a-99d6-7554c3776db9",
+		"name": "Poda de árboles",
+		"categoryId": "a87c16a6-4b25-4748-928b-ded36bd36b63"
+	},
+	{
+		"id": "6017aafd-0b9a-4775-ad37-ec60bbf757ff",
+		"name": "Diseño de jardines",
+		"categoryId": "a87c16a6-4b25-4748-928b-ded36bd36b63"
+	},
+	{
+		"id": "5c6ee8f9-a37e-4f6c-b486-efde90863d05",
+		"name": "Mantenimiento de plantas",
+		"categoryId": "a87c16a6-4b25-4748-928b-ded36bd36b63"
+	},
+	{
+		"id": "8972c7b8-738e-4d58-8bf7-5af07c73f6f1",
+		"name": "Instalación de riego automático",
+		"categoryId": "a87c16a6-4b25-4748-928b-ded36bd36b63"
+	},
+	{
+		"id": "ddf34603-20bb-4d57-b77b-84b1e94da055",
+		"name": "Control de plagas",
+		"categoryId": "a87c16a6-4b25-4748-928b-ded36bd36b63"
+	},
+	{
+		"id": "4c7db30e-daee-4b7d-8999-9ecc99bee14e",
+		"name": "Fertilización",
+		"categoryId": "a87c16a6-4b25-4748-928b-ded36bd36b63"
+	},
+	{
+		"id": "2bab7957-c51d-4b2a-8178-577035f4c53a",
+		"name": "Limpieza de espacios verdes",
+		"categoryId": "a87c16a6-4b25-4748-928b-ded36bd36b63"
+	}
 ]

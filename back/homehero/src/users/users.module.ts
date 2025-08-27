@@ -8,12 +8,13 @@ import { CategoryModule } from 'src/category/category.module';
 import { AddresModule } from 'src/addres/addres.module';
 import { Comment } from 'src/comments/entities/comment.entity';
 import { Appointment } from 'src/appointment/entities/appointment.entity';
+import { SubcategoryModule } from 'src/subcategory/subcategory.module';
 
 @Module({
-  imports: [TypeOrmModule.forFeature([User, Comment , Appointment]), EmailModule, CategoryModule, AddresModule],
+  imports: [TypeOrmModule.forFeature([User, Comment , Appointment]), EmailModule, CategoryModule, AddresModule,SubcategoryModule],
   controllers: [UsersController],
   providers: [UsersService],
-   exports: [UsersService]
+  exports: [UsersService]
 })
 export class UsersModule  {}
 
