@@ -1,24 +1,26 @@
 import { Injectable, NotFoundException, BadRequestException } from '@nestjs/common';
 import { InjectRepository } from '@nestjs/typeorm';
 import { Repository, DataSource } from 'typeorm';
-import { Comment } from './entities/comment.entity';
+import { Comment } from './entities/comment.entity'; 
 import { User } from '../users/entities/user.entity';
 import { Appointment } from '../appointment/entities/appointment.entity';
 import { CreateCommentDto } from './dto/create-comment.dto';
 import { AppointmentStatus } from '../appointment/Enum/appointmentStatus.enum';
 import { ProfanityFilterService } from '../FilterComents/filterComents.service';
+import { UsersService } from '../users/users.service'; 
 
 @Injectable()
 export class CommentsService {
   constructor(
-    @InjectRepository(Comment)
-    private commentsRepository: Repository<Comment>,
-    @InjectRepository(User)
-    private usersRepository: Repository<User>,
-    @InjectRepository(Appointment)
-    private appointmentsRepository: Repository<Appointment>,
-    private dataSource: DataSource,
-    private profanityFilterService: ProfanityFilterService,
+   @InjectRepository(Comment)
+  private commentsRepository: Repository<Comment>,
+  
+  @InjectRepository(Appointment) 
+  private appointmentsRepository: Repository<Appointment>, 
+
+  private dataSource: DataSource,
+  private profanityFilterService: ProfanityFilterService,
+  private readonly usersService: UsersService,
   ) {}
 
   async create(userId: string, createCommentDto: CreateCommentDto): Promise<Comment> {
@@ -44,9 +46,7 @@ export class CommentsService {
       throw new BadRequestException('Solo puedes comentar en tus propias citas');
     }
 
-    const receiver = await this.usersRepository.findOne({
-      where: { id: receiverId }
-    });
+    const receiver = await this.usersService.getUserById(receiverId);
 
     if (!receiver) {
       throw new NotFoundException('Receptor no encontrado');
@@ -81,21 +81,12 @@ export class CommentsService {
       });
 
       await queryRunner.manager.save(comment);
-  
-      const allComments = await queryRunner.manager.find(Comment, {
-        where: { receiverId }
-      });
-
-
-      const totalRating = allComments.reduce((sum, c) => sum + c.rating, 0);
-      const averageRating = totalRating / allComments.length;
-
-
-      await queryRunner.manager.update(User, receiverId, {
-        averageRating: averageRating
-      });
-
       await queryRunner.commitTransaction();
+  
+      this.usersService.updateProfessionalStats(receiverId).catch(error => {
+        
+        console.error('Error en la actualización de estadísticas en segundo plano:', error);
+      });
 
       const createdComment = await this.commentsRepository.findOne({
         where: { id: comment.id },

@@ -16,6 +16,10 @@ import { CategoryService } from 'src/category/category.service';
 import { Category } from 'src/category/entities/category.entity';
 import { AddresService } from 'src/addres/addres.service';
 import { Addre } from 'src/addres/entities/addre.entity';
+import { Comment } from 'src/comments/entities/comment.entity';
+import { Appointment } from 'src/appointment/entities/appointment.entity';
+import { AppointmentStatus } from 'src/appointment/Enum/appointmentStatus.enum';
+
 // import { UpdateUserDto } from './dto/update-user.dto';
 
 @Injectable()
@@ -23,9 +27,41 @@ export class UsersService {
 
   constructor(
     @InjectRepository(User) private userRepository: Repository<User>,
+    @InjectRepository(Comment) private commentRepository: Repository<Comment>,
+    @InjectRepository(Appointment) private appointmentRepository: Repository<Appointment>,
     private categoryService: CategoryService,
     private addreService: AddresService
   ) {}
+
+  async updateProfessionalStats(userId: string) {
+    try {
+     
+      const allComments = await this.commentRepository.find({
+        where: { receiverId: userId },
+      });
+      const totalRating = allComments.reduce((sum, comment) => sum + comment.rating, 0);
+      const averageRating = allComments.length > 0 ? totalRating / allComments.length : 0;
+
+      
+      const totalAppointments = await this.appointmentRepository.count({
+        where: {
+          professional: { id: userId },
+          status: AppointmentStatus.COMPLETED,
+        },
+      });
+
+
+      await this.userRepository.update(userId, {
+        averageRating: averageRating,
+        totalAppointments: totalAppointments,
+      });
+      
+      console.log(`Estadísticas actualizadas para el usuario: ${userId}`);
+
+    } catch (error) {
+      console.error(`Error al actualizar estadísticas para el usuario ${userId}:`, error);
+    }
+  }
 
   async getAllUser () {
 
