@@ -29,15 +29,7 @@ import { ConfirmAppointmentDto } from './dto/confirm-appointment.dto';
 export class AppointmentController {
   constructor(private readonly appointmentService: AppointmentService) {}
 
-  @Get('availability/:professionalId/:date')
-  @ApiBearerAuth()
-  @UseGuards(LogginGuard) 
-  getAvailability(
-    @Param('professionalId', new ParseUUIDPipe()) professionalId: string,
-    @Param('date') date: string,
-  ) {
-    return this.appointmentService.getAvailability(professionalId, date);
-  }
+  
   @Get('schedule/:professionalId/:date')
   @ApiBearerAuth()
   @UseGuards(LogginGuard) 
