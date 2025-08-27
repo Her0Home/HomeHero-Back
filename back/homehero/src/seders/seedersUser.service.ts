@@ -9,6 +9,8 @@ import { Category } from "src/category/entities/category.entity";
 import { SubCategory } from "src/subcategory/entities/subcategory.entity";
 import { CategoriesServiceSeeder } from "../seders/seederCategories/seeder.categories";
 import { SubcategoriesServiceSeeder } from "../seders/seederSubcategories/seeder.subcategories";
+import { Addre } from "src/addres/entities/addre.entity";
+
 
 @Injectable()
 export class UsersServiceSeeder implements OnApplicationBootstrap {
@@ -22,6 +24,8 @@ export class UsersServiceSeeder implements OnApplicationBootstrap {
     private readonly subCategoriesRepository: Repository<SubCategory>,
     private readonly categoriesSeeder: CategoriesServiceSeeder,
     private readonly subcategoriesSeeder: SubcategoriesServiceSeeder,
+    @InjectRepository(Addre)
+    private readonly addresRepository: Repository<Addre>,
   ) {}
 
   async onApplicationBootstrap() {
@@ -54,6 +58,18 @@ export class UsersServiceSeeder implements OnApplicationBootstrap {
           imageProfile: userData.imageProfile,
         };
         const newUser = this.usersRepository.create(userToCreate);
+
+        if (userData.addres && Array.isArray(userData.addres) && userData.addres.length > 0) {
+          const addresses = userData.addres.map(addr => {
+            return this.addresRepository.create({
+              city: addr.city,
+              streetNumber: addr.streetNumber,
+              aptoNumber: addr.aptoNumber,
+              user: newUser, // Asocia la dirección al usuario que se está creando
+            });
+          });
+          newUser.addres = addresses;
+        }
 
         if (userData.role === Role.PROFESSIONAL) {
         
