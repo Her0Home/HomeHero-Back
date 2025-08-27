@@ -111,7 +111,7 @@ export class StripeController {
       cancelUrl,
     );
     
-    return { sessionId: session.id, url: session.url };
+    return { url: session.url };
   }
 
   // @ApiBearerAuth()
