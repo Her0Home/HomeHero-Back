@@ -147,5 +147,24 @@ export class CommentsService {
 
     return comment;
   }
-  
+  async findForProfessionalPaginated(
+    professionalId: string,
+    limit: number,
+    skip: number,
+  ): Promise<[Comment[], number]> {
+    const [comments, total] = await this.commentsRepository.findAndCount({
+      where: { receiverId: professionalId },
+      relations: [
+        'sender',
+        'appointment',
+        'appointment.professional',
+        'appointment.professional.subcategories',
+      ],
+      order: { createdAt: 'DESC' },
+      take: limit, 
+      skip: skip,  
+    });
+
+    return [comments, total];
+  }
 }
