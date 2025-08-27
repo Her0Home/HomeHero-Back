@@ -41,7 +41,7 @@ export class User {
     password?: string;
 
     @Column({type:'decimal', precision: 10, scale: 1, default: 0,nullable: true})
-    avaregeRating?: number;
+    averageRating?: number;
 
     @Column({type:'integer', default: 0,nullable: true})
     totalAppointments?: number;

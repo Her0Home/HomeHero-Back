@@ -9,8 +9,14 @@
   "imageProfile" : "https://ik.imagekit.io/ankxi835d/Home%20Hero/plomeroPerfil.jpg?updatedAt=1754778343505",
   "role": "profesional",
   "description": "Plomero con 15 años de experiencia en reparaciones e instalaciones sanitarias.",
-  "categoryIds": ["3fc07b61-27fb-4cc5-b426-6b017f9ce75f"],
-  "subCategoryIds": ["b192648a-c0c3-4acd-8e94-8133e80c1a4a"]
+  "categoryName": "plomero",
+  "subCategoryName": ["Plomero experto en destape de cañerías"],
+   "addres": [
+      {
+        "streetNumber": 45,
+        "city": "Almagro"
+      }
+    ]
 },
 {
   "id": "123e4567-e89b-12d3-a456-426614174000",
@@ -22,8 +28,15 @@
   "imageProfile": "https://ik.imagekit.io/ankxi835d/Home%20Hero/electricistaProfile.jpg?updatedAt=1754778578455",
   "role": "profesional",
   "description": "Electricista certificado para instalaciones, mantenimiento y reparación de sistemas eléctricos.",
-  "categoryIds": ["718cf40e-b751-47ea-8572-6e0c9dc05d85"],
-  "subCategoryIds": ["3d78d3fd-f6a1-4c45-b092-4698fca6ae20"]
+  "categoryName": ["Electricista"],
+  "subCategoryIds": ["Instalación de paneles solares"],
+   "addres": [
+      {
+        "streetNumber": 789,
+        "city": "Barracas",
+        "aptoNumber": "101"
+      }
+    ]
 },
 {
   "id": "25fbd9d8-6256-4978-a46a-96a553e67e00",
@@ -32,11 +45,17 @@
   "birthdate": "1982-08-08T00:00:00.000Z",
   "dni": 8070605040,
   "password": "PasswordABC!",
-  "imageProfile": "https://ik.imagekit.io/ankxi835d/Home%20Hero/aseoProfile.jpg?updatedAt=1754778577652",
+  "imageProfile":"https://ik.imagekit.io/ankxi835d/Home%20Hero/aseoProfile.jpg?updatedAt=1754778577652",
   "role": "profesional",
   "description": "Aseo y limpieza profesional dejando limpio interiores",
-  "categoryIds": ["a3e99857-e8b3-43f5-8635-d453044893f6"],
-  "subCategoryIds": [""]
+  "categoryIds": ["Aseo y Limpieza"],
+  "subCategoryIds": ["Aseo doméstico por días"],
+  "addres": [
+      {
+        "streetNumber": 101,
+        "city": "Versalles"
+      }
+    ]
 },
 {
   "id": "0b8ddd96-6e4d-44d4-9f90-2ae0cdb68617",
