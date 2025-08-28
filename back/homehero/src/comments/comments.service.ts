@@ -67,9 +67,13 @@ export class CommentsService {
       );
     }
 
+    
+
     const queryRunner = this.dataSource.createQueryRunner();
     await queryRunner.connect();
     await queryRunner.startTransaction();
+
+    let savedComment: Comment;
 
     try {
       const comment = this.commentsRepository.create({
@@ -80,34 +84,41 @@ export class CommentsService {
         appointmentId
       });
 
-      await queryRunner.manager.save(comment);
-      await queryRunner.commitTransaction();
+    
+      savedComment = await queryRunner.manager.save(comment);
   
-      this.usersService.updateProfessionalStats(receiverId).catch(error => {
-        
-        console.error('Error en la actualización de estadísticas en segundo plano:', error);
-      });
-
-      const createdComment = await this.commentsRepository.findOne({
-        where: { id: comment.id },
-        relations: ['sender', 'receiver','appointment', 'appointment.client',
-          'appointment.professional',
-          'appointment.professional.subcategories'],
-      });
-
-      if (!createdComment) {
-        throw new NotFoundException('Comentario no encontrado después de crear');
-      }
-
-      return createdComment;
+       await queryRunner.commitTransaction();
 
     } catch (error) {
+
       await queryRunner.rollbackTransaction();
-      throw error;
+      throw error; 
     } finally {
+ 
       await queryRunner.release();
     }
-  }
+
+ 
+
+    this.usersService.updateProfessionalStats(receiverId).catch(error => {
+      console.error('Error en la actualización de estadísticas en segundo plano:', error);
+    });
+
+    const createdComment = await this.commentsRepository.findOne({
+      where: { id: savedComment.id },
+      relations: [
+        'sender', 'receiver', 'appointment', 'appointment.client',
+        'appointment.professional',
+        'appointment.professional.subcategories'
+      ],
+    });
+
+    if (!createdComment) {
+      throw new NotFoundException('Comentario no encontrado después de crear');
+    }
+
+    return createdComment;
+}
 
   async findAll(): Promise<Comment[]> {
     return this.commentsRepository.find({
