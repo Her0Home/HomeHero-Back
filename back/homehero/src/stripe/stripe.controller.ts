@@ -93,11 +93,4 @@ async getMembershipInfo(@Req() req) {
   const userId = req.user.id;
   return this.stripeService.getMembershipInfo(userId);
 }
-@ApiBearerAuth()
-  @Get('user-subscription/:userId')
-  @UseGuards(AuthGuard('jwt'), RolesGuard)
-  @Roles(Role.PROFESSIONAL)
-  async getUserSubscription(@Param('userId') userId: string) {
-    return this.stripeService.getActiveSubscriptionByUserId(userId);
-  }
 }

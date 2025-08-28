@@ -73,10 +73,10 @@ export class AppointmentController {
     return this.appointmentService.findAll();
   }
 
-@Get(':id') 
+@Get('user/:id') 
 @ApiBearerAuth()
 @UseGuards(LogginGuard)
-findAllByUser(@Param('userId', new ParseUUIDPipe()) userId: string) { 
+findAllByUser(@Param('id', new ParseUUIDPipe()) userId: string) { 
   return this.appointmentService.findAllByUser(userId);
 }
   @Put('confirm/:id')
