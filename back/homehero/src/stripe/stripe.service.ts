@@ -69,11 +69,9 @@ export class StripeService {
   }
 
 
-  async cancelSubscription(subscriptionId: string): Promise<Stripe.Subscription> {
-
+  async cancelSubscription(subscriptionId: string): Promise<any> {
   const subscription = await this.stripe.subscriptions.retrieve(subscriptionId);
   
-
   const payment = await this.paymentRepository.findOne({
     where: { stripeSubscriptionId: subscriptionId },
     order: { date: 'DESC' }
@@ -82,8 +80,7 @@ export class StripeService {
   if (payment) {
     const user = await this.findUserById(payment.user_id);
     
-  
-    const canceledSubscription = await this.stripe.subscriptions.update(subscriptionId, {
+   const canceledSubscription = await this.stripe.subscriptions.update(subscriptionId, {
       cancel_at_period_end: true
     });
     
@@ -91,12 +88,22 @@ export class StripeService {
       { id: user.id },
       { membershipCancelled: true }
     );
-    
-    return canceledSubscription;
+    return {
+      message: 'Suscripción cancelada exitosamente. El acceso permanecerá activo hasta el final del período de facturación.',
+      subscriptionId: canceledSubscription.id,
+      status: canceledSubscription.status,
+      cancelAtPeriodEnd: canceledSubscription.cancel_at_period_end,
+      accessValidUntil:  new Date(subscription.items.data[0].current_period_end * 1000)
+    };
   }
   
 
-  return this.stripe.subscriptions.cancel(subscriptionId);
+  const immediateCancel = await this.stripe.subscriptions.cancel(subscriptionId);
+  return {
+      message: 'Suscripción cancelada de forma inmediata.',
+      subscriptionId: immediateCancel.id,
+      status: immediateCancel.status
+  }
 }
 
  

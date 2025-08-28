@@ -61,14 +61,6 @@ export class StripeController {
   
 
   @ApiBearerAuth()
-  @Get('subscription/:id')
-  @UseGuards(AuthGuard('jwt'), RolesGuard)
-  @Roles(Role.PROFESSIONAL)
-  async getSubscription(@Param('id') id: string) {
-    return this.stripeService.getSubscription(id);
-  }
-
-  @ApiBearerAuth()
   @Post('cancel-subscription/:id')
   @UseGuards(AuthGuard('jwt'), RolesGuard)
   @Roles(Role.PROFESSIONAL)
@@ -76,13 +68,7 @@ export class StripeController {
     return this.stripeService.cancelSubscription(id);
   }
 
-  @ApiBearerAuth()
-  @Get('user-payments/:userId')
-  @UseGuards(AuthGuard('jwt'), RolesGuard)
-  @Roles(Role.PROFESSIONAL)
-  async getUserPayments(@Param('userId') userId: string) {
-    return this.stripeService.getUserPayments(userId);
-  }
+  
 
   
 @ApiBearerAuth()
