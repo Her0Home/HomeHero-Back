@@ -283,13 +283,21 @@ async getMembershipInfo(userId: string): Promise<any> {
   const user = await this.findUserById(userId);
   
 
+  const lastPayment = await this.paymentRepository.findOne({
+    where: { 
+      user_id: userId,
+      stripeSubscriptionId: Not(IsNull()) 
+    },
+    order: { date: 'DESC' }
+  });
+
   if (!user.membershipEndDate) {
     return {
       active: user.isMembresyActive || false,
       remaining: 0,
       endDate: null,
-      isCancelled: false,
-      subscriptionId: null
+      isCancelled: user.membershipCancelled || false,
+      subscriptionId: lastPayment?.stripeSubscriptionId || null 
     };
   }
   
@@ -299,14 +307,6 @@ async getMembershipInfo(userId: string): Promise<any> {
   const diffTime = endDate.getTime() - today.getTime();
   const diffDays = Math.ceil(diffTime / (1000 * 60 * 60 * 24));
   
-
-  const lastPayment = await this.paymentRepository.findOne({
-    where: { 
-      user_id: userId,
-      stripeSubscriptionId: Not(IsNull()) 
-    },
-    order: { date: 'DESC' }
-  });
   
   return {
     active: diffDays > 0 && user.isMembresyActive,
