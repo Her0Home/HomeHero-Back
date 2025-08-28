@@ -235,7 +235,6 @@ export class StripeWebhookController {
     }
     try {
       const amount = paymentIntent.amount / 100;
-      await this.emailService.sendPaymentSuccessEmail(user, amount, paymentIntent.id);
     } catch(error) {
       this.logger.error(`Fallo al enviar el correo de confirmación de pago: ${error.message}`);
     }
