@@ -16,7 +16,7 @@ async function bootstrap() {
 
    app.enableCors({
     origin: [
-      'http://localhost:3000', 
+      'http://localhost:3001', 
       'https://home-hero-front-cc1o.vercel.app'
     ],
     methods: 'GET,HEAD,PUT,PATCH,POST,DELETE,OPTIONS',
