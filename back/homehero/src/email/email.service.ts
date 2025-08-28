@@ -13,8 +13,8 @@ export class EmailService {
 
     try {
       
-      const url:string = 'https://openai.com/es-419/'
-      console.log(email);
+      
+      
       
       await this.mailerService.sendMail({
         to: email,

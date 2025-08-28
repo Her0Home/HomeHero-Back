@@ -2,6 +2,7 @@ import { Controller, Get, Post, Body, Patch, Param, Delete, Put, Req, ParseUUIDP
 import { CategoryService } from './category.service';
 import { UpdateCategoryDto } from './dto/update-category.dto';
 import { CreateCategoryDto } from './dto/create-category.dto';
+import { ApiParam } from '@nestjs/swagger';
 
 @Controller('category')
 export class CategoryController {
@@ -17,32 +18,14 @@ export class CategoryController {
     return this.categoryService.findCategoryName(category);
   }
   
+  @ApiParam({
+    name: 'id',
+    type: String,
+    description: 'ID de la categoría en formato UUID',
+    example: 'd16cf338-af25-45a6-a5c3-da3d371645df  ',
+  })
   @Get(':id')
   async findOne(@Param('id', new ParseUUIDPipe()) id: string) {
     return this.categoryService.findOne(id);
-  }
-
-
-  // @Put(':id')
-  // async update(@Param('id', new ParseUUIDPipe()) id: string, @Body() updateCategoryDto: UpdateCategoryDto) {
-  //   return this.categoryService.update(+id, updateCategoryDto);
-  // }
-
-  // @Post()
-  // async create(@Body() createCategoryDto: CreateCategoryDto) {
-  //   console.log('BODY:', createCategoryDto);
-  //   return this.categoryService.create(createCategoryDto);
-  // }
-
-  // @Delete(':id')
-  // async remove(@Param('id', new ParseUUIDPipe()) id: string) {
-  //   return this.categoryService.remove(+id);
-  // }
-
-  
-  @Patch('choose-category')
-  async chooseCatehory(@Body('categoryId') categoryId: string, @Req() req) {
-    const userId = req.user.id;
-    return this.categoryService.chooseCategory(userId, categoryId);
   }
 }

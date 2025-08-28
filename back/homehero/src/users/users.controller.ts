@@ -42,6 +42,10 @@ export class UsersController {
   @UseGuards(LogginGuard,RolesGuard)
   @ApiQuery({ name: 'page', required: false, type: Number, example: 1 })
   @ApiQuery({ name: 'limit', required: false, type: Number, example: 3 })
+  @ApiQuery({ name: 'role', required: false, enum: Role })
+  @ApiQuery({ name: 'email', required: false, type: String })
+  @ApiQuery({ name: 'id', required: false, type: String, example: '25fbd9d8-6256-4978-a46a-96a553e67e00' })
+  @ApiQuery({ name: 'name', required: false, type: String })
   @Get('search')
   getAllUserVerifi(
     @Query('role') role?: Role | undefined,
@@ -52,10 +56,11 @@ export class UsersController {
     return this.usersService.getUserFilter({role, email, id, name})
   }
 
-  
-  
-  @Get('search/professionals')
+  @ApiQuery({ name: 'categoryId', required: false, type: String, example: "d16cf338-af25-45a6-a5c3-da3d371645df"})
+  @ApiQuery({ name: 'page', required: false, type: Number, example: 1 })
+  @ApiQuery({ name: 'limit', required: false, type: Number, example: 3 })
   @UseInterceptors(ExcludePasswordInterceptor)
+  @Get('search/professionals')
   searchProfessionals(
     @Query('categoryId', ) categoryId?: string,
     @Query('page') page?: number,
@@ -108,6 +113,7 @@ export class UsersController {
   @ApiBearerAuth()
   @Roles(Role.ADMIN)
   @UseGuards(LogginGuard,RolesGuard)
+  @UseInterceptors(ExcludePasswordInterceptor)
   @Put(':id/ban')
   banUser (@Param('id', new ParseUUIDPipe()) id:string){
     return this.usersService.banUser(id);
@@ -120,6 +126,7 @@ export class UsersController {
   }
 
   @ApiBearerAuth()
+   @UseInterceptors(ExcludePasswordInterceptor)
   @UseGuards(LogginGuard)
   @Put()
   putUser(@Body() body: UpdateUser, @Req() req){
@@ -134,8 +141,8 @@ export class UsersController {
     return this.usersService.getProfessionalById(id);
   }
 
-  @UseInterceptors(ExcludePasswordInterceptor)
   @ApiBearerAuth()
+  @UseInterceptors(ExcludePasswordInterceptor)
   @UseGuards(LogginGuard)
   @Get(':id')
   GetUserById(@Param('id', new ParseUUIDPipe()) id: string) {

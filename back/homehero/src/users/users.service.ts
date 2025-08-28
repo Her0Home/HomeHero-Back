@@ -118,10 +118,6 @@ export class UsersService {
         throw new NotFoundException(`Userio no encontrado con el id: ${id} `);
       }
 
-      const mount:number= 3000;
-      const x= "hola"
-      await this.emailService.sendPaymentSuccessEmail(userFind, mount, x)
-
       return userFind;
 
     } catch (error) {
@@ -368,7 +364,7 @@ export class UsersService {
       findUser.subcategories= userSubCategories;
       }
 
-     
+      findUser.isVerified=true;
       findUser.description= description;
       findUser.birthdate= birthdate;
       findUser.imageProfile= imageProfile;
