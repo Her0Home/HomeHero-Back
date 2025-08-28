@@ -173,11 +173,33 @@ export class StripeWebhookController {
     if (!user) {
       return;
     }
+    try {
+
+        const subscription = await this.stripeService.stripe.subscriptions.retrieve(subscriptionId);
+        
+
+           const subscriptionData = subscription as any;
+        const endDate = new Date(subscriptionData.current_period_end * 1000);
+
+      
+        await this.userRepository.update(
+            { id: user.id },
+            {
+                isMembresyActive: true,
+                membershipEndDate: endDate,
+                membershipCancelled: subscription.cancel_at_period_end
+            }
+        );
+    } catch (error) {
+        this.logger.error(`Error actualizando membresía desde checkout.session.completed: ${error.message}`);
+     
+    }
 
     await this.updateUserMembershipStatus(user, true);
   }
 
   private async handlePaymentIntentSucceeded(paymentIntent: Stripe.PaymentIntent): Promise<void> {
+    this.logger.log(`Webhook 'payment_intent.succeeded' recibido para: ${paymentIntent.id}`);
     const customerId = paymentIntent.customer as string;
     
     if (paymentIntent.metadata?.subscription_id) {
@@ -190,6 +212,7 @@ export class StripeWebhookController {
     }
     
     if (!customerId) {
+       this.logger.warn('PaymentIntent no tiene customerId. Saliendo.');
       return;
     }
 
@@ -198,6 +221,7 @@ export class StripeWebhookController {
     });
     
     if (!user) {
+         this.logger.warn(`Usuario no encontrado para stripeCustomerId: ${customerId}. Saliendo.`);
       return;
     }
     try {
@@ -208,38 +232,60 @@ export class StripeWebhookController {
     }
 
 
-    let subscriptionId = this.subscriptionsMap.get(paymentIntent.id) || 
-                        this.pendingSubscriptionInfo.get(paymentIntent.id);
-    
-    if (!subscriptionId) {
-      try {
-        const charges = await this.stripeService.stripe.charges.list({
-          limit: 1,
-          payment_intent: paymentIntent.id,
-        }) as any;
-        
-        if (charges.data.length > 0 && charges.data[0].invoice) {
-          const invoiceId = charges.data[0].invoice;
-          const invoice = await this.stripeService.stripe.invoices.retrieve(invoiceId, {
-            expand: ['subscription']
-          }) as any;
-          
-          if (invoice.subscription) {
-            subscriptionId = typeof invoice.subscription === 'string' 
-              ? invoice.subscription 
-              : invoice.subscription.id;
-              
-            if (subscriptionId) {
-              this.paymentIntentsMap.set(subscriptionId, paymentIntent.id);
-              this.subscriptionsMap.set(paymentIntent.id, subscriptionId);
-              
-              await this.updatePaymentWithSubscriptionId(paymentIntent.id, subscriptionId);
-            }
-          }
-        }
-      } catch (error) {
+    let subscriptionId: string | undefined = this.subscriptionsMap.get(paymentIntent.id) || 
+                                           this.pendingSubscriptionInfo.get(paymentIntent.id);
 
-      }
+    const invoiceId = (paymentIntent as any).invoice;
+
+   if (!subscriptionId && invoiceId) {
+        try {
+ 
+            const invoice: any = await this.stripeService.stripe.invoices.retrieve(invoiceId as string);
+            
+            
+            if (invoice && invoice.subscription) {
+                subscriptionId = invoice.subscription as string;
+                 this.logger.log(`SubscriptionId encontrado a través de la factura: ${subscriptionId}`);
+            }
+        } catch (error) {
+            this.logger.warn(`No se pudo obtener la factura ${invoiceId} para el paymentIntent ${paymentIntent.id}`);
+        }
+    }
+  
+
+
+    if (subscriptionId) {
+       this.logger.log(`Intentando actualizar membresía completa para el usuario ${user.id} con la suscripción ${subscriptionId}`);
+        try {
+            const subscription = await this.stripeService.stripe.subscriptions.retrieve(subscriptionId);
+            const subscriptionData = subscription as any;
+            const endDate = new Date(subscriptionData.current_period_end * 1000);
+
+            this.logger.log(`Fecha de finalización calculada: ${endDate.toISOString()}`);
+            
+
+            await this.userRepository.update(
+                { id: user.id },
+                {
+                    isMembresyActive: true,
+                    membershipEndDate: endDate,
+                    membershipCancelled: subscription.cancel_at_period_end
+                }
+            );
+
+             this.logger.log(`¡ÉXITO! Base de datos actualizada para el usuario ${user.id}`);
+
+            this.paymentIntentsMap.set(subscriptionId, paymentIntent.id);
+            this.subscriptionsMap.set(paymentIntent.id, subscriptionId);
+            await this.updatePaymentWithSubscriptionId(paymentIntent.id, subscriptionId);
+
+        } catch (error) {
+            this.logger.error(`FALLO LA ACTUALIZACIÓN COMPLETA de la membresía para el usuario ${user.id}:`, error.stack);
+            this.logger.error(`Error al actualizar membresía desde payment_intent.succeeded: ${error.message}`);
+             await this.updateUserMembershipStatus(user, true);
+        }
+    } else {
+       this.logger.warn(`No se encontró subscriptionId para el paymentIntent ${paymentIntent.id}. Actualizando solo como activo.`);
     }
 
     await this.createOrUpdatePayment(
@@ -315,6 +361,26 @@ export class StripeWebhookController {
     if (!user) {
       return;
     }
+    try {
+
+    const subscription = await this.stripeService.stripe.subscriptions.retrieve(subscriptionId);
+    
+
+    const subscriptionData = subscription as any;
+    const endDate = new Date(subscriptionData.current_period_end * 1000);
+
+
+    await this.userRepository.update(
+      { id: user.id },
+      { 
+        isMembresyActive: true,
+        membershipEndDate: endDate,
+        membershipCancelled: subscription.cancel_at_period_end 
+      }
+    );
+  } catch (error) {
+    this.logger.error(`Error al actualizar la membresía del usuario desde la factura: ${error.message}`);
+  }
     try {
       const amount = invoice.amount_paid / 100;
       // El paymentIntentId podría estar en invoice.payment_intent

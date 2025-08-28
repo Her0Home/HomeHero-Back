@@ -1,4 +1,4 @@
-import { Controller, Post, Body, Get, Param, UseGuards, NotFoundException, ForbiddenException, Req } from '@nestjs/common';
+import { Controller, Post, Body, Get, Param, UseGuards, NotFoundException, ForbiddenException, Req, BadRequestException } from '@nestjs/common';
 import { StripeService } from './stripe.service';
 import { CreatePaymentDto } from './dto/createPayment.dto';
 import { CheckoutSessionDto } from './dto/checkoutPayment.dto';
@@ -23,8 +23,13 @@ export class StripeController {
   async createCheckoutSession(@Body() checkoutSessionDto: CheckoutSessionDto) {
     const { userId, priceId, successUrl, cancelUrl } = checkoutSessionDto;
     
+    
 
     const user = await this.stripeService.findUserById(userId);
+    
+     if (user.isMembresyActive) {
+      throw new BadRequestException('El usuario ya tiene una suscripción activa.');
+    }
 
     if (user.role !== Role.PROFESSIONAL) {
       throw new ForbiddenException('Solo los usuarios profesionales pueden crear suscripciones');
