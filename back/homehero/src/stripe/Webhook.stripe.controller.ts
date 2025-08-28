@@ -143,6 +143,7 @@ export class StripeWebhookController {
 }
 
   private async handleCheckoutSessionCompleted(session: Stripe.Checkout.Session): Promise<void> {
+     this.logger.log(`Webhook 'checkout.session.completed' recibido para sesión: ${session.id}`);
     if (!session.customer || !session.subscription) {
       return;
     }
@@ -176,9 +177,18 @@ export class StripeWebhookController {
     try {
 
         const subscription = await this.stripeService.stripe.subscriptions.retrieve(subscriptionId);
+        this.logger.log(`Objeto Subscription recuperado de Stripe: ${JSON.stringify(subscription, null, 2)}`);
         
 
-           const subscriptionData = subscription as any;
+         const subscriptionData = subscription as any;
+
+         if (typeof subscriptionData.current_period_end !== 'number') {
+            this.logger.error(`¡FATAL! El campo 'current_period_end' no es un número. Valor recibido: ${subscriptionData.current_period_end}`);
+            // Lanzamos un error para detener la ejecución y que quede registrado.
+            throw new Error('current_period_end is not a valid number from Stripe.');
+        }
+
+          
         const endDate = new Date(subscriptionData.current_period_end * 1000);
 
       
