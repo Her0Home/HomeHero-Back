@@ -272,12 +272,41 @@ async rescheduleAppointment(appointmentId: string, dto: UpdateAppointmentDto) {
     });
   }
 
-  findOne(id: string) {
-    return this.appointmentRepository.findOne({
-      where: { id },
-      relations: ['client', 'professional'],
-    });
-  }
+ async findAllByUser(userId: string) {
+
+  const appointments = await this.appointmentRepository.find({
+    where: [
+      { client: { id: userId } },
+      { professional: { id: userId } },
+    ],
+    relations: ['client', 'professional'],
+  });
+
+
+  const formattedAppointments = appointments.map((appointment) => {
+    return {
+      id: appointment.id,
+      startTime: appointment.startTime,
+      endTime: appointment.endTime,
+      description: appointment.description,
+      status: appointment.status,
+      imageService: appointment.imageService,
+      client: {
+        id: appointment.client.id,
+        name: appointment.client.name, 
+        address: appointment.client.addres, 
+      },
+      professional: {
+        id: appointment.professional.id,
+        name: appointment.professional.name, 
+        address: appointment.professional.addres, 
+      },
+    };
+  });
+
+
+  return formattedAppointments;
+}
   async cancelAppointment(appointmentId: string, userId: string) {
     const appointment = await this.findAndValidateAppointment(appointmentId);
 

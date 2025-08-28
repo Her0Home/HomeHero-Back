@@ -9,9 +9,11 @@ import { AddresModule } from 'src/addres/addres.module';
 import { Comment } from 'src/comments/entities/comment.entity';
 import { Appointment } from 'src/appointment/entities/appointment.entity';
 import { SubcategoryModule } from 'src/subcategory/subcategory.module';
+import { JwtModule } from '@nestjs/jwt';
+import { AuthModule } from 'src/auth/auth.module';
 
 @Module({
-  imports: [TypeOrmModule.forFeature([User, Comment , Appointment]), EmailModule, CategoryModule, AddresModule,SubcategoryModule],
+  imports: [TypeOrmModule.forFeature([User, Comment , Appointment]),AuthModule, EmailModule, CategoryModule, AddresModule,SubcategoryModule],
   controllers: [UsersController],
   providers: [UsersService],
   exports: [UsersService]

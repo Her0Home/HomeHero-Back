@@ -53,14 +53,7 @@ export class UsersController {
   }
 
   
-  @UseInterceptors(ExcludePasswordInterceptor)
-  @ApiBearerAuth()
-  @UseGuards(LogginGuard)
-  @Get(':id')
-  GetUserById(@Param('id', new ParseUUIDPipe()) id: string) {
-    return this.usersService.getUserById(id);
-  }
-
+  
   @Get('search/professionals')
   @UseInterceptors(ExcludePasswordInterceptor)
   searchProfessionals(
@@ -91,13 +84,24 @@ export class UsersController {
   }
 
   @ApiBearerAuth()
-  @UseInterceptors(ExcludePasswordInterceptor,ResponseUserInterceptor)
+  @UseInterceptors(ChangeRoleInterceptor,ExcludePasswordInterceptor,ResponseUserInterceptor)
   @UseGuards(LogginGuard)
   @Put('role')
   putRole(@Req() req, @Body() body: updateRole){
     const id: string = req.user.id;
     
     return this.usersService.changeRole(id, body);
+  
+  }
+
+  @ApiBearerAuth()
+  @UseInterceptors(ChangeRoleInterceptor,ExcludePasswordInterceptor,ResponseUserInterceptor)
+  @UseGuards(LogginGuard)
+  @Put('role')
+  putActive(@Req() req){
+    const id: string = req.user.id;
+    
+    return this.usersService.banUser(id);
   
   }
 
@@ -128,5 +132,13 @@ export class UsersController {
   @Get('profile/:id')
   GetUserProfileById(@Param('id', new ParseUUIDPipe()) id: string) {
     return this.usersService.getProfessionalById(id);
+  }
+
+  @UseInterceptors(ExcludePasswordInterceptor)
+  @ApiBearerAuth()
+  @UseGuards(LogginGuard)
+  @Get(':id')
+  GetUserById(@Param('id', new ParseUUIDPipe()) id: string) {
+    return this.usersService.getUserById(id);
   }
 }
