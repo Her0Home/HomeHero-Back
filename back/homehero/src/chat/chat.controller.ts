@@ -11,7 +11,7 @@ export class ChatController {
   constructor(private readonly chatService: ChatService) {}
 
   @Get()
-  @ApiBearerAuth() // Indica que las rutas usan autenticación Bearer
+  @ApiBearerAuth() 
   @UseGuards(AuthGuard('jwt')) 
   findAll(@Req() req: Request) {
     const currentUser = req.user as User;
