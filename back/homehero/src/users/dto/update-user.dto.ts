@@ -1,6 +1,6 @@
 import { ArrayNotEmpty, IsArray, IsDate, IsNotEmpty, IsOptional, IsString, IsUUID, Matches } from "class-validator";
 import { Role } from "../assets/roles";
-import { Type } from "class-transformer";
+import { Transform, Type } from "class-transformer";
 
 export class updateRole{
     @IsNotEmpty()
@@ -25,7 +25,7 @@ export class UpdateUser{
 
 
     @IsString()
-    @IsNotEmpty()
+    @IsOptional()
     aptoNumber: string;
 
     @IsNotEmpty()
@@ -42,5 +42,8 @@ export class UpdateUser{
     @IsString()
     @Matches(/^\d{7,8}$/, { message: 'El DNI debe tener entre 7 y 8 dígitos' })
     dni: string;
+
+    @IsOptional()
+    description: string;
 
 }
