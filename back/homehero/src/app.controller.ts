@@ -13,7 +13,7 @@ export class AppController {
 @Get()
 handleRoot(@Req() req: Request, @Res() res: Response) {
   if (req.oidc && req.oidc.isAuthenticated()) {
-   res.redirect('https://home-hero-front.vercel.app/login/callback');
+   res.redirect('https://home-hero-front.vercel.app/callback');
   } else {
     res.send(this.appService.getHello());
   }
