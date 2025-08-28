@@ -56,6 +56,7 @@ export class UsersServiceSeeder implements OnApplicationBootstrap {
           role: userData.role as Role,
           description: userData.description,
           imageProfile: userData.imageProfile,
+          averageRating: userData.averageRating,
         };
         const newUser = this.usersRepository.create(userToCreate);
 

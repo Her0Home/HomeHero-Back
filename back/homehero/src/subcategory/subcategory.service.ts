@@ -2,7 +2,7 @@ import { HttpException, Injectable, InternalServerErrorException, NotFoundExcept
 import { CreateSubcategoryDto } from './dto/create-subcategory.dto';
 import { UpdateSubcategoryDto } from './dto/update-subcategory.dto';
 import { InjectRepository } from '@nestjs/typeorm';
-import { Repository } from 'typeorm';
+import { ILike, Repository } from 'typeorm';
 import { SubCategory } from './entities/subcategory.entity';
 import { Category } from 'src/category/entities/category.entity';
 import { ExceptionsHandler } from '@nestjs/core/exceptions/exceptions-handler';
@@ -47,13 +47,16 @@ export class SubcategoryService {
     }
   }
 
-  async getSubCategorieById(id: string) {
+  async getSubCategorieById(name: string) {
     try {
-      const subCategorie: SubCategory | null = await this.subcategoriesRepository.findOne({where:{id}});
-      if(!subCategorie) throw new NotFoundException('Categoria no encontrada');
+      const subCategorie: SubCategory | null = await this.subcategoriesRepository.findOne( {where: { name: ILike(`%${name}%`)}});
+      if(!subCategorie){
+        console.log(name);
+        throw new NotFoundException('Categoria no encontrada');
+      } 
       return subCategorie;
     } catch (error) {
-      console.log(error.message);
+      console.log(error);
       if(error instanceof HttpException) throw error;
       throw new InternalServerErrorException('Error al buscar la categoria');
     }

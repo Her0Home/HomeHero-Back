@@ -1,4 +1,4 @@
-import { ArrayNotEmpty, IsArray, IsDate, IsNotEmpty, IsOptional, IsString, IsUUID } from "class-validator";
+import { ArrayNotEmpty, IsArray, IsDate, IsNotEmpty, IsOptional, IsString, IsUUID, Matches } from "class-validator";
 import { Role } from "../assets/roles";
 import { Type } from "class-transformer";
 
@@ -36,6 +36,11 @@ export class UpdateUser{
     imageProfile?: string;
 
     @IsOptional()
-    subcategories: string[];
+    subCategoriesName: string[];
+
+    @IsNotEmpty()
+    @IsString()
+    @Matches(/^\d{7,8}$/, { message: 'El DNI debe tener entre 7 y 8 dígitos' })
+    dni: string;
 
 }

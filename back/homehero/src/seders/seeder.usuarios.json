@@ -10,11 +10,12 @@
   "role": "profesional",
   "description": "Plomero con 15 años de experiencia en reparaciones e instalaciones sanitarias.",
   "categoryIds": "07917bce-15f3-461d-a7b3-d45809da6dd6",
-  "subCategoryIds": ["a550bac5-0f70-40d3-9a47-47c4a4070429","a550bac5-0f70-40d3-9a47-47c4a4070429","a550bac5-0f70-40d3-9a47-47c4a4070429"],
+  "subCategoryIds": ["7536458d-13e1-40d3-a695-fc3032018df3","62ef5a8e-5bb0-4202-b2d6-021a7d8c63c1"],
    "addres": [
       {
         "streetNumber": 45,
-        "city": "Almagro"
+        "city": "Almagro",
+        "aptoNumber": "3b"
       }
     ]
 },
@@ -29,7 +30,7 @@
   "role": "profesional",
   "description": "Electricista certificado para instalaciones, mantenimiento y reparación de sistemas eléctricos.",
   "categoryIds": "d16cf338-af25-45a6-a5c3-da3d371645df",
-  "subCategoryIds": ["131a8194-777a-46e1-8d22-1a99a4f2a98c"],
+  "subCategoryIds": ["2a5169dc-0d1f-47e4-a089-573a57a337a2"],
    "addres": [
       {
         "streetNumber": 789,
@@ -49,11 +50,12 @@
   "role": "profesional",
   "description": "Aseo y limpieza profesional dejando limpio interiores",
   "categoryIds": "c066beed-a172-445f-b183-af1abc4bcaf6",
-  "subCategoryIds": ["fb5d0c4e-1d25-4f6d-a8ea-afed3c8a0683"],
+  "subCategoryIds": ["fb5d0c4e-1d25-4f6d-a8ea-afed3c8a0683","486a987a-896d-40f1-a613-fcb6206ee01e"],
   "addres": [
       {
-        "streetNumber": 101,
-        "city": "Versalles"
+        "streetNumber": 789,
+        "city": "",
+        "aptoNumber": "101"
       }
     ]
 },
@@ -67,7 +69,14 @@
   "role": "profesional",
   "description": "Paseadora de perros con experiencia en adiestramiento básico y primeros auxilios.",
   "categoryIds": "ed17826c-1f2a-47a2-bb56-b83ae948f2e7",
-  "subCategoryIds": ["749fe1bc-3dc8-4447-b45e-c0bc252fe379"]
+  "subCategoryIds": ["a3399ad2-a295-4260-8275-036566e62481","e72a09f5-e4e0-436d-ac4e-27243574ad09"],
+  "addres": [
+      {
+        "streetNumber": 789,
+        "city": "Matanza",
+        "aptoNumber": "101"
+      }
+    ]
 },
 {
   "id": "3b9e073b-3aac-443c-8c6e-493d2bab8397",
@@ -79,7 +88,14 @@
   "role": "profesional",
   "description": "pintor profesional, responsable y cariñoso. Con experiencia en el pintado de exteriores de 10 años de experiencia.",
   "categoryIds": "e40e456c-bf4e-446b-954e-b0124f8247db",
-  "subCategoryIds": ["e40e456c-bf4e-446b-954e-b0124f8247db"]
+  "subCategoryIds": ["79b4b312-f4f6-4b8e-a896-0b2bdf5e9865"],
+  "addres": [
+      {
+        "streetNumber": 789,
+        "city": "Bogota",
+        "aptoNumber": "101"
+      }
+    ]
 },
 {
   "id": "f1e2d3c4-b5a6-7890-abcd-ef1234567890",
@@ -108,7 +124,14 @@
   "dni": 5060708090,
   "password": "PasswordClient2@",
   "role": "cliente",
-  "imageProfile": "https://example.com/images/sofia.png"
+  "imageProfile": "https://example.com/images/sofia.png",
+  "addres": [
+      {
+        "streetNumber": 789,
+        "city": "Buenos Aires",
+        "aptoNumber": "19"
+      }
+    ]
 },
 {
   "id": "bfdc48f6-ab99-4ad7-a4fe-f7af9b4c4a96",
@@ -117,7 +140,7 @@
   "birthdate": "1975-11-11T00:00:00.000Z",
   "dni": 6070809010,
   "password": "PasswordClient3#",
-  "role": "cliente"
+  "role": "admin"
 },
 {
   "id": "6c90ad7a-d0b9-4e85-b060-ec7abce82bf8",

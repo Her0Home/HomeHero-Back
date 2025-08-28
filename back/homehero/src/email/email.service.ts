@@ -21,9 +21,9 @@ export class EmailService {
         subject:'Bienvenido a Home Hero',// Asunto del Email
         template:'welcome',
         context:{
-          name: user,
-          appName: 'Home Hero',
-          loginUrl: url
+          name:user,
+          loginUrl: 'https://home-hero-front-mbak.vercel.app/login', // link a tu frontend
+          year: new Date().getFullYear(),
         }
       })
 
@@ -40,14 +40,14 @@ export class EmailService {
 
     try {
       await this.mailerService.sendMail({
-      from: '"Tu Empresa" no-reply@tuempresa.com',
       to: user.email,
       subject: '✅ Confirmación de tu pago',
-       template:'welcome',
+       template:'welcomeProfessional',
         context:{
+          email: user.email,
           name: user.name,
-          appName: 'Home Hero',
-          loginUrl: url
+          amount: amount,
+          paymentMethod: paymentIntentId,
         }
     });
       console.log(`Correo de pago exitoso enviado a ${user.email}`);
