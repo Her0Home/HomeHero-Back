@@ -27,7 +27,7 @@ export class AuthService {
 
 
 
-  async logIn(credentials: credentialsDto): Promise<ResponseLoginDTO>{
+  async logIn(credentials: credentialsDto): Promise<ResponseLoginDTO | string>{
 
     const findUser: User | null = await this.userRepository.findOne({where:{email: credentials.email}});
 
@@ -35,40 +35,45 @@ export class AuthService {
       throw new NotFoundException('Datos invalidos');
     }
 
-    const comparePassword = await bcrypt.compare(credentials.password, findUser.password!)
+    if(findUser.isActive===true){
+      const comparePassword = await bcrypt.compare(credentials.password, findUser.password!)
 
-    if(!comparePassword){
+      if(!comparePassword){
       throw new NotFoundException('Datos invalidos');
+      }
+
+      const payload ={
+        id: findUser.id,
+        email: findUser.email,
+        role: findUser.role,
+        dni: findUser.dni,
+      }
+
+      const user = {
+        isActive: findUser.isActive,
+      
+        isVerified: findUser.isVerified,
+      
+        role: findUser.role,
+      
+        id: findUser.id,
+      
+        name: findUser.name,
+
+        isMembresyActive: findUser.isMembresyActive
+      }
+
+      const token = this.jwtservice.sign(payload);
+      return { message: 'Login successful', token: token, user:user};
     }
 
-    const payload ={
-      id: findUser.id,
-      email: findUser.email,
-      role: findUser.role,
-      dni: findUser.dni,
-    }
+      return 'No se pudo iniciar sesion'
 
-    const user = {
-      isActive: findUser.isActive,
-      
-      isVerified: findUser.isVerified,
-      
-      role: findUser.role,
-      
-      id: findUser.id,
-      
-      name: findUser.name,
-
-      isMembresyActive: findUser.isMembresyActive
-    }
-
-    const token = this.jwtservice.sign(payload);
-    return { message: 'Login successful', token: token, user:user};
   }
 
 
 
-   async create(createUserDto: CreateUserDto): Promise <User> {
+  async create(createUserDto: CreateUserDto): Promise <User> {
       try {
   
         const foundUser: User | null = await this.userRepository.findOne({where:{email: createUserDto.email, dni: createUserDto.dni}});

@@ -21,6 +21,7 @@ import { Appointment } from 'src/appointment/entities/appointment.entity';
 import { AppointmentStatus } from 'src/appointment/Enum/appointmentStatus.enum';
 import { SubcategoryService } from 'src/subcategory/subcategory.service';
 import { SubCategory } from 'src/subcategory/entities/subcategory.entity';
+import { findSourceMap } from 'module';
 
 // import { UpdateUserDto } from './dto/update-user.dto';
 
@@ -33,7 +34,9 @@ export class UsersService {
     @InjectRepository(Appointment) private appointmentRepository: Repository<Appointment>,
     private categoryService: CategoryService,
     private addreService: AddresService,
-    private subcategoriService: SubcategoryService
+    private subcategoriService: SubcategoryService,
+    private emailService: EmailService,
+    private jwtService: JwtService, // ← CORRECTO
   ) {}
 
   async updateProfessionalStats(userId: string) {
@@ -115,6 +118,10 @@ export class UsersService {
         throw new NotFoundException(`Userio no encontrado con el id: ${id} `);
       }
 
+      const mount:number= 3000;
+      const x= "hola"
+      await this.emailService.sendPaymentSuccessEmail(userFind, mount, x)
+
       return userFind;
 
     } catch (error) {
@@ -153,23 +160,36 @@ export class UsersService {
   };
 }
 
-  async changeRole (id: string, body: updateRole){
+  async changeRole(id: string, body: updateRole) {
+    const { role } = body;
 
-    const {role} = body
-
-    if(!Object.values(Role).includes(role)){
-      throw new BadRequestException(`El rol ${role} no es valido`);
+    if (!Object.values(Role).includes(role)) {
+      throw new BadRequestException(`El rol ${role} no es válido`);
     }
 
-    const result = await this.userRepository.update(id, {role: role});
-
-    if(result.affected===0){
-      throw new NotFoundException(`El usuario con el id: ${id}, no fue encontrado`);
+    const user = await this.userRepository.findOne({ where: { id } });
+    if (!user) {
+      throw new NotFoundException(`El usuario con id ${id} no fue encontrado`);
     }
 
-    const findUser: User | null = await this.userRepository.findOne({where:{id: id}});
-    return findUser;
+    user.role = role;
+    user.isVerified= true;
+    await this.userRepository.save(user);
 
+    // Generar token actualizado
+    const payload = { id: user.id, email: user.email, role: user.role };
+    const newToken = this.jwtService.sign(payload);
+
+    const userResponse ={
+      isActive: user.isActive,
+      isVerified: user.isVerified,
+      role: user.role,
+      id: user.id,
+      name: user.name,
+      isMembresyActive: user.isMembresyActive,
+    }
+
+    return { access_token: newToken, user:userResponse };
   }
 
   async getAllProfesional (page: number, limit: number): Promise<User[] | undefined>{
@@ -183,8 +203,6 @@ export class UsersService {
       if(!profesionals){
         throw new InternalServerErrorException('Error al mostrar los profesionales');
       }
-      
-      
 
       const start:number = (safePage-1)*safeLimit;
       const end:number = safeLimit + start;

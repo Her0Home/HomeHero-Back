@@ -47,6 +47,7 @@ export class EmailService {
           email: user.email,
           name: user.name,
           amount: amount,
+          year: new Date().getFullYear(),
           paymentMethod: paymentIntentId,
         }
     });
