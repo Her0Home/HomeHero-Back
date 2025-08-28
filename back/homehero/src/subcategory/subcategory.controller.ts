@@ -2,6 +2,7 @@ import { Controller, Get, Post, Body, Patch, Param, Delete, ParseUUIDPipe } from
 import { SubcategoryService } from './subcategory.service';
 import { CreateSubcategoryDto } from './dto/create-subcategory.dto';
 import { UpdateSubcategoryDto } from './dto/update-subcategory.dto';
+import { ApiParam } from '@nestjs/swagger';
 
 @Controller('subcategory')
 export class SubcategoryController {
@@ -12,8 +13,14 @@ export class SubcategoryController {
     return this.subcategoryService.getAll();
   }
 
+   @ApiParam({
+      name: 'id',
+      type: String,
+      description: 'Nombre de la subCategoria',
+      example: 'Instalación',
+    })
   @Get(':id/subcategory')
-  findOne(@Param('id', new ParseUUIDPipe()) id: string) {
+  findOne(@Param('id') id: string) {
     return this.subcategoryService.getSubCategorieById(id);
   }
 
