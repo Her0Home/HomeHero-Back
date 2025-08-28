@@ -311,6 +311,7 @@ export class StripeWebhookController {
 
   private async handleInvoicePayment(invoice: any): Promise<void> {
   
+  
     await new Promise(resolve => setTimeout(resolve, 2000));
     
     if (!invoice.customer) {
@@ -371,25 +372,25 @@ export class StripeWebhookController {
       return;
     }
     try {
+        const subscription = await this.stripeService.stripe.subscriptions.retrieve(subscriptionId);
 
-    const subscription = await this.stripeService.stripe.subscriptions.retrieve(subscriptionId);
-    
+        if (!subscription.items?.data?.length) {
+            throw new Error(`Suscripción ${subscription.id} sin items.`);
+        }
+        const endDate = new Date(subscription.items.data[0].current_period_end * 1000);
 
-    const subscriptionData = subscription as any;
-    const endDate = new Date(subscriptionData.current_period_end * 1000);
-
-
-    await this.userRepository.update(
-      { id: user.id },
-      { 
-        isMembresyActive: true,
-        membershipEndDate: endDate,
-        membershipCancelled: subscription.cancel_at_period_end 
-      }
-    );
-  } catch (error) {
-    this.logger.error(`Error al actualizar la membresía del usuario desde la factura: ${error.message}`);
-  }
+        await this.userRepository.update(
+          { id: user.id },
+          { 
+            isMembresyActive: true,
+            membershipEndDate: endDate,
+            membershipCancelled: subscription.cancel_at_period_end 
+          }
+        );
+        this.logger.log(`✅ ÉXITO en handleInvoicePayment para usuario ${user.id}`);
+    } catch (error) {
+        this.logger.error(`Error en handleInvoicePayment: ${error.message}`);
+    }
     try {
       const amount = invoice.amount_paid / 100;
       // El paymentIntentId podría estar en invoice.payment_intent
