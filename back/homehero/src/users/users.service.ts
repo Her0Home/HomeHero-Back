@@ -333,9 +333,11 @@ export class UsersService {
 
   async putUser (userId: string, body: UpdateUser ){
 
-    const {categoriesId, birthdate, city, aptoNumber, streetNumber, imageProfile, subCategoriesName,dni} = body
+    const {categoriesId, birthdate, city, aptoNumber, streetNumber, imageProfile, subCategoriesName,dni,description} = body
     
     try {
+
+
       
       const findUser: User| null = await this.userRepository.findOne({where:{ id: userId}});
       if(!findUser){
@@ -367,7 +369,7 @@ export class UsersService {
       }
 
      
-
+      findUser.description= description;
       findUser.birthdate= birthdate;
       findUser.imageProfile= imageProfile;
       findUser.dni= +dni;
