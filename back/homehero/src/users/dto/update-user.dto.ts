@@ -36,7 +36,7 @@ export class UpdateUser{
     imageProfile?: string;
 
     @IsOptional()
-    subcategories: string[];
+    subCategoriesName: string[];
 
     @IsNotEmpty()
     @IsString()

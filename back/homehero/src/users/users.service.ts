@@ -315,7 +315,7 @@ export class UsersService {
 
   async putUser (userId: string, body: UpdateUser ){
 
-    const {categoriesId, birthdate, city, aptoNumber, streetNumber, imageProfile, subcategories,dni} = body
+    const {categoriesId, birthdate, city, aptoNumber, streetNumber, imageProfile, subCategoriesName,dni} = body
     
     try {
       
@@ -334,18 +334,18 @@ export class UsersService {
       const addre: Addre | null = await this.addreService.create({city, aptoNumber,streetNumber}, findUser.id)
       if(!addre) throw new InternalServerErrorException('Error al crear la direccion');
       
-      if(subcategories){
+      if(subCategoriesName){
          const userSubCategoriesUnfiltred: SubCategory[] = await Promise.all(
-          subcategories.map(async (idSubCat)=>{
-          const subCategory: SubCategory | undefined = await this.subcategoriService.getSubCategorieById(idSubCat);
-          if(!subCategory) throw new BadRequestException(`Error al asignar la subcategoria ${idSubCat}`);
+          subCategoriesName.map(async (nameSubCat)=>{
+          const subCategory: SubCategory | undefined = await this.subcategoriService.getSubCategorieById(nameSubCat);
+          if(!subCategory) throw new BadRequestException(`Error al asignar la subcategoria ${nameSubCat}`);
           return subCategory;
           })
         )
         
         const userSubCategories = userSubCategoriesUnfiltred.filter((subCat): subCat is SubCategory=> !!subCat)
 
-        findUser.subcategories= userSubCategories;
+      findUser.subcategories= userSubCategories;
       }
 
      
