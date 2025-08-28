@@ -29,6 +29,8 @@ export class LogginGuard implements CanActivate {
       user.iat = new Date(user.iat * 1000);
 
       request.user = user;
+      console.log(request.user);
+      
 
    
       return true;

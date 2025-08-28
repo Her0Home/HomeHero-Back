@@ -32,7 +32,7 @@ export class CategoryService {
     try {
       const category: Category | null = await this.categoryRepository.findOne({ where: { id:id}});
       if (!category) {
-        throw new Error('La categoria no existe');
+        throw new Error('La categoria no existe');  
       }
       return category;
 
