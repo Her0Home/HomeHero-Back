@@ -368,7 +368,7 @@ export class UsersService {
       findUser.subcategories= userSubCategories;
       }
 
-     
+      findUser.isVerified=true;
       findUser.description= description;
       findUser.birthdate= birthdate;
       findUser.imageProfile= imageProfile;

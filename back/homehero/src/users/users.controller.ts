@@ -108,6 +108,7 @@ export class UsersController {
   @ApiBearerAuth()
   @Roles(Role.ADMIN)
   @UseGuards(LogginGuard,RolesGuard)
+  @UseInterceptors(ExcludePasswordInterceptor)
   @Put(':id/ban')
   banUser (@Param('id', new ParseUUIDPipe()) id:string){
     return this.usersService.banUser(id);
@@ -120,6 +121,7 @@ export class UsersController {
   }
 
   @ApiBearerAuth()
+   @UseInterceptors(ExcludePasswordInterceptor)
   @UseGuards(LogginGuard)
   @Put()
   putUser(@Body() body: UpdateUser, @Req() req){
@@ -134,8 +136,8 @@ export class UsersController {
     return this.usersService.getProfessionalById(id);
   }
 
-  @UseInterceptors(ExcludePasswordInterceptor)
   @ApiBearerAuth()
+  @UseInterceptors(ExcludePasswordInterceptor)
   @UseGuards(LogginGuard)
   @Get(':id')
   GetUserById(@Param('id', new ParseUUIDPipe()) id: string) {
