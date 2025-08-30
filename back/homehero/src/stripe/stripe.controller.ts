@@ -68,6 +68,17 @@ export class StripeController {
     return this.stripeService.cancelSubscription(id);
   }
 
+  @ApiBearerAuth()
+  @Get('payments/history')
+  @UseGuards(AuthGuard('jwt'))
+  async getUserPayments(@Req() req) {
+    const userId = req.user.id;
+    if (!userId) {
+      throw new BadRequestException('User ID not found in token');
+    }
+    return this.stripeService.getUserPayments(userId);
+  }
+
   
 
   
