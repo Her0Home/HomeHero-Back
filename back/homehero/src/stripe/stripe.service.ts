@@ -337,7 +337,8 @@ async getMembershipInfo(userId: string): Promise<any> {
     remaining: diffDays > 0 ? diffDays : 0,
     endDate: user.membershipEndDate,
     isCancelled: user.membershipCancelled || false,
-    subscriptionId: lastPayment?.stripeSubscriptionId || null
+    subscriptionId: lastPayment?.stripeSubscriptionId || null,
+    priceId: priceId,
   };
 }
 
