@@ -297,6 +297,20 @@ async getMembershipInfo(userId: string): Promise<any> {
     },
     order: { date: 'DESC' }
   });
+  let priceId: string | null = null;
+    if (lastPayment?.stripeSubscriptionId) {
+      try {
+        const subscription = await this.stripe.subscriptions.retrieve(
+          lastPayment.stripeSubscriptionId
+        );
+
+        if (subscription.items.data.length > 0) {
+          priceId = subscription.items.data[0].price.id;
+        }
+      } catch (error) {
+        console.error("Error al obtener detalles de la suscripción de Stripe:", error);
+      }
+    }
 
   if (!user.membershipEndDate) {
     return {
