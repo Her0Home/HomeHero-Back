@@ -298,19 +298,21 @@ async getMembershipInfo(userId: string): Promise<any> {
     order: { date: 'DESC' }
   });
   let priceId: string | null = null;
-    if (lastPayment?.stripeSubscriptionId) {
-      try {
-        const subscription = await this.stripe.subscriptions.retrieve(
-          lastPayment.stripeSubscriptionId
-        );
 
-        if (subscription.items.data.length > 0) {
-          priceId = subscription.items.data[0].price.id;
-        }
-      } catch (error) {
-        console.error("Error al obtener detalles de la suscripción de Stripe:", error);
+  if (lastPayment?.stripeSubscriptionId) {
+    try {
+
+      const subscription = await this.stripe.subscriptions.retrieve(
+        lastPayment.stripeSubscriptionId
+      );
+
+      if (subscription.items.data.length > 0) {
+        priceId = subscription.items.data[0].price.id;
       }
+    } catch (error) {
     }
+  }
+
 
   if (!user.membershipEndDate) {
     return {
@@ -318,10 +320,11 @@ async getMembershipInfo(userId: string): Promise<any> {
       remaining: 0,
       endDate: null,
       isCancelled: user.membershipCancelled || false,
-      subscriptionId: lastPayment?.stripeSubscriptionId || null 
+      subscriptionId: lastPayment?.stripeSubscriptionId || null,
+      priceId: priceId, 
     };
   }
-  
+
 
   const today = new Date();
   const endDate = new Date(user.membershipEndDate);
