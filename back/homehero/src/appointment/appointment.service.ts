@@ -1,8 +1,8 @@
-import { BadRequestException, ConflictException, Injectable, NotFoundException, UnauthorizedException } from '@nestjs/common';
+import { BadRequestException, ConflictException, Injectable, NotFoundException, UnauthorizedException, Logger } from '@nestjs/common';
 import { CreateAppointmentDto } from './dto/create-appointment.dto';
 import { UpdateAppointmentDto } from './dto/update-appointment.dto';
 import { InjectRepository } from '@nestjs/typeorm';
-import { Between, DataSource, EntityManager, In, Not, Repository } from 'typeorm';
+import { Between, DataSource, EntityManager, In, LessThan, Not, Repository } from 'typeorm';
 import { Appointment } from './entities/appointment.entity';
 import { User } from 'src/users/entities/user.entity';
 import { AppointmentStatus } from 'src/appointment/Enum/appointmentStatus.enum';
@@ -10,6 +10,7 @@ import { Role } from 'src/users/assets/roles';
 import { ChatService } from 'src/chat/chat.service';
 import { ImagesService } from '../images/images.service';
 import { FinishAppointmentDto } from './dto/finish-appointment.dto';
+import { Cron, CronExpression } from '@nestjs/schedule';
 
 export interface TimeSlot {
   id: string;
@@ -20,6 +21,8 @@ export interface TimeSlot {
 
 @Injectable()
 export class AppointmentService {
+  private readonly logger = new Logger(AppointmentService.name);
+  
   constructor( 
     @InjectRepository(Appointment)
     private appointmentRepository: Repository<Appointment>,
@@ -30,6 +33,41 @@ export class AppointmentService {
     private readonly imageUploadService: ImagesService,
   ) {}
   
+  @Cron(CronExpression.EVERY_DAY_AT_MIDNIGHT)
+  async handleUnfulfilledAppointments() {
+    this.logger.log('Ejecutando tarea para verificar citas incumplidas...');
+
+    const yesterday = new Date();
+    yesterday.setDate(yesterday.getDate() - 1);
+
+    const overdueAppointments = await this.appointmentRepository.find({
+      where: {
+        status: AppointmentStatus.CONFIRMED,
+        endTime: LessThan(yesterday),
+      },
+      relations: ['professional'],
+    });
+
+    for (const appointment of overdueAppointments) {
+      appointment.status = AppointmentStatus.UNFULFILLED;
+      await this.appointmentRepository.save(appointment);
+
+      const professional = appointment.professional;
+      if (professional) {
+        professional.unfulfilledAppointments = (professional.unfulfilledAppointments || 0) + 1;
+        
+        if (professional.unfulfilledAppointments >= 3) {
+          professional.isActive = false;
+          this.logger.warn(`Profesional ${professional.name} (ID: ${professional.id}) suspendido por acumular 3 citas incumplidas.`);
+        }
+        
+        await this.userRepository.save(professional);
+      }
+    }
+
+    this.logger.log(`Tarea finalizada. Se procesaron ${overdueAppointments.length} citas.`);
+  }
+
    private async findAndValidateAppointment(appointmentId: string): Promise<Appointment> {
     const appointment = await this.appointmentRepository.findOne({
       where: { id: appointmentId },

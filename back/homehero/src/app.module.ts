@@ -23,10 +23,12 @@ import { EmailModule } from './email/email.module';
 import { Auth0Module } from './auth0/auth0.module';
 import { StripeModule } from './stripe/stripe.module';
 import { CommentsModule } from './comments/comments.module';
+import { ScheduleModule } from '@nestjs/schedule';
 
 
 @Module({
   imports: [
+    ScheduleModule.forRoot(),
     ConfigModule.forRoot({
       isGlobal: true,
       load: [typeOrmConfig],
