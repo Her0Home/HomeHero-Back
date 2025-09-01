@@ -24,7 +24,6 @@ import { EmailModule } from './email/email.module';
 import { Auth0Module } from './auth0/auth0.module';
 import { StripeModule } from './stripe/stripe.module';
 import { CommentsModule } from './comments/comments.module';
-import { TasksModule } from './appointment/task.module';
 
 @Module({
   imports: [
@@ -32,7 +31,6 @@ import { TasksModule } from './appointment/task.module';
       isGlobal: true,
       load: [typeOrmConfig],
     }),
-    ScheduleModule.forRoot(),
     EventEmitterModule.forRoot(),
 
     TypeOrmModule.forRootAsync({
@@ -55,7 +53,6 @@ import { TasksModule } from './appointment/task.module';
     Auth0Module,
     AppointmentModule,
     ChatModule,
-    TasksModule,
     MessageModule,
     UsersModule,
     AddresModule,

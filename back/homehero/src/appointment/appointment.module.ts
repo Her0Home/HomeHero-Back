@@ -1,5 +1,6 @@
 import { Module } from '@nestjs/common';
 import { TypeOrmModule } from '@nestjs/typeorm';
+import { ScheduleModule } from '@nestjs/schedule'; // Importar ScheduleModule
 import { AppointmentController } from './appointment.controller';
 import { AppointmentService } from './appointment.service';
 import { Appointment } from './entities/appointment.entity';
@@ -10,6 +11,7 @@ import { ImagesModule } from 'src/images/images.module';
 
 @Module({
   imports: [
+    ScheduleModule.forRoot(), 
     TypeOrmModule.forFeature([Appointment, User]),
     ChatModule,
     AuthModule,
@@ -17,7 +19,6 @@ import { ImagesModule } from 'src/images/images.module';
   ],
   controllers: [AppointmentController],
   providers: [AppointmentService],
-  exports: [AppointmentService],
+  exports: [AppointmentService], 
 })
 export class AppointmentModule {}
-
