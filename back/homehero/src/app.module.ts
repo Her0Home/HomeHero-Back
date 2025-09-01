@@ -24,10 +24,10 @@ import { EmailModule } from './email/email.module';
 import { Auth0Module } from './auth0/auth0.module';
 import { StripeModule } from './stripe/stripe.module';
 import { CommentsModule } from './comments/comments.module';
+import { TasksModule } from './appointment/task.module';
 
 @Module({
   imports: [
-    // 1. Módulos de configuración y síncronos globales
     ConfigModule.forRoot({
       isGlobal: true,
       load: [typeOrmConfig],
@@ -35,7 +35,6 @@ import { CommentsModule } from './comments/comments.module';
     ScheduleModule.forRoot(),
     EventEmitterModule.forRoot(),
 
-    // 2. Módulos asíncronos que dependen de la configuración
     TypeOrmModule.forRootAsync({
       inject: [ConfigService],
       useFactory: (configService: ConfigService) =>
@@ -50,14 +49,13 @@ import { CommentsModule } from './comments/comments.module';
       }),
       global: true,
     }),
-
-    // 3. Módulos de la aplicación
     CategoryModule,
     SubcategoryModule,
     SeederModule,
     Auth0Module,
     AppointmentModule,
     ChatModule,
+    TasksModule,
     MessageModule,
     UsersModule,
     AddresModule,
