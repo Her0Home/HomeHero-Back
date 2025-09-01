@@ -7,7 +7,6 @@ import { User } from '../users/entities/user.entity';
 import { ChatModule } from '../chat/chat.module';
 import { AuthModule } from '../auth/auth.module';
 import { ImagesModule } from 'src/images/images.module';
-import { Reflector } from '@nestjs/core'; 
 
 @Module({
   imports: [
@@ -17,7 +16,8 @@ import { Reflector } from '@nestjs/core';
     ImagesModule,
   ],
   controllers: [AppointmentController],
-  providers: [AppointmentService, Reflector],
+  providers: [AppointmentService],
   exports: [AppointmentService],
 })
 export class AppointmentModule {}
+
