@@ -148,4 +148,12 @@ export class UsersController {
   GetUserById(@Param('id', new ParseUUIDPipe()) id: string) {
     return this.usersService.getUserById(id);
   }
+
+  @ApiBearerAuth()
+@UseGuards(LogginGuard)
+@Put('acknowledge-warning')
+acknowledgeWarning(@Req() req) {
+  const userId: string = req.user.id;
+  return this.usersService.acknowledgeWarning(userId);
+}
 }

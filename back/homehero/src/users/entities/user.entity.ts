@@ -74,6 +74,9 @@ export class User {
     @Column({ nullable: true })
     stripeCustomerId?: string;
 
+    @Column({ type: 'integer', default: 0, nullable: true })
+    acknowledgedUnfulfilledCount?: number;
+
     @OneToMany(() => Appointment, appoiment=> appoiment.client)
     clientAppointments?: Appointment[];
     
