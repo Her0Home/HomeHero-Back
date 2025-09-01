@@ -28,7 +28,6 @@ import { ScheduleModule } from '@nestjs/schedule';
 
 @Module({
   imports: [
-    ScheduleModule.forRoot(),
     ConfigModule.forRoot({
       isGlobal: true,
       load: [typeOrmConfig],
@@ -38,6 +37,7 @@ import { ScheduleModule } from '@nestjs/schedule';
       useFactory: (ConfigService: ConfigService) =>
         ConfigService.get('typeorm')!,
     }),
+    ScheduleModule.forRoot(),
       EventEmitterModule.forRoot(),
      CategoryModule,
      SubcategoryModule,
