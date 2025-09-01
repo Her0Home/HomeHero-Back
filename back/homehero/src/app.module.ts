@@ -27,11 +27,13 @@ import { CommentsModule } from './comments/comments.module';
 
 @Module({
   imports: [
+    ScheduleModule.forRoot(),
     ConfigModule.forRoot({
       isGlobal: true,
       load: [typeOrmConfig],
     }),
     EventEmitterModule.forRoot(),
+    
 
     TypeOrmModule.forRootAsync({
       inject: [ConfigService],
