@@ -67,6 +67,9 @@ export class User {
 
     @Column({ type: 'jsonb', nullable: true })
     metadata?: any;
+
+    @Column({type:'integer', default: 0, nullable: true})
+    unfulfilledAppointments?: number;
      
     @Column({ nullable: true })
     stripeCustomerId?: string;
