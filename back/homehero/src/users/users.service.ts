@@ -390,7 +390,14 @@ export class UsersService {
 
   }
   
-  
+  async acknowledgeWarning(userId: string): Promise<User> {
+  const user = await this.userRepository.findOne({ where: { id: userId } });
+  if (!user) {
+    throw new NotFoundException(`Usuario con ID ${userId} no encontrado.`);
+  }
+  user.acknowledgedUnfulfilledCount = user.unfulfilledAppointments;
+  return this.userRepository.save(user);
+}
 
 
 
