@@ -10,6 +10,7 @@ import { Role } from 'src/users/assets/roles';
 import { ChatService } from 'src/chat/chat.service';
 import { ImagesService } from '../images/images.service';
 import { FinishAppointmentDto } from './dto/finish-appointment.dto';
+import { Cron, CronExpression } from '@nestjs/schedule';
 
 export interface TimeSlot {
   id: string;
@@ -32,6 +33,13 @@ export class AppointmentService {
     private readonly imageUploadService: ImagesService,
   ) {}
   
+@Cron(CronExpression.EVERY_DAY_AT_1AM) // Esto ejecutará la tarea todos los días a la 1 AM
+  async handleUnfulfilledAppointments() {
+    this.logger.log('Iniciando la verificación de citas incumplidas...');
+    const count = await this.processUnfulfilledAppointments();
+    this.logger.log(`${count} citas han sido marcadas como incumplidas.`);
+  }
+
   async processUnfulfilledAppointments(): Promise<number> {
     const yesterday = new Date();
     yesterday.setDate(yesterday.getDate() - 1);
@@ -51,17 +59,16 @@ export class AppointmentService {
       const professional = appointment.professional;
       if (professional) {
         professional.unfulfilledAppointments = (professional.unfulfilledAppointments || 0) + 1;
-        
+
         if (professional.unfulfilledAppointments >= 3) {
-          professional.isActive = false;
+          professional.isActive = false; // Suspensión de la cuenta
         }
-        
+
         await this.userRepository.save(professional);
       }
     }
     return overdueAppointments.length;
   }
-
 
    private async findAndValidateAppointment(appointmentId: string): Promise<Appointment> {
     const appointment = await this.appointmentRepository.findOne({

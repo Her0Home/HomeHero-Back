@@ -11,7 +11,6 @@ import { ImagesModule } from 'src/images/images.module';
 
 @Module({
   imports: [
-    ScheduleModule.forRoot(), 
     TypeOrmModule.forFeature([Appointment, User]),
     ChatModule,
     AuthModule,
