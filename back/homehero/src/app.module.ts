@@ -3,13 +3,9 @@ import { AppController } from './app.controller';
 import { AppService } from './app.service';
 import { ConfigModule, ConfigService } from '@nestjs/config';
 import { TypeOrmModule } from '@nestjs/typeorm';
-import { ScheduleModule } from '@nestjs/schedule';
 import { EventEmitterModule } from '@nestjs/event-emitter';
 import { JwtModule } from '@nestjs/jwt';
-
 import typeOrmConfig from './config/typeorm';
-
-// --- Módulos de Funcionalidades ---
 import { AppointmentModule } from './appointment/appointment.module';
 import { SeederModule } from './seders/seeder.Module';
 import { ChatModule } from './chat/chat.module';
@@ -27,7 +23,6 @@ import { CommentsModule } from './comments/comments.module';
 
 @Module({
   imports: [
-    ScheduleModule.forRoot(),
     ConfigModule.forRoot({
       isGlobal: true,
       load: [typeOrmConfig],
