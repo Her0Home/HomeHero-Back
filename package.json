@@ -1,6 +1,5 @@
 {
   "dependencies": {
-    "@nestjs/schedule": "^6.0.0",
     "cookie-parser": "^1.4.7",
     "jwt-decode": "^4.0.0"
   },

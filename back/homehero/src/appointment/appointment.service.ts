@@ -10,7 +10,6 @@ import { Role } from 'src/users/assets/roles';
 import { ChatService } from 'src/chat/chat.service';
 import { ImagesService } from '../images/images.service';
 import { FinishAppointmentDto } from './dto/finish-appointment.dto';
-import { Cron, CronExpression } from '@nestjs/schedule';
 
 export interface TimeSlot {
   id: string;
@@ -33,7 +32,6 @@ export class AppointmentService {
     private readonly imageUploadService: ImagesService,
   ) {}
   
-@Cron(CronExpression.EVERY_DAY_AT_1AM) // Esto ejecutará la tarea todos los días a la 1 AM
   async handleUnfulfilledAppointments() {
     this.logger.log('Iniciando la verificación de citas incumplidas...');
     const count = await this.processUnfulfilledAppointments();

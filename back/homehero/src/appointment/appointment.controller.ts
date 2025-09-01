@@ -12,6 +12,8 @@ import {
   MaxFileSizeValidator,
   FileTypeValidator,
   UseInterceptors,
+  HttpCode,
+  HttpStatus,
 } from '@nestjs/common';
 import { AppointmentService } from './appointment.service';
 import { CreateAppointmentDto } from './dto/create-appointment.dto';
@@ -22,8 +24,9 @@ import { Role } from 'src/users/assets/roles';
 import { RolesGuard } from 'src/guards/roles.guard';
 import { FileInterceptor } from '@nestjs/platform-express';
 import { FinishAppointmentDto } from './dto/finish-appointment.dto';
-import { ApiBearerAuth } from '@nestjs/swagger';
+import { ApiBearerAuth, ApiExcludeEndpoint } from '@nestjs/swagger';
 import { ConfirmAppointmentDto } from './dto/confirm-appointment.dto';
+import { CronGuard } from 'src/guards/cron.guard';
 
 @Controller('appointment')
 export class AppointmentController {
@@ -126,5 +129,13 @@ findAllByUser(@Param('id', new ParseUUIDPipe()) userId: string) {
     @Param('professionalId', new ParseUUIDPipe()) professionalId: string,
   ) {
     return this.appointmentService.findAllByProfessional(professionalId);
+  }
+  @ApiExcludeEndpoint() // Oculta este endpoint de la documentación de Swagger
+  @Post('process-unfulfilled')
+  @UseGuards(CronGuard) // ¡Usamos nuestro guard aquí!
+  @HttpCode(HttpStatus.OK)
+  async triggerUnfulfilledAppointmentsProcessing() {
+    this.appointmentService.processUnfulfilledAppointments();
+    return { message: 'El procesamiento de citas incumplidas ha comenzado.' };
   }
 }
