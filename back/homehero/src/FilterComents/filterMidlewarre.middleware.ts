@@ -1,6 +1,6 @@
 import { Injectable, NestMiddleware, BadRequestException } from '@nestjs/common';
 import { Request, Response, NextFunction } from 'express';
-import { ProfanityFilterService } from '../FilterComents/filterComents.service';
+import { ProfanityFilterService } from './filterComents.service';
 
 @Injectable()
 export class ProfanityFilterMiddleware implements NestMiddleware {

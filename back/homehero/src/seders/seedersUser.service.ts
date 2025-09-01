@@ -7,8 +7,8 @@ import usersData from "./seeder.usuarios.json";
 import { Role } from "src/users/assets/roles";
 import { Category } from "src/category/entities/category.entity";
 import { SubCategory } from "src/subcategory/entities/subcategory.entity";
-import { CategoriesServiceSeeder } from "../seders/seederCategories/seeder.categories";
-import { SubcategoriesServiceSeeder } from "../seders/seederSubcategories/seeder.subcategories";
+import { CategoriesServiceSeeder } from "./seederCategories/seeder.categories";
+import { SubcategoriesServiceSeeder } from "./seederSubcategories/seeder.subcategories";
 import { Addre } from "src/addres/entities/addre.entity";
 
 
