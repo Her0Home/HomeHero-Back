@@ -1,5 +1,5 @@
 import { Module } from '@nestjs/common';
-import { ProfanityFilterService } from '../FilterComents/filterComents.service';
+import { ProfanityFilterService } from './filterComents.service';
 
 @Module({
   providers: [ProfanityFilterService],
