@@ -27,29 +27,31 @@ import { CommentsModule } from './comments/comments.module';
 
 @Module({
   imports: [
-    // --- Módulos de Configuración Global (Primero) ---
+    // 1. Módulos de configuración y síncronos globales
     ConfigModule.forRoot({
       isGlobal: true,
       load: [typeOrmConfig],
     }),
+    ScheduleModule.forRoot(),
+    EventEmitterModule.forRoot(),
+
+    // 2. Módulos asíncronos que dependen de la configuración
     TypeOrmModule.forRootAsync({
       inject: [ConfigService],
       useFactory: (configService: ConfigService) =>
         configService.get('typeorm')!,
     }),
-    ScheduleModule.forRoot(), // Módulo global de Tareas Programadas
-    EventEmitterModule.forRoot(), // Módulo global de Eventos
-    JwtModule.registerAsync({ // Configuración de JWT
+    JwtModule.registerAsync({
       imports: [ConfigModule],
       inject: [ConfigService],
       useFactory: (configService: ConfigService) => ({
         secret: configService.get<string>('SECRET_KEY'),
         signOptions: { expiresIn: '1h' },
       }),
-      global: true, // Hacer JWT global
+      global: true,
     }),
 
-    // --- Módulos de la Aplicación ---
+    // 3. Módulos de la aplicación
     CategoryModule,
     SubcategoryModule,
     SeederModule,
